@@ -1,3 +1,3 @@
-# @kahi-docs/shared
+# @svelte-in-motion/core
 
-> Subpackage for handling all non-Application specific shared code.
+> ...
