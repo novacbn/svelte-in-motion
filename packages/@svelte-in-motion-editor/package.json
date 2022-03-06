@@ -1,0 +1,32 @@
+{
+    "name": "@svelte-in-motion/editor",
+    "author": "novacbn",
+    "private": true,
+    "version": "0.0.1",
+    "type": "module",
+    "scripts": {
+        "dev": "vite",
+        "build": "vite build",
+        "preview": "vite preview",
+        "check": "svelte-check --tsconfig ./tsconfig.json"
+    },
+    "devDependencies": {
+        "@svelte-in-motion/core": "workspace:^",
+        "@svelte-in-motion/transitions": "workspace:^",
+        "@sveltejs/vite-plugin-svelte": "^1.0.0-next.30",
+        "@tsconfig/svelte": "^2.0.1",
+        "@types/prismjs": "^1.26.0",
+        "svelte": "^3.44.0",
+        "svelte-check": "^2.2.7",
+        "svelte-preprocess": "^4.9.8",
+        "tslib": "^2.3.1",
+        "typescript": "^4.5.4",
+        "vite": "^2.8.0"
+    },
+    "dependencies": {
+        "@novacbn/svelte-codejar": "^0.1.2",
+        "@novacbn/svelte-pipeline": "^0.3.0",
+        "prismjs": "^1.27.0",
+        "urlpattern-polyfill": "^1.0.0-rc5"
+    }
+}

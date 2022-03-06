@@ -1,0 +1,19 @@
+{
+    "name": "svelte-in-motion",
+    "type": "module",
+    "scripts": {
+        "build:application": "pnpm run --filter \"*web\" build:application",
+        "dev:application": "pnpm run --filter \"*web\" dev:application",
+        "preview:application": "pnpm run --filter \"*web\" preview:application",
+        "format:content": "prettier --config ./content/.prettierrc --plugin-search-dir=. --write ./content",
+        "format:packages": "pnpm -r format",
+        "lint:content": "prettier --config ./content/.prettierrc --plugin-search-dir=. --check ./content",
+        "lint:packages": "pnpm -r lint",
+        "test:packages": "pnpm -r test"
+    },
+    "dependencies": {},
+    "devDependencies": {
+        "prettier": "^2.4.1",
+        "prettier-plugin-svelte": "^2.6.0"
+    }
+}
