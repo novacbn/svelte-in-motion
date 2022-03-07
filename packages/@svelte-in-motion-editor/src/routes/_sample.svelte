@@ -4,21 +4,21 @@
         delay={0.25}
         duration={1.25}
         easing={bounceOut}
-        units_y="-100px"
+        max_y="-100px"
     >
-        <Fade.In class="background--transition" delay={0.25} duration={1.25}>
+        <Fade.In class="background--transition" delay={0.25} duration={1.25} max={0.5}>
             <Fade.Out class="background--transition" delay={2} duration={0.5}>
                 <Translate.Out
                     class="background--transition"
                     delay={2}
                     duration={0.5}
-                    units_y="-100px"
+                    max_y="-100px"
                 >
                     <Rotate.Out
                         class="background--transition"
                         delay={2}
                         duration={0.5}
-                        rotation="-90deg"
+                        max="-90deg"
                     >
                         <div class="background--box" />
                     </Rotate.Out>
@@ -29,8 +29,8 @@
 
     <Scale.In delay={0.25} duration={1.25} easing={bounceOut}>
         <Fade.Out delay={2} duration={0.5}>
-            <Translate.Out delay={2} duration={0.5} units_y="100px">
-                <Rotate.Out delay={2} duration={0.5} rotation="90deg">
+            <Translate.Out delay={2} duration={0.5} max_y="100px">
+                <Rotate.Out delay={2} duration={0.5} max="90deg">
                     <h1>Hello World</h1>
                 </Rotate.Out>
             </Translate.Out>
