@@ -2,4 +2,4 @@
 
 > Remotion clone, but in Svelte!
 
-https://user-images.githubusercontent.com/31122674/156940448-ebdc2c35-6c2d-489e-a211-d4ee56699f03.mp4
+https://user-images.githubusercontent.com/31122674/157046450-4ab9dd3a-6f00-4114-bd07-5629d0c89689.mp4
