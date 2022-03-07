@@ -6,6 +6,8 @@ export enum EXTRAPOLATE_MODES {
     clamp = "clamp",
 
     extend = "extend",
+
+    wrap = "wrap",
 }
 
 export type IExtrapolateModesLiteral = `${EXTRAPOLATE_MODES}`;
@@ -21,9 +23,9 @@ export interface IInterpolateRangeOptions {
 export interface IInterpolateOptions {
     easing?: EasingFunction;
 
-    end?: IInterpolateRangeOptions;
+    end?: IInterpolateRangeOptions | number;
 
-    start?: IInterpolateRangeOptions;
+    start?: IInterpolateRangeOptions | number;
 }
 
 export function interpolate(
@@ -33,14 +35,24 @@ export function interpolate(
 ): IInterpolateStore {
     const {easing, end = {}, start = {}} = options;
 
-    const {extrapolate: end_extrapolate = EXTRAPOLATE_MODES.clamp, value: end_value = 1} = end;
+    const {extrapolate: end_extrapolate = EXTRAPOLATE_MODES.clamp, value: end_value = 1} =
+        typeof end === "number" ? {value: end} : end;
+
     const {extrapolate: start_extrapolate = EXTRAPOLATE_MODES.clamp, value: start_value = 0} =
-        start;
+        typeof start === "number" ? {value: start} : start;
 
     const state_store = writable(state, callback);
     const interpolated_store = derived(state_store, ($state) => {
         if (end_extrapolate === EXTRAPOLATE_MODES.clamp) $state = Math.min($state, 1);
+        else if (end_extrapolate === EXTRAPOLATE_MODES.wrap && $state > 1) {
+            $state = Math.floor($state) % 2 === 0 ? $state % 1 : 1 - ($state % 1);
+        }
+
         if (start_extrapolate === EXTRAPOLATE_MODES.clamp) $state = Math.max($state, 0);
+        else if (start_extrapolate === EXTRAPOLATE_MODES.wrap && $state < 0) {
+            $state = Math.abs($state);
+            $state = Math.floor($state) % 2 === 0 ? $state % 1 : 1 - ($state % 1);
+        }
 
         if (easing) $state = easing($state);
         return (end_value - start_value) * $state + start_value;

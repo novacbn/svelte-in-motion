@@ -8,3 +8,6 @@ export * from "./stores/playing";
 export * from "./stores/position";
 export * from "./stores/random";
 export * from "./stores/state";
+
+export * from "./util/contexts";
+export * from "./util/math";
