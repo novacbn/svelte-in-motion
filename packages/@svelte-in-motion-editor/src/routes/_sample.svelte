@@ -1,3 +1,15 @@
+<script>
+    const pulse = CONTEXT_STATE.get({
+        duration: 0.5,
+
+        start: 0.25,
+        end: {
+            value: 1,
+            extrapolate: "wrap",
+        },
+    });
+</script>
+
 <div class="content">
     <Translate.In
         class="background--transition"
@@ -7,16 +19,16 @@
         end_y="-100px"
     >
         <Fade.In class="background--transition" delay={0.25} duration={1.25} end={0.5}>
-            <Fade.Out class="background--transition" delay={2} duration={0.5}>
+            <Fade.Out class="background--transition" delay={4} duration={0.5}>
                 <Translate.Out
                     class="background--transition"
-                    delay={2}
+                    delay={4}
                     duration={0.5}
                     end_y="-100px"
                 >
                     <Rotate.Out
                         class="background--transition"
-                        delay={2}
+                        delay={4}
                         duration={0.5}
                         end="-90deg"
                     >
@@ -28,10 +40,10 @@
     </Translate.In>
 
     <Scale.In delay={0.25} duration={1.25} easing={bounceOut}>
-        <Fade.Out delay={2} duration={0.5}>
-            <Translate.Out delay={2} duration={0.5} end_y="100px">
-                <Rotate.Out delay={2} duration={0.5} end="90deg">
-                    <h1>Hello World</h1>
+        <Fade.Out delay={4} duration={0.5}>
+            <Translate.Out delay={4} duration={0.5} end_y="100px">
+                <Rotate.Out delay={4} duration={0.5} end="90deg">
+                    <h1 style="opacity:{$pulse};">Hello World</h1>
                 </Rotate.Out>
             </Translate.Out>
         </Fade.Out>

@@ -18,7 +18,7 @@
 <StaticLayout>
     <EditorCode bind:value={script} />
 
-    <Compositor frame={0} framerate={60} maxframes={Math.floor(60 * 2.5)}>
+    <Compositor frame={0} framerate={60} maxframes={Math.floor(60 * 4.5)}>
         <PreviewControls />
 
         <PreviewRender value={script} />
