@@ -42,7 +42,10 @@
 
             if (!$_playing || $_frame >= $_maxframes || handle !== cache) {
                 clearInterval(cache);
-                if (handle === cache) handle = null;
+                if (handle === cache) {
+                    handle = null;
+                    $_playing = false;
+                }
             }
         }, 1000 / framerate));
     }
