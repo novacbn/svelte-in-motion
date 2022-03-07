@@ -1,4 +1,4 @@
-import {Readable, StartStopNotifier, Writable} from "svelte/store";
+import {StartStopNotifier, Writable} from "svelte/store";
 import {derived, writable} from "svelte/store";
 import type {EasingFunction} from "svelte/types/runtime/transition";
 
@@ -21,27 +21,29 @@ export interface IInterpolateRangeOptions {
 export interface IInterpolateOptions {
     easing?: EasingFunction;
 
-    max?: IInterpolateRangeOptions;
+    end?: IInterpolateRangeOptions;
 
-    min?: IInterpolateRangeOptions;
+    start?: IInterpolateRangeOptions;
 }
 
 export function interpolate(
     state: number = 0,
     options: IInterpolateOptions = {},
-    start?: StartStopNotifier<number>
+    callback?: StartStopNotifier<number>
 ): IInterpolateStore {
-    const {easing, max = {}, min = {}} = options;
-    const {extrapolate: max_extrapolate = EXTRAPOLATE_MODES.clamp, value: max_value = 1} = max;
-    const {extrapolate: min_extrapolate = EXTRAPOLATE_MODES.clamp, value: min_value = 0} = min;
+    const {easing, end = {}, start = {}} = options;
 
-    const state_store = writable(state, start);
+    const {extrapolate: end_extrapolate = EXTRAPOLATE_MODES.clamp, value: end_value = 1} = end;
+    const {extrapolate: start_extrapolate = EXTRAPOLATE_MODES.clamp, value: start_value = 0} =
+        start;
+
+    const state_store = writable(state, callback);
     const interpolated_store = derived(state_store, ($state) => {
-        if (max_extrapolate === EXTRAPOLATE_MODES.clamp) $state = Math.min($state, 1);
-        if (min_extrapolate === EXTRAPOLATE_MODES.clamp) $state = Math.max($state, 0);
+        if (end_extrapolate === EXTRAPOLATE_MODES.clamp) $state = Math.min($state, 1);
+        if (start_extrapolate === EXTRAPOLATE_MODES.clamp) $state = Math.max($state, 0);
 
         if (easing) $state = easing($state);
-        return (max_value - min_value) * $state + min_value;
+        return (end_value - start_value) * $state + start_value;
     });
 
     return {

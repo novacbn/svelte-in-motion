@@ -3,11 +3,11 @@ import {linear} from "svelte/easing";
 import type {ITransition, ITransitionParameters} from "../transitions/transitions";
 
 export interface ITranslateParameters extends ITransitionParameters {
-    max_x?: number | string;
-    min_x?: number | string;
+    end_x?: number | string;
+    start_x?: number | string;
 
-    max_y?: number | string;
-    min_y?: number | string;
+    end_y?: number | string;
+    start_y?: number | string;
 }
 
 export const translate: ITransition<ITranslateParameters> = (
@@ -16,10 +16,10 @@ export const translate: ITransition<ITranslateParameters> = (
         delay = 0,
         duration = 0,
         easing = linear,
-        max_x = "0px",
-        min_x = "0px",
-        max_y = "0px",
-        min_y = "0px",
+        end_x = "0px",
+        start_x = "0px",
+        end_y = "0px",
+        start_y = "0px",
     } = {}
 ) => {
     return {
@@ -27,6 +27,6 @@ export const translate: ITransition<ITranslateParameters> = (
         duration,
         easing,
         css: (t, u) =>
-            `transform: translate(calc((${max_x} - ${min_x}) * ${u}), calc((${max_y} - ${min_y}) * ${u}))`,
+            `transform: translate(calc((${end_x} - ${start_x}) * ${u}), calc((${end_y} - ${start_y}) * ${u}))`,
     };
 };
