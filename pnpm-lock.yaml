@@ -29,12 +29,20 @@ importers:
 
   packages/@svelte-in-motion-core:
     specifiers:
+      '@types/mersenne-twister': ^1.1.2
+      '@types/string-hash': ^1.1.1
+      mersenne-twister: ^1.1.0
       prettier: ^2.3.1
+      string-hash: ^1.1.3
       svelte: ^3.46.4
       typescript: ^4.3.5
     dependencies:
+      '@types/string-hash': 1.1.1
+      mersenne-twister: 1.1.0
+      string-hash: 1.1.3
       svelte: 3.46.4
     devDependencies:
+      '@types/mersenne-twister': 1.1.2
       prettier: 2.5.1
       typescript: 4.6.2
 
@@ -143,6 +151,10 @@ packages:
     resolution: {integrity: sha512-aqkICXbM1oX5FfgZd2qSSAGdyo/NRxjWCamxoyi3T8iVQnzGge19HhDYzZ6NrVOW7bhcWNSq9XexWFtMzbB24A==}
     dev: true
 
+  /@types/mersenne-twister/1.1.2:
+    resolution: {integrity: sha512-7KMIfSkMpaVExbzJRLUXHMO4hkFWbbspHPREk8I6pBxiNN+3+l6eAEClMCIPIo2KjCkR0rjYfXppr6+wKdTwpA==}
+    dev: true
+
   /@types/node/17.0.21:
     resolution: {integrity: sha512-DBZCJbhII3r90XbQxI8Y9IjjiiOGlZ0Hr32omXIZvwwZ7p4DMMXGrKXVyPfuoBOri9XNtL0UK69jYIBIsRX3QQ==}
     dev: true
@@ -160,6 +172,10 @@ packages:
     dependencies:
       '@types/node': 17.0.21
     dev: true
+
+  /@types/string-hash/1.1.1:
+    resolution: {integrity: sha512-ijt3zdHi2DmZxQpQTmozXszzDo78V4R3EdvX0jFMfnMH2ZzQSmCbaWOMPGXFUYSzSIdStv78HDjg32m5dxc+tA==}
+    dev: false
 
   /anymatch/3.1.2:
     resolution: {integrity: sha512-P43ePfOAIupkguHUycrc4qJ9kz8ZiuOUijaETwX7THt0Y/GNK7v0aa8rY816xWjZ7rJdA5XdMcpVFTKMq+RvWg==}
@@ -591,6 +607,10 @@ packages:
     engines: {node: '>= 8'}
     dev: true
 
+  /mersenne-twister/1.1.0:
+    resolution: {integrity: sha1-+RZhjuQ9cXnvz2Qb7EUx65Zwl4o=}
+    dev: false
+
   /micromatch/4.0.4:
     resolution: {integrity: sha512-pRmzw/XUcwXGpD9aI9q/0XOwLNygjETJ8y0ao0wdqprrzDa4YnxLcz7fQRZr8voh8V10kGhABbNcHVk5wHgWwg==}
     engines: {node: '>=8.6'}
@@ -791,6 +811,10 @@ packages:
   /sourcemap-codec/1.4.8:
     resolution: {integrity: sha512-9NykojV5Uih4lgo5So5dtw+f0JgJX30KCNI8gwhz2J9A15wD0Ml6tjHKwf6fTSa6fAdVBdZeNOs9eJ71qCk8vA==}
     dev: true
+
+  /string-hash/1.1.3:
+    resolution: {integrity: sha1-6Kr8CsGFW0Zmkp7X3RJ1311sgRs=}
+    dev: false
 
   /strip-indent/3.0.0:
     resolution: {integrity: sha512-laJTa3Jb+VQpaC6DseHhF7dXVqHTfJPCRDaEbid/drOhgitgYku/letMUqOXFoWV0zIIUbjpdH2t+tYj4bQMRQ==}
