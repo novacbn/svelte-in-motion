@@ -25,7 +25,7 @@
     },
     "dependencies": {
         "@novacbn/svelte-codejar": "^0.1.2",
-        "@novacbn/svelte-pipeline": "^0.3.0",
+        "@novacbn/svelte-pipeline": "0.3.1",
         "prismjs": "^1.27.0",
         "urlpattern-polyfill": "^1.0.0-rc5"
     }
