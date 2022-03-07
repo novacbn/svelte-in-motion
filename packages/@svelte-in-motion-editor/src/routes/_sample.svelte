@@ -18,7 +18,12 @@
         easing={bounceOut}
         end_y="-100px"
     >
-        <Fade.In class="background--transition" delay={0.25} duration={1.25} end={0.5}>
+        <Fade.In
+            class="background--transition"
+            delay={0.25}
+            duration={1.25}
+            end={0.5}
+        >
             <Fade.Out class="background--transition" delay={4} duration={0.5}>
                 <Translate.Out
                     class="background--transition"

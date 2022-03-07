@@ -55,6 +55,7 @@ importers:
       '@sveltejs/vite-plugin-svelte': ^1.0.0-next.30
       '@tsconfig/svelte': ^2.0.1
       '@types/prismjs': ^1.26.0
+      html-to-image: ^1.9.0
       prismjs: ^1.27.0
       svelte: ^3.44.0
       svelte-check: ^2.2.7
@@ -66,6 +67,7 @@ importers:
     dependencies:
       '@novacbn/svelte-codejar': 0.1.2
       '@novacbn/svelte-pipeline': 0.3.1
+      html-to-image: 1.9.0
       prismjs: 1.27.0
       urlpattern-polyfill: 1.0.0-rc5
     devDependencies:
@@ -541,6 +543,10 @@ packages:
     dependencies:
       function-bind: 1.1.1
     dev: true
+
+  /html-to-image/1.9.0:
+    resolution: {integrity: sha512-9gaDCIYg62Ek07F2pBk76AHgYZ2gxq2YALU7rK3gNCqXuhu6cWzsOQqM7qGbjZiOzxGzrU1deDqZpAod2NEwbA==}
+    dev: false
 
   /import-fresh/3.3.0:
     resolution: {integrity: sha512-veYYhQa+D1QBKznvhUHxb8faxlrwUnxseDAbAp457E0wLNio2bOSKnjYDhMj+YiAq61xrMGhQk9iXVk5FzgQMw==}

@@ -3,8 +3,6 @@
 </script>
 
 <script lang="ts">
-    import {Compositor} from "@svelte-in-motion/animations";
-
     import EditorCode from "../components/code/EditorCode.svelte";
     import StaticLayout from "../components/layouts/StaticLayout.svelte";
     import PreviewControls from "../components/preview/PreviewControls.svelte";
@@ -12,15 +10,19 @@
 
     import Sample from "./_sample.svelte?raw";
 
+    let frame: number = 0;
+    let framerate: number = 60;
+    let maxframes: number = Math.floor(60 * 4.5);
+
+    let playing: boolean = false;
+
     let script = Sample;
 </script>
 
 <StaticLayout>
     <EditorCode bind:value={script} />
 
-    <Compositor frame={0} framerate={60} maxframes={Math.floor(60 * 4.5)}>
-        <PreviewControls />
+    <PreviewControls bind:frame bind:framerate bind:maxframes bind:playing />
 
-        <PreviewRender value={script} />
-    </Compositor>
+    <PreviewRender bind:frame {framerate} {maxframes} {playing} {script} />
 </StaticLayout>

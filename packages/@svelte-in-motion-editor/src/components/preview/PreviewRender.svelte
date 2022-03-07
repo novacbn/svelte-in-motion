@@ -1,50 +1,95 @@
 <script lang="ts">
-    import {pipeline_svelte} from "@novacbn/svelte-pipeline";
-    import {PipelineRenderComponent} from "@novacbn/svelte-pipeline/components";
-    import type {SvelteComponent} from "svelte";
+    import {onDestroy} from "svelte";
 
-    import {debounce} from "@svelte-in-motion/animations";
+    import {debounce as _debounce} from "@svelte-in-motion/animations";
 
-    import {REPL_CONTEXT, REPL_IMPORTS} from "../../lib/repl";
+    import {dispatch, subscribe} from "../../lib/messages";
+    import type {
+        IRenderFrameMessage,
+        IRenderFramerateMessage,
+        IRenderMaxFramesMessage,
+        IRenderPlayingMessage,
+        IRenderReadyMessage,
+        IRenderScriptMessage,
+    } from "../../lib/types/render";
 
-    type $$Events = {
-        destroy: CustomEvent<{component: SvelteComponent}>;
+    let iframe_element: HTMLIFrameElement | undefined;
 
-        error: CustomEvent<{error: Error}>;
+    export let frame: number = 0;
+    export let framerate: number = 0;
+    export let maxframes: number = 0;
 
-        mount: CustomEvent<{component: SvelteComponent}>;
-    };
+    export let playing: boolean = false;
 
-    const pipeline_store = pipeline_svelte({
-        context: REPL_CONTEXT,
-        imports: REPL_IMPORTS,
+    export let debounce: number = 250;
+    export let script: string;
 
-        compiler: {
-            dev: true,
-            generate: "dom",
-            name: "App",
-            filename: "App.svelte",
-        },
+    let _destroy_frame: (() => void) | null = null;
+    let _destroy_ready: (() => void) | null = null;
+    let _ready: boolean = false;
+
+    function update_script(value: string): void {
+        dispatch<IRenderScriptMessage>("RENDER_SCRIPT", {script: value}, iframe_element);
+    }
+
+    onDestroy(() => {
+        if (_destroy_frame) _destroy_frame();
+        if (_destroy_ready) _destroy_ready();
     });
 
-    const update_store = debounce((code: string) => ($pipeline_store = code), 250);
+    $: {
+        if (iframe_element) {
+            if (_destroy_ready) {
+                _destroy_ready();
+                _destroy_ready = null;
+            }
 
-    export let value: string;
+            _destroy_ready = subscribe<IRenderReadyMessage>(
+                "RENDER_READY",
+                () => (_ready = true),
+                iframe_element
+            );
+        }
+    }
 
-    $: update_store(value);
+    $: {
+        if (iframe_element) {
+            if (_destroy_frame) {
+                _destroy_frame();
+                _destroy_frame = null;
+            }
+
+            _destroy_frame = subscribe<IRenderFrameMessage>(
+                "RENDER_FRAME",
+                (detail) => (frame = detail.frame),
+                iframe_element
+            );
+        }
+    }
+
+    $: _update_script = _debounce(update_script, debounce);
+    $: if (iframe_element && _ready) _update_script(script);
+
+    $: if (iframe_element && _ready)
+        dispatch<IRenderFrameMessage>("RENDER_FRAME", {frame}, iframe_element);
+    $: if (iframe_element && _ready)
+        dispatch<IRenderFramerateMessage>("RENDER_FRAMERATE", {framerate}, iframe_element);
+    $: if (iframe_element && _ready)
+        dispatch<IRenderMaxFramesMessage>("RENDER_MAXFRAMES", {maxframes}, iframe_element);
+
+    $: if (iframe_element && _ready)
+        dispatch<IRenderPlayingMessage>("RENDER_PLAYING", {playing}, iframe_element);
 </script>
 
-<PipelineRenderComponent
-    class="sim--code-render"
-    pipeline={pipeline_store}
-    on:destroy
-    on:error
-    on:error={(event) => console.error(event.detail.error)}
-    on:mount
-/>
+<iframe bind:this={iframe_element} class="sim--preview-render" src="/render.html" />
 
 <style>
-    :global(.sim--code-render) {
+    :global(.sim--preview-render) {
         grid-area: render;
+
+        border: none;
+
+        height: 100%;
+        width: 100%;
     }
 </style>

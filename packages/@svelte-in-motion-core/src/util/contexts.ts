@@ -9,6 +9,8 @@ export interface IContextScope<T> {
     has(): boolean;
 
     set(value: T | undefined): void;
+
+    symbol: Symbol;
 }
 
 /**
@@ -25,6 +27,8 @@ export function make_scoped_context<T>(identifier: string): IContextScope<T> {
     const symbol = Symbol.for(`svelte-in-motion-${identifier}`);
 
     return {
+        symbol,
+
         get() {
             return getContext(symbol);
         },

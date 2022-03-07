@@ -1,35 +1,28 @@
 <script lang="ts">
-    import {
-        CONTEXT_FRAME,
-        CONTEXT_FRAMERATE,
-        CONTEXT_MAXFRAMES,
-        CONTEXT_PLAYING,
-    } from "@svelte-in-motion/core";
+    export let frame: number = 0;
+    export let framerate: number = 60;
+    export let maxframes: number = Math.floor(60 * 4.5);
 
-    const frame = CONTEXT_FRAME.get()!;
-    const framerate = CONTEXT_FRAMERATE.get()!;
-    const maxframes = CONTEXT_MAXFRAMES.get()!;
+    export let playing: boolean = false;
 
-    const playing = CONTEXT_PLAYING.get()!;
+    let duration = maxframes / framerate;
 
-    let duration = $maxframes / $framerate;
-
-    $: $maxframes = Math.floor($framerate * duration);
+    $: maxframes = Math.floor(framerate * duration);
 </script>
 
 <div class="sim--preview-controls">
-    <button on:click={() => ($playing = !$playing)}>
-        {$playing ? "PLAYING" : "PAUSED"}
+    <button on:click={() => (playing = !playing)}>
+        {playing ? "PLAYING" : "PAUSED"}
     </button>
 
     <label>
-        Frame: <code>({$frame}/{$maxframes})</code>
-        <input type="range" min={0} max={$maxframes} bind:value={$frame} />
+        Frame: <code>({frame}/{maxframes})</code>
+        <input type="range" min={0} max={maxframes} bind:value={frame} />
     </label>
 
     <label>
-        Framerate: <code>({$framerate})</code>
-        <input type="range" min={16} max={120} bind:value={$framerate} />
+        Framerate: <code>({framerate})</code>
+        <input type="range" min={16} max={120} bind:value={framerate} />
     </label>
 
     <label>

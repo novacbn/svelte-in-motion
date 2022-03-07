@@ -86,15 +86,18 @@ export function routes(...routes: IRouteDefinition[]): [INavigatingStore, IRoute
         loading.set(true);
         const current = (nonce = {});
 
-        let results: URLPatternResult | undefined;
-        let route: IRoute;
+        let results: URLPatternResult | undefined | null;
+        let route: IRoute | null = null;
 
-        for (route of parsed_routes) {
-            results = route.pattern.exec(href, location.href);
-            if (results) break;
+        for (const _route of parsed_routes) {
+            results = _route.pattern.exec(href, location.href);
+            if (results) {
+                route = _route;
+                break;
+            }
         }
 
-        if (!results) return;
+        if (!results || !route) return;
 
         let props: Record<string, any> | undefined;
         if (route.load) {

@@ -1,3 +1,4 @@
+export * from "./stores/advance";
 export * from "./stores/completion";
 export * from "./stores/duration";
 export * from "./stores/frame";
@@ -9,5 +10,6 @@ export * from "./stores/position";
 export * from "./stores/random";
 export * from "./stores/state";
 
+export * from "./util/browser";
 export * from "./util/contexts";
 export * from "./util/math";
