@@ -3,7 +3,7 @@
 </script>
 
 <script lang="ts">
-    import {Compositor} from "@svelte-in-motion/transitions";
+    import {Compositor} from "@svelte-in-motion/animations";
 
     import EditorCode from "../components/code/EditorCode.svelte";
     import StaticLayout from "../components/layouts/StaticLayout.svelte";

@@ -6,8 +6,8 @@ import * as svelte_store from "svelte/store";
 import * as svelte_transition from "svelte/transition";
 import type {IPipelineContext, IPipelineImports} from "@novacbn/svelte-pipeline";
 
+import * as animations from "@svelte-in-motion/animations";
 import * as core from "@svelte-in-motion/core";
-import * as transitions from "@svelte-in-motion/transitions";
 
 export const REPL_CONTEXT: IPipelineContext = {
     ...svelte,
@@ -17,8 +17,8 @@ export const REPL_CONTEXT: IPipelineContext = {
     ...svelte_store,
     ...svelte_transition,
 
+    ...animations,
     ...core,
-    ...transitions,
 };
 
 export const REPL_IMPORTS: IPipelineImports = {
@@ -29,6 +29,6 @@ export const REPL_IMPORTS: IPipelineImports = {
     "svelte/store": svelte_store,
     "svelte/transition": svelte_transition,
 
+    "@svelte-in-motion/animations": animations,
     "@svelte-in-motion/core": core,
-    "@svelte-in-motion/transitions": transitions,
 };

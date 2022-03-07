@@ -1,5 +1,5 @@
 <script lang="ts">
-    import {fade} from "svelte/transition";
+    import {opacity} from "../../transitions/opacity";
 
     import Transition from "../Transition.svelte";
 
@@ -9,7 +9,7 @@
         class?: string;
 
         is?: "div" | "span";
-    } & Parameters<typeof fade>[1];
+    } & Parameters<typeof opacity>[1];
 
     export let element: $$Props["element"] = null;
 
@@ -22,7 +22,7 @@
 <Transition
     bind:element
     class="sim--fade-out {_class}"
-    transition={fade}
+    transition={opacity}
     parameters={$$restProps}
     {is}
     inverse

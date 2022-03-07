@@ -3,7 +3,7 @@
     import {PipelineRenderComponent} from "@novacbn/svelte-pipeline/components";
     import type {SvelteComponent} from "svelte";
 
-    import {debounce} from "@svelte-in-motion/transitions";
+    import {debounce} from "@svelte-in-motion/animations";
 
     import {REPL_CONTEXT, REPL_IMPORTS} from "../../lib/repl";
 

@@ -11,6 +11,7 @@ export * as Translate from "./components/translate";
 
 export * from "./transitions/rotate";
 export * from "./transitions/scale";
+export * from "./transitions/opacity";
 export * from "./transitions/translate";
 export * from "./transitions/transitions";
 
