@@ -1,11 +1,11 @@
-import {Readable} from "svelte/store";
+import type {Readable} from "svelte/store";
 import {get, readable} from "svelte/store";
 
 import type {IFrameStore} from "./frame";
 import {CONTEXT_FRAME} from "./frame";
-import {IFrameRateStore} from "./framerate";
+import type {IFrameRateStore} from "./framerate";
 import {CONTEXT_FRAMERATE} from "./framerate";
-import {IMaxFramesStore} from "./maxframes";
+import type {IMaxFramesStore} from "./maxframes";
 import {CONTEXT_MAXFRAMES} from "./maxframes";
 import type {IPlayingStore} from "./playing";
 import {CONTEXT_PLAYING} from "./playing";

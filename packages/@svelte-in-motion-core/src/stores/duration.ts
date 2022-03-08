@@ -1,9 +1,9 @@
-import {Readable} from "svelte/store";
+import type {Readable} from "svelte/store";
 import {derived} from "svelte/store";
 
-import {IFrameRateStore} from "./framerate";
+import type {IFrameRateStore} from "./framerate";
 import {CONTEXT_FRAMERATE} from "./framerate";
-import {IMaxFramesStore} from "./maxframes";
+import type {IMaxFramesStore} from "./maxframes";
 import {CONTEXT_MAXFRAMES} from "./maxframes";
 
 export type IDurationStore = Readable<number>;

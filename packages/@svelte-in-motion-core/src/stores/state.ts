@@ -1,9 +1,9 @@
-import {Readable} from "svelte/store";
+import type {Readable} from "svelte/store";
 import {derived} from "svelte/store";
 
-import {IFrameStore} from "./frame";
+import type {IFrameStore} from "./frame";
 import {CONTEXT_FRAME} from "./frame";
-import {IFrameRateStore} from "./framerate";
+import type {IFrameRateStore} from "./framerate";
 import {CONTEXT_FRAMERATE} from "./framerate";
 import type {IInterpolateOptions} from "./interpolate";
 import {interpolate} from "./interpolate";

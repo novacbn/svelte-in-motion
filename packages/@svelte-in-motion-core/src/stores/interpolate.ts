@@ -1,4 +1,4 @@
-import {StartStopNotifier, Writable} from "svelte/store";
+import type {StartStopNotifier, Writable} from "svelte/store";
 import {derived, writable} from "svelte/store";
 import type {EasingFunction} from "svelte/types/runtime/transition";
 
