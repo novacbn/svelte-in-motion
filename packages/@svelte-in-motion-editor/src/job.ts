@@ -20,8 +20,7 @@ import {parse_configuration} from "@svelte-in-motion/metadata";
 import {dispatch} from "./lib/messages";
 import {REPL_CONTEXT, REPL_IMPORTS} from "./lib/repl";
 import type {IJobEndMessage, IJobFrameMessage, IJobStartMessage} from "./lib/types/job";
-
-import {STORAGE_FILESYSTEM, STORAGE_FRAMES} from "./lib/storage/definitions";
+import {STORAGE_USER, STORAGE_FRAMES} from "./lib/storage";
 
 (async () => {
     const url = new URL(location.href);
@@ -35,11 +34,11 @@ import {STORAGE_FILESYSTEM, STORAGE_FRAMES} from "./lib/storage/definitions";
         throw new ReferenceError("bad navigation to '/job.html' (no file specified)");
     }
 
-    if (!(await STORAGE_FILESYSTEM.hasItem(file))) {
-        throw new ReferenceError(`bad navigation to '/job.html' (file ${file} is invalid)`);
+    if (!(await STORAGE_USER.hasItem(file))) {
+        throw new ReferenceError(`bad navigation to '/job.html' (file '${file}' is invalid)`);
     }
 
-    const SCRIPT = (await STORAGE_FILESYSTEM.getItem(file)) as string;
+    const SCRIPT = (await STORAGE_USER.getItem(file)) as string;
     const CONFIGURATION = parse_configuration(SCRIPT);
     const STORAGE_OUTPUT = prefixStorage(STORAGE_FRAMES, job);
 

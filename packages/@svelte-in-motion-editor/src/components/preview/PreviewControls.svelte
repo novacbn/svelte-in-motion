@@ -1,13 +1,28 @@
 <script lang="ts">
+    import {debounce as _debounce} from "@svelte-in-motion/animations";
+
+    import {parse_configuration} from "@svelte-in-motion/metadata";
+
     export let frame: number = 0;
-    export let framerate: number = 60;
-    export let maxframes: number = Math.floor(60 * 4.5);
+    export let script: string;
 
     export let playing: boolean = false;
 
-    let duration = maxframes / framerate;
+    export let debounce: number = 100;
 
-    $: maxframes = Math.floor(framerate * duration);
+    let framerate: number = 60;
+    let maxframes: number = Math.floor(60 * 4.5);
+
+    const update = _debounce(async (script: string) => {
+        const configuration = parse_configuration(script);
+
+        ({framerate, maxframes} = configuration);
+    }, debounce);
+
+    $: _duration = maxframes / framerate;
+    $: _position = Math.floor((frame / maxframes) * _duration * 1000) / 1000;
+
+    $: update(script);
 </script>
 
 <div class="sim--preview-controls">
@@ -16,18 +31,8 @@
     </button>
 
     <label>
-        Frame: <code>({frame}/{maxframes})</code>
+        Frame: <code>({frame}/{maxframes}) ({_position}s/{_duration}s)</code>
         <input type="range" min={0} max={maxframes} bind:value={frame} />
-    </label>
-
-    <label>
-        Framerate: <code>({framerate})</code>
-        <input type="range" min={16} max={120} bind:value={framerate} />
-    </label>
-
-    <label>
-        Duration: <code>(seconds)</code>
-        <input type="number" min={0} bind:value={duration} />
     </label>
 </div>
 

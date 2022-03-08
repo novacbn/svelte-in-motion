@@ -1,10 +1,23 @@
 <script context="module" lang="ts">
     import type {ILoadCallback} from "../lib/router";
     import {GUARD_STORAGE} from "../lib/router";
+    import {STORAGE_USER} from "../lib/storage";
 
-    export const pattern: string = "/editor";
+    export const pattern: string = "/editor/:file";
 
-    export const load: ILoadCallback = GUARD_STORAGE();
+    export const load: ILoadCallback = GUARD_STORAGE(async ({results}) => {
+        const {file} = results.pathname.groups;
+
+        if (!(await STORAGE_USER.hasItem(file))) {
+            throw new ReferenceError(`bad navigation to '/editor' (file '${file}' not found)`);
+        }
+
+        return {
+            props: {
+                file,
+            },
+        };
+    });
 </script>
 
 <script lang="ts">
@@ -13,21 +26,17 @@
     import PreviewControls from "../components/preview/PreviewControls.svelte";
     import PreviewRender from "../components/preview/PreviewRender.svelte";
 
-    import Sample from "./_sample.svelte?raw";
+    export let file: string;
 
     let frame: number = 0;
-    let framerate: number = 60;
-    let maxframes: number = Math.floor(60 * 4.5);
-
     let playing: boolean = false;
-
-    let script = Sample;
+    let script: string = "";
 </script>
 
 <StaticLayout>
-    <EditorCode bind:value={script} />
+    <EditorCode bind:script {file} />
 
-    <PreviewControls bind:frame bind:framerate bind:maxframes bind:playing />
+    <PreviewControls bind:frame bind:playing {script} />
 
-    <PreviewRender bind:frame {framerate} {maxframes} {playing} {script} />
+    <PreviewRender bind:frame bind:playing {file} />
 </StaticLayout>

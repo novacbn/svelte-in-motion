@@ -26,22 +26,6 @@ export interface IRenderFrameMessage extends IMessage {
     };
 }
 
-export interface IRenderFramerateMessage extends IMessage {
-    name: "RENDER_FRAMERATE";
-
-    detail: {
-        framerate: number;
-    };
-}
-
-export interface IRenderMaxFramesMessage extends IMessage {
-    name: "RENDER_MAXFRAMES";
-
-    detail: {
-        maxframes: number;
-    };
-}
-
 export interface IRenderMountMessage extends IMessage {
     name: "RENDER_MOUNT";
 
