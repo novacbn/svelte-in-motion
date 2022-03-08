@@ -6,9 +6,10 @@ export * from "./stores/framerate";
 export * from "./stores/interpolate";
 export * from "./stores/maxframes";
 export * from "./stores/playing";
-export * from "./stores/position";
 export * from "./stores/random";
+export * from "./stores/seek";
 export * from "./stores/state";
+export * from "./stores/util";
 
 export * from "./util/browser";
 export * from "./util/contexts";

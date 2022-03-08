@@ -5,8 +5,15 @@ import type {IFrameStore} from "./frame";
 import {CONTEXT_FRAME} from "./frame";
 import type {IMaxFramesStore} from "./maxframes";
 import {CONTEXT_MAXFRAMES} from "./maxframes";
+import type {ReadableOnly} from "./util";
 
 export type ICompletionStore = Readable<number>;
+
+export interface ICompletionOptions {
+    frame: ReadableOnly<IFrameStore>;
+
+    maxframes: ReadableOnly<IMaxFramesStore>;
+}
 
 export const CONTEXT_COMPLETION = {
     has() {
@@ -28,10 +35,12 @@ export const CONTEXT_COMPLETION = {
             );
         }
 
-        return completion(frame, maxframes);
+        return completion({frame, maxframes});
     },
 };
 
-export function completion(frame: IFrameStore, maxframes: IMaxFramesStore): ICompletionStore {
+export function completion(options: ICompletionOptions): ICompletionStore {
+    const {frame, maxframes} = options;
+
     return derived([frame, maxframes], ([$frame, $maxframes]) => $frame / $maxframes);
 }

@@ -5,8 +5,15 @@ import type {IFrameRateStore} from "./framerate";
 import {CONTEXT_FRAMERATE} from "./framerate";
 import type {IMaxFramesStore} from "./maxframes";
 import {CONTEXT_MAXFRAMES} from "./maxframes";
+import type {ReadableOnly} from "./util";
 
 export type IDurationStore = Readable<number>;
+
+export interface IDurationOptions {
+    framerate: ReadableOnly<IFrameRateStore>;
+
+    maxframes: ReadableOnly<IMaxFramesStore>;
+}
 
 export const CONTEXT_DURATION = {
     has() {
@@ -28,10 +35,12 @@ export const CONTEXT_DURATION = {
             );
         }
 
-        return duration(framerate, maxframes);
+        return duration({framerate, maxframes});
     },
 };
 
-export function duration(framerate: IFrameRateStore, maxframes: IMaxFramesStore): IDurationStore {
+export function duration(options: IDurationOptions): IDurationStore {
+    const {framerate, maxframes} = options;
+
     return derived([framerate, maxframes], ([$framerate, $maxframes]) => $maxframes / $framerate);
 }

@@ -9,10 +9,21 @@ import type {IMaxFramesStore} from "./maxframes";
 import {CONTEXT_MAXFRAMES} from "./maxframes";
 import type {IPlayingStore} from "./playing";
 import {CONTEXT_PLAYING} from "./playing";
+import type {ReadableOnly} from "./util";
 
 // NOTE: abusing stores to handle lifecycle... feels clunky
 
 export type IAdvanceStore = Readable<boolean>;
+
+export interface IAdvanceOptions {
+    frame: IFrameStore;
+
+    framerate: ReadableOnly<IFrameRateStore>;
+
+    maxframes: ReadableOnly<IMaxFramesStore>;
+
+    playing: IPlayingStore;
+}
 
 export const CONTEXT_ADVANCE = {
     has() {
@@ -53,16 +64,13 @@ export const CONTEXT_ADVANCE = {
             );
         }
 
-        return advance(frame, framerate, maxframes, playing);
+        return advance({frame, framerate, maxframes, playing});
     },
 };
 
-export function advance(
-    frame: IFrameStore,
-    framerate: IFrameRateStore,
-    maxframes: IMaxFramesStore,
-    playing: IPlayingStore
-): IAdvanceStore {
+export function advance(options: IAdvanceOptions): IAdvanceStore {
+    const {frame, framerate, maxframes, playing} = options;
+
     return readable<boolean>(false, (set) => {
         let interval = 0;
         let handle: NodeJS.Timer | null = null;
