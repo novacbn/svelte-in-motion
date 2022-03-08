@@ -27,7 +27,7 @@ import type {
     IRenderReadyMessage,
 } from "./lib/types/render";
 import {STORAGE_USER} from "./lib/storage";
-import {file as file_store} from "./lib/stores/file";
+import {preload_file} from "./lib/stores/file";
 
 (async () => {
     const url = new URL(location.href);
@@ -41,7 +41,7 @@ import {file as file_store} from "./lib/stores/file";
         throw new ReferenceError(`bad navigation to '/render.html' (file '${file}' is invalid)`);
     }
 
-    const _file = file_store(file);
+    const _file = await preload_file(file);
 
     const pipeline_store = pipeline_svelte({
         context: REPL_CONTEXT,

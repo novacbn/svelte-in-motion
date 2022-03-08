@@ -2,6 +2,7 @@
     import type {ILoadCallback} from "../lib/router";
     import {GUARD_STORAGE} from "../lib/router";
     import {STORAGE_USER} from "../lib/storage";
+    import {preload_editor} from "../lib/stores/editor";
 
     export const pattern: string = "/editor/:file";
 
@@ -12,31 +13,32 @@
             throw new ReferenceError(`bad navigation to '/editor' (file '${file}' not found)`);
         }
 
+        const editor = await preload_editor(file);
+
         return {
             props: {
-                file,
+                editor,
             },
         };
     });
 </script>
 
 <script lang="ts">
+    import type {IEditorContext} from "../lib/stores/editor";
+    import {CONTEXT_EDITOR} from "../lib/stores/editor";
+
     import EditorCode from "../components/code/EditorCode.svelte";
+    import EditorControls from "../components/code/EditorControls.svelte";
+    import EditorRender from "../components/code/EditorRender.svelte";
     import StaticLayout from "../components/layouts/StaticLayout.svelte";
-    import PreviewControls from "../components/preview/PreviewControls.svelte";
-    import PreviewRender from "../components/preview/PreviewRender.svelte";
 
-    export let file: string;
+    export let editor: IEditorContext;
 
-    let frame: number = 0;
-    let playing: boolean = false;
-    let script: string = "";
+    CONTEXT_EDITOR.set(editor);
 </script>
 
 <StaticLayout>
-    <EditorCode bind:script {file} />
-
-    <PreviewControls bind:frame bind:playing {script} />
-
-    <PreviewRender bind:frame bind:playing {file} />
+    <EditorCode />
+    <EditorControls />
+    <EditorRender />
 </StaticLayout>

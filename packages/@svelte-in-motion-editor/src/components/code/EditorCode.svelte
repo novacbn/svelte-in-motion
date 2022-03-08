@@ -6,29 +6,13 @@
 
 <script lang="ts">
     import {CodeJar} from "@novacbn/svelte-codejar";
-    import {onMount} from "svelte";
 
-    import {debounce as _debounce} from "@svelte-in-motion/animations";
+    import {CONTEXT_EDITOR} from "../../lib/stores/editor";
 
-    import {STORAGE_USER} from "../../lib/storage";
-
-    export let file: string;
-    export let script: string = "";
-
-    export let debounce: number = 250;
-
-    const update_script = _debounce((value: string) => {
-        STORAGE_USER.setItem(file, value);
-    }, debounce);
-
-    onMount(async () => {
-        script = (await STORAGE_USER.getItem(file)) as string;
-    });
-
-    $: update_script(script);
+    const {content} = CONTEXT_EDITOR.get()!;
 </script>
 
-<CodeJar class="sim--code-editor" syntax="svelte" {highlight} bind:value={script} />
+<CodeJar class="sim--code-editor" syntax="svelte" {highlight} bind:value={$content} />
 
 <style>
     :global(.sim--code-editor) {
