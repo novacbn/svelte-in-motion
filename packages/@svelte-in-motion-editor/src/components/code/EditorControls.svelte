@@ -9,7 +9,7 @@
 
 <div class="sim--editor-controls">
     <button on:click={() => ($playing = !$playing)}>
-        {playing ? "PLAYING" : "PAUSED"}
+        {$playing ? "PLAYING" : "PAUSED"}
     </button>
 
     <label>

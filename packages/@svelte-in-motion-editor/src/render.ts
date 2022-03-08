@@ -8,7 +8,6 @@ import {
     CONTEXT_FRAMERATE,
     CONTEXT_MAXFRAMES,
     CONTEXT_PLAYING,
-    advance,
     frame as frame_store,
     framerate as framerate_store,
     maxframes as maxframes_store,
@@ -60,7 +59,6 @@ import {preload_file} from "./lib/stores/file";
     const _maxframes = maxframes_store();
 
     const _playing = playing_store();
-    const _advance = advance(_frame, _framerate, _maxframes, _playing);
 
     const context = new Map<Symbol, any>([
         [CONTEXT_FRAME.symbol, _frame],
@@ -98,12 +96,6 @@ import {preload_file} from "./lib/stores/file";
 
     subscribe<IRenderFrameMessage>("RENDER_FRAME", ({frame}) => _frame.set(frame));
     subscribe<IRenderPlayingMessage>("RENDER_PLAYING", ({playing}) => _playing.set(playing));
-
-    _frame.subscribe((frame) => dispatch<IRenderFrameMessage>("RENDER_FRAME", {frame}));
-    _playing.subscribe((playing) => dispatch<IRenderPlayingMessage>("RENDER_PLAYING", {playing}));
-
-    // HACK: Need to subscribe to it, so it'll run
-    _advance.subscribe(() => {});
 
     _file.subscribe(
         debounce(async (text) => {

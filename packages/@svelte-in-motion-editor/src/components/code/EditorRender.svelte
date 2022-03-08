@@ -1,6 +1,8 @@
 <script lang="ts">
     import {onMount} from "svelte";
 
+    import {advance} from "@svelte-in-motion/core";
+
     import {dispatch, subscribe} from "../../lib/messages";
     import type {
         IRenderFrameMessage,
@@ -9,7 +11,9 @@
     } from "../../lib/types/render";
     import {CONTEXT_EDITOR} from "../../lib/stores/editor";
 
-    const {file, frame, playing} = CONTEXT_EDITOR.get()!;
+    const {file, frame, framerate, maxframes, playing} = CONTEXT_EDITOR.get()!;
+
+    const _advance = advance({frame, framerate, maxframes, playing});
 
     let iframe_element: HTMLIFrameElement | undefined;
 
@@ -20,30 +24,17 @@
             throw ReferenceError("bad mount to 'PreviewRender' (could not query iframe)");
         }
 
-        const destroy_frame = subscribe<IRenderFrameMessage>(
-            "RENDER_FRAME",
-            (detail) => ($frame = detail.frame),
-            iframe_element
-        );
-
-        const destroy_playing = subscribe<IRenderPlayingMessage>(
-            "RENDER_PLAYING",
-            (detail) => ($playing = detail.playing),
-            iframe_element
-        );
-
-        const destroy_ready = subscribe<IRenderReadyMessage>(
+        const destroy = subscribe<IRenderReadyMessage>(
             "RENDER_READY",
             () => (_ready = true),
             iframe_element
         );
 
-        return () => {
-            destroy_frame();
-            destroy_ready();
-            destroy_playing();
-        };
+        return () => destroy();
     });
+
+    // HACK: Need to subscribe to it, so it'll run
+    $_advance;
 
     $: if (iframe_element && _ready)
         dispatch<IRenderFrameMessage>("RENDER_FRAME", {frame: $frame}, iframe_element);

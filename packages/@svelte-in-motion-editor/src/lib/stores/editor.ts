@@ -1,7 +1,12 @@
 import type {Readable} from "svelte/store";
 import {derived} from "svelte/store";
 
-import type {IFrameStore, IPlayingStore} from "@svelte-in-motion/core";
+import type {
+    IFrameRateStore,
+    IFrameStore,
+    IMaxFramesStore,
+    IPlayingStore,
+} from "@svelte-in-motion/core";
 import {
     frame as frame_store,
     make_scoped_context,
@@ -24,6 +29,10 @@ export interface IEditorContext {
 
     frame: IFrameStore;
 
+    framerate: Omit<IFrameRateStore, "set" | "update">;
+
+    maxframes: Omit<IMaxFramesStore, "set" | "update">;
+
     playing: IPlayingStore;
 }
 
@@ -33,11 +42,16 @@ export function editor(path: string, content: IFileStore = file_store(path)): IE
     const frame = frame_store(0);
     const playing = playing_store(false);
 
+    const framerate = derived(configuration, ($configuration) => $configuration.framerate);
+    const maxframes = derived(configuration, ($configuration) => $configuration.maxframes);
+
     return {
         configuration,
         content,
         file: path,
         frame,
+        framerate,
+        maxframes,
         playing,
     };
 }
