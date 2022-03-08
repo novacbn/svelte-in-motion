@@ -13,6 +13,7 @@
     "devDependencies": {
         "@svelte-in-motion/animations": "workspace:^",
         "@svelte-in-motion/core": "workspace:^",
+        "@svelte-in-motion/metadata": "workspace:^",
         "@sveltejs/vite-plugin-svelte": "^1.0.0-next.30",
         "@tsconfig/svelte": "^2.0.1",
         "@types/prismjs": "^1.26.0",
@@ -28,6 +29,7 @@
         "@novacbn/svelte-pipeline": "0.3.1",
         "html-to-image": "^1.9.0",
         "prismjs": "^1.27.0",
+        "unstorage": "^0.3.3",
         "urlpattern-polyfill": "^1.0.0-rc5"
     }
 }

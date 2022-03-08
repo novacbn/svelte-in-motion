@@ -2,4 +2,5 @@
 
 /packages/@svelte-in-motion-core/node_modules/
 /packages/@svelte-in-motion-editor/node_modules/
+/packages/@svelte-in-motion-metadata/node_modules/
 /packages/@svelte-in-motion-transitions/node_modules/

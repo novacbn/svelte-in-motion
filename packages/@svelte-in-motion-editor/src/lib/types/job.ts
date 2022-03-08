@@ -3,7 +3,9 @@ import type {IMessage} from "../messages";
 export interface IJobEndMessage extends IMessage {
     name: "JOB_END";
 
-    detail: {};
+    detail: {
+        frames: string[];
+    };
 }
 
 export interface IJobFrameMessage extends IMessage {
@@ -11,8 +13,6 @@ export interface IJobFrameMessage extends IMessage {
 
     detail: {
         frame: number;
-
-        value: string;
     };
 }
 

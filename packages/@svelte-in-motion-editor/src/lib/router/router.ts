@@ -3,9 +3,10 @@ import type {Readable, Writable} from "svelte/store";
 import {derived, writable} from "svelte/store";
 import type {URLPatternResult} from "urlpattern-polyfill/dist/url-pattern.interfaces";
 import {URLPattern} from "urlpattern-polyfill";
-import {normalize_relative} from "./url";
 
-export type ILoadCallback = (input: ILoadInput) => ILoadOutput | Promise<ILoadOutput> | void;
+import {normalize_relative} from "../url";
+
+export type ILoadCallback = (input: ILoadInput) => ILoadOutput | void | Promise<ILoadOutput | void>;
 
 export type INavigatingStore = Readable<boolean>;
 
@@ -19,6 +20,8 @@ export interface ILoadInput {
 
 export interface ILoadOutput {
     props?: Record<string, any>;
+
+    redirect?: string;
 }
 
 export interface IRouteDefinition {
@@ -104,7 +107,14 @@ export function routes(...routes: IRouteDefinition[]): [INavigatingStore, IRoute
             const url = new URL(href, location.href);
             const output = await route.load({results, url});
 
-            if (output) props = output.props;
+            if (output) {
+                if (output.redirect) {
+                    location.hash = output.redirect;
+                    return;
+                }
+
+                props = output.props;
+            }
         }
 
         if (nonce !== current) return;
