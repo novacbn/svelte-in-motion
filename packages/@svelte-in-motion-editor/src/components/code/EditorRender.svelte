@@ -52,10 +52,10 @@
         dispatch<IRenderPlayingMessage>("RENDER_PLAYING", {playing: $playing}, iframe_element);
 </script>
 
-<iframe bind:this={iframe_element} class="sim--preview-render" src="/render.html?file={file}" />
+<iframe bind:this={iframe_element} class="sim--editor-render" src="/render.html?file={file}" />
 
 <style>
-    :global(.sim--preview-render) {
+    :global(.sim--editor-render) {
         grid-area: render;
 
         border: none;

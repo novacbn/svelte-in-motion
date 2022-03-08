@@ -12,10 +12,10 @@
     const {content} = CONTEXT_EDITOR.get()!;
 </script>
 
-<CodeJar class="sim--code-editor" syntax="svelte" {highlight} bind:value={$content} />
+<CodeJar class="sim--editor-code" syntax="svelte" {highlight} bind:value={$content} />
 
 <style>
-    :global(.sim--code-editor) {
+    :global(.sim--editor-code) {
         grid-area: editor;
 
         padding: 0 !important;

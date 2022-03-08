@@ -7,7 +7,7 @@
     $: _position = Math.floor(($frame / $configuration.maxframes) * _duration * 1000) / 1000;
 </script>
 
-<div class="sim--preview-controls">
+<div class="sim--editor-controls">
     <button on:click={() => ($playing = !$playing)}>
         {playing ? "PLAYING" : "PAUSED"}
     </button>
@@ -19,7 +19,7 @@
 </div>
 
 <style>
-    :global(.sim--preview-controls) {
+    :global(.sim--editor-controls) {
         display: flex;
         flex-direction: column;
 
