@@ -1,5 +1,6 @@
 import {pipeline_svelte} from "@novacbn/svelte-pipeline";
 import {PipelineRenderComponent} from "@novacbn/svelte-pipeline/components";
+import {get} from "svelte/store";
 
 import {
     CONTEXT_FRAME,
@@ -101,7 +102,9 @@ subscribe<IRenderMaxFramesMessage>("RENDER_MAXFRAMES", ({maxframes}) => _maxfram
 subscribe<IRenderPlayingMessage>("RENDER_PLAYING", ({playing}) => _playing.set(playing));
 subscribe<IRenderScriptMessage>("RENDER_SCRIPT", ({script}) => pipeline_store.set(script));
 
-_frame.subscribe((frame) => dispatch<IRenderFrameMessage>("RENDER_FRAME", {frame}));
+_frame.subscribe((frame) => {
+    if (get(_playing)) dispatch<IRenderFrameMessage>("RENDER_FRAME", {frame});
+});
 
 // HACK: Need to subscribe to it, so it'll run
 _advance.subscribe(() => {});
