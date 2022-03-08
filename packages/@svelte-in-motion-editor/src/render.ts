@@ -27,6 +27,7 @@ import type {
     IRenderReadyMessage,
 } from "./lib/types/render";
 import {STORAGE_USER} from "./lib/storage";
+import {file as file_store} from "./lib/stores/file";
 
 (async () => {
     const url = new URL(location.href);
@@ -39,6 +40,8 @@ import {STORAGE_USER} from "./lib/storage";
     if (!(await STORAGE_USER.hasItem(file))) {
         throw new ReferenceError(`bad navigation to '/render.html' (file '${file}' is invalid)`);
     }
+
+    const _file = file_store(file);
 
     const pipeline_store = pipeline_svelte({
         context: REPL_CONTEXT,
@@ -57,20 +60,7 @@ import {STORAGE_USER} from "./lib/storage";
     const _maxframes = maxframes_store();
 
     const _playing = playing_store();
-
     const _advance = advance(_frame, _framerate, _maxframes, _playing);
-
-    const reset = debounce(async () => {
-        // TODO: handle if file gets removed
-        const SCRIPT = (await STORAGE_USER.getItem(file)) as string;
-        const CONFIGURATION = parse_configuration(SCRIPT);
-
-        _frame.set(0);
-        _framerate.set(CONFIGURATION.framerate);
-        _maxframes.set(CONFIGURATION.maxframes);
-
-        pipeline_store.set(SCRIPT);
-    }, 100);
 
     const context = new Map<Symbol, any>([
         [CONTEXT_FRAME.symbol, _frame],
@@ -109,22 +99,26 @@ import {STORAGE_USER} from "./lib/storage";
     subscribe<IRenderFrameMessage>("RENDER_FRAME", ({frame}) => _frame.set(frame));
     subscribe<IRenderPlayingMessage>("RENDER_PLAYING", ({playing}) => _playing.set(playing));
 
-    _frame.subscribe((frame) => {
-        if (get(_playing)) dispatch<IRenderFrameMessage>("RENDER_FRAME", {frame});
-    });
-
-    _playing.subscribe((playing) => {
-        dispatch<IRenderPlayingMessage>("RENDER_PLAYING", {playing});
-    });
+    _frame.subscribe((frame) => dispatch<IRenderFrameMessage>("RENDER_FRAME", {frame}));
+    _playing.subscribe((playing) => dispatch<IRenderPlayingMessage>("RENDER_PLAYING", {playing}));
 
     // HACK: Need to subscribe to it, so it'll run
     _advance.subscribe(() => {});
 
-    await reset();
+    _file.subscribe(
+        debounce(async (text) => {
+            // TODO: handle if file gets removed
+            const CONFIGURATION = parse_configuration(text);
 
-    await STORAGE_USER.watch((event, key) => {
-        if (event === "update" && key === `filesystem:user:${file}`) reset();
-    });
+            _framerate.set(CONFIGURATION.framerate);
+            _maxframes.set(CONFIGURATION.maxframes);
+
+            const frame = get(_frame);
+
+            _frame.set(Math.min(frame, CONFIGURATION.maxframes));
+            pipeline_store.set(text);
+        }, 100)
+    );
 
     dispatch<IRenderReadyMessage>("RENDER_READY", {});
 })();
