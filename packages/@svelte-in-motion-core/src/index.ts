@@ -13,4 +13,6 @@ export * from "./stores/util";
 
 export * from "./util/browser";
 export * from "./util/contexts";
+export * from "./util/event";
 export * from "./util/math";
+export * from "./util/random";

@@ -43,7 +43,7 @@ import {STORAGE_USER, STORAGE_FRAMES} from "./lib/storage";
     const STORAGE_OUTPUT = prefixStorage(STORAGE_FRAMES, job);
 
     const parsed_end = Math.min(parseInt(end) || CONFIGURATION.maxframes, CONFIGURATION.maxframes);
-    const parsed_start = parseInt(start) || 0;
+    const parsed_start = parseInt(start) || 1;
 
     if (parsed_end <= parsed_start) {
         throw new RangeError(
