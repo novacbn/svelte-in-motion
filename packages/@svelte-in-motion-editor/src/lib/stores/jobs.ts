@@ -53,7 +53,7 @@ export type IJobQueueOptions = {
 } & IJobDimensions &
     IJobRange;
 
-export interface IJobStore extends Readable<IJob[]> {
+export interface IJobQueueStore extends Readable<IJob[]> {
     EVENT_END: IEvent<IJob>;
 
     EVENT_START: IEvent<IJob>;
@@ -61,7 +61,7 @@ export interface IJobStore extends Readable<IJob[]> {
     queue(options: IJobQueueOptions): string;
 }
 
-function _jobs(): IJobStore {
+function jobqueue(): IJobQueueStore {
     const store = writable<IJob[]>([]);
 
     const EVENT_END = event<IJob>();
@@ -165,6 +165,6 @@ function _jobs(): IJobStore {
     };
 }
 
-export const jobs = _jobs();
+export const jobs = jobqueue();
 
 export const {EVENT_END, EVENT_START} = jobs;
