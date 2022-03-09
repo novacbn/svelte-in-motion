@@ -79,11 +79,10 @@ export function advance(options: IAdvanceOptions): IAdvanceStore {
             const $frame = get(frame) + 1;
             const $maxframes = get(maxframes);
 
-            if ($frame > $maxframes) playing.set(false);
-            else {
+            if ($frame <= $maxframes) {
                 frame.set($frame);
                 handle = setTimeout(advance_frame, interval);
-            }
+            } else playing.set(false);
         }
 
         const destroy_framerate = framerate.subscribe((value) => {
@@ -96,7 +95,6 @@ export function advance(options: IAdvanceOptions): IAdvanceStore {
                 const $maxframes = get(maxframes);
 
                 if ($frame >= $maxframes) frame.set(0);
-
                 advance_frame();
             } else if (handle) {
                 clearTimeout(handle);
