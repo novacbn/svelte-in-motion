@@ -25,6 +25,7 @@
         "vite": "^2.8.0"
     },
     "dependencies": {
+        "@ffmpeg/ffmpeg": "^0.10.1",
         "@novacbn/svelte-codejar": "^0.1.2",
         "@novacbn/svelte-pipeline": "0.3.1",
         "html-to-image": "^1.9.0",
