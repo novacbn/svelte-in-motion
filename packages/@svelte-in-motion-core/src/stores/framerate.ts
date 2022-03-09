@@ -7,6 +7,6 @@ export type IFrameRateStore = Writable<number>;
 
 export const CONTEXT_FRAMERATE = make_scoped_context<IFrameRateStore>("framerate");
 
-export function framerate(value: number = 60): IFrameRateStore {
+export function framerate(value: number = 0): IFrameRateStore {
     return writable(value);
 }

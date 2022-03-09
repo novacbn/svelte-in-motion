@@ -7,6 +7,6 @@ export type IMaxFramesStore = Writable<number>;
 
 export const CONTEXT_MAXFRAMES = make_scoped_context<IMaxFramesStore>("maxframes");
 
-export function maxframes(value: number = 3600): IMaxFramesStore {
+export function maxframes(value: number = 0): IMaxFramesStore {
     return writable(value);
 }
