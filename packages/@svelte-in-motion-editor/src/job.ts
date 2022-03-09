@@ -9,6 +9,7 @@ import {
     CONTEXT_FRAMERATE,
     CONTEXT_MAXFRAMES,
     CONTEXT_PLAYING,
+    clamp,
     frame,
     framerate,
     idle,
@@ -42,8 +43,8 @@ import {STORAGE_USER, STORAGE_FRAMES} from "./lib/storage";
     const CONFIGURATION = parse_configuration(SCRIPT);
     const STORAGE_OUTPUT = prefixStorage(STORAGE_FRAMES, job);
 
-    const parsed_end = Math.min(parseInt(end) || CONFIGURATION.maxframes, CONFIGURATION.maxframes);
-    const parsed_start = parseInt(start) || 1;
+    const parsed_end = clamp(parseInt(end) || 0, 0, CONFIGURATION.maxframes);
+    const parsed_start = Math.max(parseInt(start) || 1, 0);
 
     if (parsed_end <= parsed_start) {
         throw new RangeError(
