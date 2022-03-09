@@ -21,7 +21,7 @@
 
     onMount(() => {
         if (!iframe_element) {
-            throw ReferenceError("bad mount to 'PreviewRender' (could not query iframe)");
+            throw ReferenceError("bad mount to 'EditorRender' (could not query iframe)");
         }
 
         const destroy = subscribe<IRenderReadyMessage>(
