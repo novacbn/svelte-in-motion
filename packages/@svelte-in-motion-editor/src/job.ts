@@ -96,9 +96,9 @@ import {STORAGE_USER, STORAGE_FRAMES} from "./lib/storage";
             const $frame = get(_frame);
             if ($frame > parsed_end) {
                 const frames = (await Promise.all(
-                    new Array(parsed_end)
+                    new Array(parsed_end + 1)
                         .fill(null)
-                        .map((value, index) => STORAGE_OUTPUT.getItem(`${index + 1}.png.datauri`))
+                        .map((value, index) => STORAGE_OUTPUT.getItem(`${index}.png.datauri`))
                 )) as string[];
 
                 dispatch<IJobEndMessage>("JOB_END", {
