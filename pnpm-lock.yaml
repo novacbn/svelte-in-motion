@@ -48,11 +48,11 @@ importers:
 
   packages/@svelte-in-motion-editor:
     specifiers:
-      '@ffmpeg/ffmpeg': ^0.10.1
       '@novacbn/svelte-codejar': ^0.1.2
       '@novacbn/svelte-pipeline': 0.3.1
       '@svelte-in-motion/animations': workspace:^
       '@svelte-in-motion/core': workspace:^
+      '@svelte-in-motion/encoding': workspace:^
       '@svelte-in-motion/metadata': workspace:^
       '@sveltejs/vite-plugin-svelte': ^1.0.0-next.30
       '@tsconfig/svelte': ^2.0.1
@@ -68,17 +68,17 @@ importers:
       urlpattern-polyfill: ^1.0.0-rc5
       vite: ^2.8.0
     dependencies:
-      '@ffmpeg/ffmpeg': 0.10.1
       '@novacbn/svelte-codejar': 0.1.2
       '@novacbn/svelte-pipeline': 0.3.1
+      '@svelte-in-motion/animations': link:../@svelte-in-motion-animations
+      '@svelte-in-motion/core': link:../@svelte-in-motion-core
+      '@svelte-in-motion/encoding': link:../@svelte-in-motion-encoding
+      '@svelte-in-motion/metadata': link:../@svelte-in-motion-metadata
       html-to-image: 1.9.0
       prismjs: 1.27.0
       unstorage: 0.3.3
       urlpattern-polyfill: 1.0.0-rc5
     devDependencies:
-      '@svelte-in-motion/animations': link:../@svelte-in-motion-animations
-      '@svelte-in-motion/core': link:../@svelte-in-motion-core
-      '@svelte-in-motion/metadata': link:../@svelte-in-motion-metadata
       '@sveltejs/vite-plugin-svelte': 1.0.0-next.39_svelte@3.46.4+vite@2.8.6
       '@tsconfig/svelte': 2.0.1
       '@types/prismjs': 1.26.0
@@ -88,6 +88,19 @@ importers:
       tslib: 2.3.1
       typescript: 4.6.2
       vite: 2.8.6
+
+  packages/@svelte-in-motion-encoding:
+    specifiers:
+      '@ffmpeg/ffmpeg': ^0.10.1
+      '@svelte-in-motion/core': workspace:^
+      prettier: ^2.3.1
+      typescript: ^4.3.5
+    dependencies:
+      '@ffmpeg/ffmpeg': 0.10.1
+      '@svelte-in-motion/core': link:../@svelte-in-motion-core
+    devDependencies:
+      prettier: 2.5.1
+      typescript: 4.6.2
 
   packages/@svelte-in-motion-metadata:
     specifiers:
