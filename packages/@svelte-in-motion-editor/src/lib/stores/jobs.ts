@@ -166,3 +166,5 @@ function _jobs(): IJobStore {
 }
 
 export const jobs = _jobs();
+
+export const {EVENT_END, EVENT_START} = jobs;
