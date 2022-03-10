@@ -223,39 +223,4 @@ export function jobqueue(): IJobQueueStore {
 
 export const jobs = jobqueue();
 
-window._testrun = async (WORKERS: number) => {
-    console.log("STARTO");
-
-    const identifier = jobs.queue({
-        file: "Sample.svelte",
-
-        encode: {
-            codec: "vp9",
-            crf: 31,
-            framerate: 60,
-            height: 1080,
-            pixel_format: "yuv420p",
-            width: 1920,
-        },
-
-        render: {
-            end: 270,
-            start: 0,
-            height: 1080,
-            width: 1920,
-        },
-    });
-
-    jobs.EVENT_RENDERING.subscribe(() => console.log("RENDERING!"));
-
-    jobs.EVENT_ENCODING.subscribe(() => console.log("ENCODING!"));
-
-    const buffer = await jobs.yield(identifier);
-
-    const blob = new Blob([buffer], {type: "video/webm"});
-    const url = URL.createObjectURL(blob);
-
-    window.open(url);
-
-    console.log("ENDO");
-};
+export const {EVENT_ENCODING, EVENT_END, EVENT_RENDERING, EVENT_START} = jobs;
