@@ -31,7 +31,12 @@
 
     const _playing = playing_store(playing);
 
-    const _advance = advance(_frame, _framerate, _maxframes, _playing);
+    const _advance = advance({
+        frame: _frame,
+        framerate: _framerate,
+        maxframes: _maxframes,
+        playing: _playing,
+    });
 
     CONTEXT_FRAME.set(_frame);
     CONTEXT_FRAMERATE.set(_framerate);

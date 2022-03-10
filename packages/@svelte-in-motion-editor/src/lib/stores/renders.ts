@@ -1,15 +1,14 @@
-import {prefixStorage} from "unstorage";
+import type {Readable} from "svelte/store";
+import {get, writable} from "svelte/store";
 
-import {encode} from "@svelte-in-motion/encoding";
+import type {IEvent} from "@svelte-in-motion/core";
+import {event, generate_id} from "@svelte-in-motion/core";
 
-import {STORAGE_FRAMES} from "../storage";
-
-import {jobs} from "./jobs";
+import {subscribe} from "../messages";
+import type {IRenderEndMessage, IRenderFrameMessage, IRenderStartMessage} from "../types/render";
 
 export enum RENDER_STATES {
     ended = "ended",
-
-    paued = "paused",
 
     started = "started",
 
@@ -26,114 +25,184 @@ export interface IRenderEvent {
     render: IRender;
 }
 
+export interface IRenderEndEvent extends IRenderEvent {
+    frames: Uint8Array[];
+}
+
+export interface IRenderRange {
+    end: number;
+
+    start: number;
+}
+
 export interface IRender {
     identifier: string;
 
+    element: HTMLIFrameElement;
+
     state: `${RENDER_STATES}`;
+
+    frame?: number;
 
     dimensions: IRenderDimensions;
 
-    jobs: string[];
-}
-
-export interface IRenderVideoSettings {
-    // NOTE: We're only going to support VP9/WebM for the forseeable future
-    codec: "vp9";
-
-    crf: number;
-
-    pixel_format: "yuv420p" | "yuva420p";
+    range: IRenderRange;
 }
 
 export type IRenderQueueOptions = {
     file: string;
-
-    workers?: number;
 } & IRenderDimensions &
-    Partial<IRenderVideoSettings>;
+    IRenderRange;
 
-function RenderQueueOptions(options: IRenderQueueOptions): Required<IRenderQueueOptions> {
-    const {
-        codec = "vp9",
-        crf = 0,
-        file,
-        height,
-        pixel_format = "yuva420p",
-        width,
-        workers = 0,
-    } = options;
+export interface IRenderQueueStore extends Readable<IRender[]> {
+    EVENT_END: IEvent<IRenderEndEvent>;
 
-    return {codec, crf, file, height, pixel_format, width, workers};
+    EVENT_START: IEvent<IRenderEvent>;
+
+    queue(options: IRenderQueueOptions): string;
+
+    yield(identifier: string): Promise<Uint8Array[]>;
 }
 
-window._testrun = async () => {
-    console.log("STARTO");
+function renderqueue(): IRenderQueueStore {
+    const store = writable<IRender[]>([]);
 
-    console.log("JOB STARTED");
-    const identifier = jobs.queue({
-        file: "Sample.svelte",
-        start: 0,
-        end: 270,
-        width: 1920,
-        height: 1080,
-    });
+    const EVENT_END = event<IRenderEndEvent>();
+    const EVENT_START = event<IRenderEvent>();
 
-    await new Promise<void>((resolve) => {
-        const destroy = jobs.EVENT_END.subscribe((job) => {
-            if (identifier === job.identifier) {
-                resolve();
-                destroy();
-            }
-        });
-    });
+    function add_render(render: IRender): IRender {
+        const renders = get(store);
 
-    console.log("JOB ENDED");
-
-    console.log("COLLECTING FRAMES");
-
-    const STORAGE_OUTPUT = prefixStorage(STORAGE_FRAMES, identifier);
-    const frames = await STORAGE_OUTPUT.getKeys();
-
-    const buffers = await Promise.all(
-        frames.map(async (name, index) => {
-            const uri = (await STORAGE_OUTPUT.getItem(name)) as string;
-            await STORAGE_OUTPUT.removeItem(name);
-
-            const response = await fetch(uri);
-            const buffer = await response.arrayBuffer();
-
-            console.log(`copied '${index}.png'`);
-            return new Uint8Array(buffer);
-        })
-    );
-
-    console.log("COLLECTING FINISHED");
-
-    console.log("RENDERING VIDEO");
-
-    const handle = encode({
-        codec: "vp9",
-        crf: 0,
-        framerate: 60,
-        frames: buffers,
-        height: 1080,
-        pixel_format: "yuv420p",
-        width: 1920,
-    });
-
-    let buffer;
-    try {
-        buffer = await handle.result;
-    } catch (err) {
-        document.body.remove();
-        throw err;
+        store.set([...renders, render]);
+        return render;
     }
-    console.log("RENDERING FINISHED");
 
-    const blob = new Blob([buffer], {type: "video/webm"});
-    const url = URL.createObjectURL(blob);
+    function get_render(identifier: string): IRender {
+        const renders = get(store);
+        const index = renders.findIndex((render) => render.identifier === identifier);
 
-    window.open(url);
+        if (index < 0) {
+            throw new ReferenceError(
+                `bad argument #0 to 'get_render' (invalid identifer '${identifier}')`
+            );
+        }
 
-    console.log("ENDO");
-};
+        return renders[index];
+    }
+
+    function update_render(identifier: string, partial: Partial<IRender>): IRender {
+        const renders = get(store);
+        const index = renders.findIndex((render) => render.identifier === identifier);
+
+        if (index < 0) {
+            throw new ReferenceError(
+                `bad argument #0 to 'update_render' (invalid identifer '${identifier}')`
+            );
+        }
+
+        const render = (renders[index] = {...renders[index], ...partial});
+
+        store.set(renders);
+        return render;
+    }
+
+    return {
+        EVENT_END,
+        EVENT_START,
+
+        subscribe: store.subscribe,
+
+        queue(options) {
+            const {file, end, height, start, width} = options;
+            const identifier = generate_id();
+
+            const iframe_element = document.createElement("IFRAME") as HTMLIFrameElement;
+
+            // NOTE: Need to hide it so it basically acts like an "off-screen canvas"
+            iframe_element.style.position = "fixed";
+            iframe_element.style.pointerEvents = "none";
+            iframe_element.style.opacity = "0";
+
+            iframe_element.style.height = `${height}px`;
+            iframe_element.style.width = `${width}px`;
+
+            iframe_element.src = `/render.html?identifier=${identifier}&file=${file}&start=${start}&end=${end}`;
+
+            add_render({
+                identifier,
+                element: iframe_element,
+                state: RENDER_STATES.uninitialized,
+                dimensions: {width, height},
+                range: {start, end},
+            });
+
+            iframe_element.addEventListener("load", () => {
+                const destroy_frame = subscribe<IRenderFrameMessage>(
+                    "RENDER_FRAME",
+                    (detail) => update_render(identifier, {frame: detail.frame}),
+                    iframe_element
+                );
+
+                const destroy_start = subscribe<IRenderStartMessage>(
+                    "RENDER_START",
+                    () => {
+                        const render = update_render(identifier, {state: RENDER_STATES.started});
+                        EVENT_START.dispatch({render});
+                    },
+
+                    iframe_element
+                );
+
+                const destroy_end = subscribe<IRenderEndMessage>(
+                    "RENDER_END",
+                    async (detail) => {
+                        const frames = await Promise.all(
+                            detail.frames.map(async (uri, index) => {
+                                const response = await fetch(uri);
+                                const buffer = await response.arrayBuffer();
+
+                                return new Uint8Array(buffer);
+                            })
+                        );
+
+                        destroy_end();
+                        destroy_frame();
+                        destroy_start();
+
+                        iframe_element.remove();
+
+                        const render = update_render(identifier, {state: RENDER_STATES.ended});
+                        EVENT_END.dispatch({render, frames});
+                    },
+                    iframe_element
+                );
+            });
+
+            document.body.appendChild(iframe_element);
+            return identifier;
+        },
+
+        yield(identifier) {
+            const render = get_render(identifier);
+
+            if (render.state === RENDER_STATES.ended) {
+                throw new ReferenceError(
+                    `bad argument #0 'renderqueue.yield' (render '${identifier}' already ended)`
+                );
+            }
+
+            return new Promise<Uint8Array[]>((resolve) => {
+                const destroy = EVENT_END.subscribe(({frames, render}) => {
+                    if (identifier === render.identifier) {
+                        resolve(frames);
+                        destroy();
+                    }
+                });
+            });
+        },
+    };
+}
+
+export const renders = renderqueue();
+
+export const {EVENT_END, EVENT_START} = renders;

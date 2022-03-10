@@ -9,8 +9,8 @@ export default defineConfig({
         rollupOptions: {
             input: {
                 main: resolve(__dirname, "index.html"),
-                job: resolve(__dirname, "job.html"),
                 render: resolve(__dirname, "render.html"),
+                preview: resolve(__dirname, "preview.html"),
             },
         },
     },

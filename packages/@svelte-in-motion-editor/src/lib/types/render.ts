@@ -1,20 +1,10 @@
 import type {IMessage} from "../messages";
 
-export interface IRenderDestroyMessage extends IMessage {
-    name: "RENDER_DESTROY";
-
-    detail: {};
-}
-
-export interface IRenderErrorMessage extends IMessage {
-    name: "RENDER_ERROR";
+export interface IRenderEndMessage extends IMessage {
+    name: "RENDER_END";
 
     detail: {
-        message: string;
-
-        name: string;
-
-        stack?: string;
+        frames: string[];
     };
 }
 
@@ -26,30 +16,8 @@ export interface IRenderFrameMessage extends IMessage {
     };
 }
 
-export interface IRenderMountMessage extends IMessage {
-    name: "RENDER_MOUNT";
+export interface IRenderStartMessage extends IMessage {
+    name: "RENDER_START";
 
     detail: {};
-}
-
-export interface IRenderPlayingMessage extends IMessage {
-    name: "RENDER_PLAYING";
-
-    detail: {
-        playing: boolean;
-    };
-}
-
-export interface IRenderReadyMessage extends IMessage {
-    name: "RENDER_READY";
-
-    detail: {};
-}
-
-export interface IRenderScriptMessage extends IMessage {
-    name: "RENDER_SCRIPT";
-
-    detail: {
-        script: string;
-    };
 }

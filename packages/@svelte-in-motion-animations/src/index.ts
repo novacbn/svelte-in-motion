@@ -14,5 +14,3 @@ export * from "./transitions/scale";
 export * from "./transitions/opacity";
 export * from "./transitions/translate";
 export * from "./transitions/transitions";
-
-export * from "./util/timing";

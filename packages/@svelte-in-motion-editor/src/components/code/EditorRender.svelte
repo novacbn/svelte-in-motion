@@ -4,12 +4,12 @@
     import {advance} from "@svelte-in-motion/core";
 
     import {dispatch, subscribe} from "../../lib/messages";
-    import type {
-        IRenderFrameMessage,
-        IRenderPlayingMessage,
-        IRenderReadyMessage,
-    } from "../../lib/types/render";
     import {CONTEXT_EDITOR} from "../../lib/stores/editor";
+    import type {
+        IPreviewFrameMessage,
+        IPreviewPlayingMessage,
+        IPreviewReadyMessage,
+    } from "../../lib/types/preview";
 
     const {file, frame, framerate, maxframes, playing} = CONTEXT_EDITOR.get()!;
 
@@ -24,8 +24,8 @@
             throw ReferenceError("bad mount to 'EditorRender' (could not query iframe)");
         }
 
-        const destroy = subscribe<IRenderReadyMessage>(
-            "RENDER_READY",
+        const destroy = subscribe<IPreviewReadyMessage>(
+            "PREVIEW_READY",
             () => (_ready = true),
             iframe_element
         );
@@ -37,13 +37,13 @@
     $_advance;
 
     $: if (iframe_element && _ready)
-        dispatch<IRenderFrameMessage>("RENDER_FRAME", {frame: $frame}, iframe_element);
+        dispatch<IPreviewFrameMessage>("PREVIEW_FRAME", {frame: $frame}, iframe_element);
 
     $: if (iframe_element && _ready)
-        dispatch<IRenderPlayingMessage>("RENDER_PLAYING", {playing: $playing}, iframe_element);
+        dispatch<IPreviewPlayingMessage>("PREVIEW_PLAYING", {playing: $playing}, iframe_element);
 </script>
 
-<iframe bind:this={iframe_element} class="sim--editor-render" src="/render.html?file={file}" />
+<iframe bind:this={iframe_element} class="sim--editor-render" src="/preview.html?file={file}" />
 
 <style>
     :global(.sim--editor-render) {

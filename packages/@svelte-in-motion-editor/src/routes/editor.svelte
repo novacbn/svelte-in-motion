@@ -24,7 +24,7 @@
 </script>
 
 <script lang="ts">
-    import "../lib/stores/renders";
+    import "../lib/stores/jobs";
 
     import type {IEditorContext} from "../lib/stores/editor";
     import {CONTEXT_EDITOR} from "../lib/stores/editor";

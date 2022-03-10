@@ -5,3 +5,11 @@ export function idle(): Promise<void> {
         });
     });
 }
+
+export function timeout(delay: number): Promise<void> {
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            resolve();
+        }, delay);
+    });
+}

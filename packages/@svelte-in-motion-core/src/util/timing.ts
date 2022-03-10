@@ -15,6 +15,14 @@ export function debounce<F extends (...args: any[]) => any | Promise<any>>(
     };
 }
 
+export function idle(): Promise<void> {
+    return new Promise((resolve, reject) => {
+        requestIdleCallback(() => {
+            resolve();
+        });
+    });
+}
+
 export function throttle<F extends (...args: any[]) => any | Promise<any>>(
     func: F,
     duration: number = 0
@@ -28,4 +36,12 @@ export function throttle<F extends (...args: any[]) => any | Promise<any>>(
             previous_call = current_call;
         }
     };
+}
+
+export function timeout(delay: number): Promise<void> {
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            resolve();
+        }, delay);
+    });
 }

@@ -1,36 +1,39 @@
+import {toPng} from "html-to-image";
 import {pipeline_svelte} from "@novacbn/svelte-pipeline";
 import {PipelineRenderComponent} from "@novacbn/svelte-pipeline/components";
 import {get} from "svelte/store";
 
-import {debounce} from "@svelte-in-motion/animations";
 import {
     CONTEXT_FRAME,
     CONTEXT_FRAMERATE,
     CONTEXT_MAXFRAMES,
     CONTEXT_PLAYING,
-    frame as frame_store,
-    framerate as framerate_store,
-    maxframes as maxframes_store,
-    playing as playing_store,
+    clamp,
+    frame,
+    framerate,
+    idle,
+    maxframes,
+    playing,
 } from "@svelte-in-motion/core";
 import {parse_configuration} from "@svelte-in-motion/metadata";
 
-import {dispatch, subscribe} from "./lib/messages";
+import {dispatch} from "./lib/messages";
 import {REPL_CONTEXT, REPL_IMPORTS} from "./lib/repl";
-import type {
-    IRenderDestroyMessage,
-    IRenderErrorMessage,
-    IRenderFrameMessage,
-    IRenderPlayingMessage,
-    IRenderMountMessage,
-    IRenderReadyMessage,
-} from "./lib/types/render";
+import type {IRenderEndMessage, IRenderFrameMessage, IRenderStartMessage} from "./lib/types/render";
 import {STORAGE_USER} from "./lib/storage";
-import {preload_file} from "./lib/stores/file";
 
 (async () => {
     const url = new URL(location.href);
-    const {file} = Object.fromEntries(url.searchParams.entries());
+    const {
+        file,
+        identifier,
+        end = "0",
+        start = "0",
+    } = Object.fromEntries(url.searchParams.entries());
+
+    if (!identifier) {
+        throw new ReferenceError("bad navigation to '/render.html' (no identifier specified)");
+    }
 
     if (!file) {
         throw new ReferenceError("bad navigation to '/render.html' (no file specified)");
@@ -40,7 +43,19 @@ import {preload_file} from "./lib/stores/file";
         throw new ReferenceError(`bad navigation to '/render.html' (file '${file}' is invalid)`);
     }
 
-    const _file = await preload_file(file);
+    const SCRIPT = (await STORAGE_USER.getItem(file)) as string;
+    const CONFIGURATION = parse_configuration(SCRIPT);
+
+    const parsed_end = clamp(parseInt(end) || 0, 0, CONFIGURATION.maxframes);
+    const parsed_start = Math.max(parseInt(start) || 1, 0);
+
+    if (parsed_end <= parsed_start) {
+        throw new RangeError(
+            `bad navigation to '/render.html' (parameter 'end' (${parsed_end}) is less than parameter 'start' (${parsed_start}))'`
+        );
+    }
+
+    const FRAMES: Record<number, string> = {};
 
     const pipeline_store = pipeline_svelte({
         context: REPL_CONTEXT,
@@ -54,11 +69,10 @@ import {preload_file} from "./lib/stores/file";
         },
     });
 
-    const _frame = frame_store();
-    const _framerate = framerate_store();
-    const _maxframes = maxframes_store();
-
-    const _playing = playing_store();
+    const _frame = frame(parsed_start);
+    const _framerate = framerate(CONFIGURATION.framerate);
+    const _maxframes = maxframes(CONFIGURATION.maxframes);
+    const _playing = playing(false);
 
     const context = new Map<Symbol, any>([
         [CONTEXT_FRAME.symbol, _frame],
@@ -77,40 +91,35 @@ import {preload_file} from "./lib/stores/file";
     });
 
     render_component.$on("error", (event) => {
-        const {message, name, stack} = event.detail.error;
-
-        dispatch<IRenderErrorMessage>("RENDER_ERROR", {
-            name,
-            message,
-            stack,
-        });
-    });
-
-    render_component.$on("destroy", () => {
-        dispatch<IRenderDestroyMessage>("RENDER_DESTROY", {});
+        throw event.detail.error;
     });
 
     render_component.$on("mount", () => {
-        dispatch<IRenderMountMessage>("RENDER_MOUNT", {});
+        async function advance_frame() {
+            await idle();
+
+            const $frame = get(_frame);
+            if ($frame > parsed_end) {
+                dispatch<IRenderEndMessage>("RENDER_END", {
+                    frames: Object.values(FRAMES),
+                });
+
+                return;
+            }
+
+            FRAMES[$frame] = await toPng(document.documentElement);
+
+            dispatch<IRenderFrameMessage>("RENDER_FRAME", {
+                frame: $frame,
+            });
+
+            _frame.set($frame + 1);
+            advance_frame();
+        }
+
+        advance_frame();
+        dispatch<IRenderStartMessage>("RENDER_START", {});
     });
 
-    subscribe<IRenderFrameMessage>("RENDER_FRAME", ({frame}) => _frame.set(frame));
-    subscribe<IRenderPlayingMessage>("RENDER_PLAYING", ({playing}) => _playing.set(playing));
-
-    _file.subscribe(
-        debounce(async (text) => {
-            // TODO: handle if file gets removed
-            const CONFIGURATION = parse_configuration(text);
-
-            _framerate.set(CONFIGURATION.framerate);
-            _maxframes.set(CONFIGURATION.maxframes);
-
-            const frame = get(_frame);
-
-            _frame.set(Math.min(frame, CONFIGURATION.maxframes));
-            pipeline_store.set(text);
-        }, 100)
-    );
-
-    dispatch<IRenderReadyMessage>("RENDER_READY", {});
+    pipeline_store.set(SCRIPT);
 })();

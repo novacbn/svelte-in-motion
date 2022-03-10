@@ -1,8 +1,7 @@
 import type {Writable} from "svelte/store";
 import {get, writable} from "svelte/store";
 
-import {debounce as _debounce} from "@svelte-in-motion/animations";
-import {make_scoped_context} from "@svelte-in-motion/core";
+import {debounce as _debounce, make_scoped_context} from "@svelte-in-motion/core";
 
 import {STORAGE_USER} from "../storage";
 

@@ -31,6 +31,15 @@ export function get_codec(codec: ICodecNames): ICodecEncoders {
     throw new Error(`bad argument #0 to 'get_codec' (codec '${codec}' not supported)`);
 }
 
+export function get_codec_arguments(codec: ICodecNames): string[] {
+    switch (codec) {
+        case "vp9":
+            return ["-row-mt", "1"];
+    }
+
+    throw new Error(`bad argument #0 to 'get_codec_argument' (codec '${codec}' not supported)`);
+}
+
 export function get_codec_extension(codec: ICodecNames): string {
     switch (codec) {
         case "vp9":
