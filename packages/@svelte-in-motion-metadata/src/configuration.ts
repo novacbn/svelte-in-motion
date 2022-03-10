@@ -5,12 +5,15 @@ import {collect_metadata, parse_ast} from "./parse";
 export interface IConfiguration {
     framerate: number;
 
+    height: number;
+
     maxframes: number;
+
+    width: number;
 }
 
 const SCHEMA_CONFIGURATION: Schema = {
     type: "object",
-    required: ["framerate", "maxframes"],
 
     properties: {
         framerate: {
@@ -19,8 +22,23 @@ const SCHEMA_CONFIGURATION: Schema = {
             minimum: 16,
         },
 
+        // NOTE: Not sure who would wait forever for an 8K render... Also
+        // resolution is platform / codec dependant as well. But seems like a good default?
+
+        height: {
+            type: "number",
+            maximum: 4320,
+            minimum: 0,
+        },
+
         maxframes: {
             type: "number",
+            minimum: 0,
+        },
+
+        width: {
+            type: "number",
+            maximum: 7680,
             minimum: 0,
         },
     },
