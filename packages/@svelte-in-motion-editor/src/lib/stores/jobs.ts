@@ -1,170 +1,54 @@
-import type {Readable} from "svelte/store";
-import {get, writable} from "svelte/store";
-import {prefixStorage} from "unstorage";
+import {encodes} from "./encodes";
+import {renders} from "./renders";
 
-import {event, generate_id, IEvent} from "@svelte-in-motion/core";
+const MAX_FRAMES = 270;
 
-import {subscribe} from "../messages";
-import {STORAGE_FRAMES} from "../storage";
-import type {IJobEndMessage, IJobFrameMessage, IJobStartMessage} from "../types/job";
+window._testrun = async (WORKERS: number) => {
+    console.log("STARTO");
 
-export enum JOB_STATES {
-    ended = "ended",
+    const PER_WORKER = Math.floor(MAX_FRAMES / WORKERS) + 1;
 
-    paued = "paused",
+    console.log("RENDER STARTED");
 
-    started = "started",
+    const frames = (
+        await Promise.all(
+            new Array(WORKERS).fill(null).map(async (value, index) => {
+                const render_job = renders.queue({
+                    file: "Sample.svelte",
+                    start: PER_WORKER * index,
+                    end: PER_WORKER * (index + 1) - 1,
+                    width: 1920,
+                    height: 1080,
+                });
 
-    uninitialized = "uninitialized",
-}
+                return renders.yield(render_job);
+            })
+        )
+    ).flat();
 
-export interface IJobDimensions {
-    width: number;
+    console.log({frames: frames.length});
+    console.log("RENDER ENDED");
 
-    height: number;
-}
+    const encode_job = encodes.queue({
+        codec: "vp9",
+        crf: 0,
+        framerate: 60,
+        frames,
+        height: 1080,
+        pixel_format: "yuv420p",
+        width: 1920,
+    });
 
-export interface IJobEvent {
-    job: IJob;
-}
+    console.log("ENCODING STARTED");
 
-export interface IJobRange {
-    end: number;
+    const buffer = await encodes.yield(encode_job);
 
-    start: number;
-}
+    console.log("ENCODING FINISHED");
 
-export interface IJob {
-    identifier: string;
+    const blob = new Blob([buffer], {type: "video/webm"});
+    const url = URL.createObjectURL(blob);
 
-    element: HTMLIFrameElement;
+    window.open(url);
 
-    state: `${JOB_STATES}`;
-
-    frame?: number;
-
-    dimensions: IJobDimensions;
-
-    range: IJobRange;
-}
-
-export type IJobQueueOptions = {
-    file: string;
-} & IJobDimensions &
-    IJobRange;
-
-export interface IJobQueueStore extends Readable<IJob[]> {
-    EVENT_END: IEvent<IJob>;
-
-    EVENT_START: IEvent<IJob>;
-
-    queue(options: IJobQueueOptions): string;
-}
-
-function jobqueue(): IJobQueueStore {
-    const store = writable<IJob[]>([]);
-
-    const EVENT_END = event<IJob>();
-    const EVENT_START = event<IJob>();
-
-    function add_job(job: IJob): void {
-        const jobs = get(store);
-
-        store.set([...jobs, job]);
-    }
-
-    function update_job(identifier: string, partial: Partial<IJob>): IJob {
-        const jobs = get(store);
-        const index = jobs.findIndex((job) => job.identifier === identifier);
-
-        if (index < 0) {
-            throw new ReferenceError(
-                `bad argument #0 to 'update_job' (invalid identifer '${identifier}')`
-            );
-        }
-
-        const job = (jobs[index] = {...jobs[index], ...partial});
-
-        store.set(jobs);
-        return job;
-    }
-
-    return {
-        EVENT_END,
-        EVENT_START,
-
-        subscribe: store.subscribe,
-
-        queue(options) {
-            const {file, end, height, start, width} = options;
-            const identifier = generate_id();
-
-            const STORAGE_OUTPUT = prefixStorage(STORAGE_FRAMES, identifier);
-            const iframe_element = document.createElement("IFRAME") as HTMLIFrameElement;
-
-            // NOTE: Need to hide it so it basically acts like an "off-screen canvas"
-            iframe_element.style.position = "fixed";
-            iframe_element.style.pointerEvents = "none";
-            iframe_element.style.opacity = "0";
-
-            iframe_element.style.height = `${height}px`;
-            iframe_element.style.width = `${width}px`;
-
-            iframe_element.src = `/job.html?job=${identifier}&file=${file}&start=${start}&end=${end}`;
-
-            add_job({
-                identifier,
-                element: iframe_element,
-                state: JOB_STATES.uninitialized,
-                dimensions: {width, height},
-                range: {start, end},
-            });
-
-            iframe_element.addEventListener("load", () => {
-                const destroy_frame = subscribe<IJobFrameMessage>(
-                    "JOB_FRAME",
-                    (detail) => update_job(identifier, {frame: detail.frame}),
-                    iframe_element
-                );
-
-                const destroy_start = subscribe<IJobStartMessage>(
-                    "JOB_START",
-                    () => {
-                        const job = update_job(identifier, {state: JOB_STATES.started});
-                        EVENT_START.dispatch(job);
-                    },
-
-                    iframe_element
-                );
-
-                const destroy_end = subscribe<IJobEndMessage>(
-                    "JOB_END",
-                    async (detail) => {
-                        await Promise.all(
-                            detail.frames.map((frame, index) =>
-                                STORAGE_OUTPUT.setItem(`${index + start}.png.datauri`, frame)
-                            )
-                        );
-
-                        destroy_end();
-                        destroy_frame();
-                        destroy_start();
-
-                        iframe_element.remove();
-
-                        const job = update_job(identifier, {state: JOB_STATES.ended});
-                        EVENT_END.dispatch(job);
-                    },
-                    iframe_element
-                );
-            });
-
-            document.body.appendChild(iframe_element);
-            return identifier;
-        },
-    };
-}
-
-export const jobs = jobqueue();
-
-export const {EVENT_END, EVENT_START} = jobs;
+    console.log("ENDO");
+};
