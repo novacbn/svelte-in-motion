@@ -2,6 +2,9 @@
     export const CONFIGURATION = {
         framerate: 60,
         maxframes: 270,
+
+        width: 1920,
+        height: 1080,
     };
 </script>
 

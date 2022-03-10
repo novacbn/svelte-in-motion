@@ -11,7 +11,7 @@
         IPreviewReadyMessage,
     } from "../../lib/types/preview";
 
-    const {file, frame, framerate, maxframes, playing} = CONTEXT_EDITOR.get()!;
+    const {configuration, file, frame, framerate, maxframes, playing} = CONTEXT_EDITOR.get()!;
 
     const _advance = advance({frame, framerate, maxframes, playing});
 
@@ -43,15 +43,49 @@
         dispatch<IPreviewPlayingMessage>("PREVIEW_PLAYING", {playing: $playing}, iframe_element);
 </script>
 
-<iframe bind:this={iframe_element} class="sim--editor-render" src="/preview.html?file={file}" />
+<div
+    class="sim--editor-render"
+    style="--width:{$configuration.width};--height:{$configuration.height};"
+>
+    <iframe bind:this={iframe_element} src="/preview.html?file={file}" />
+</div>
 
 <style>
     :global(.sim--editor-render) {
+        display: flex;
+
+        align-items: center;
+        justify-content: center;
+
         grid-area: render;
 
+        padding: 2rem;
+
+        overflow: hidden;
+    }
+
+    :global(.sim--editor-render > iframe) {
         border: none;
 
-        height: 100%;
+        aspect-ratio: calc(var(--width) / var(--height));
+
         width: 100%;
+        max-width: calc(var(--width) * 1px);
+        max-height: 100%;
+
+        /** SOURCE: https://www.magicpattern.design/tools/css-backgrounds */
+
+        background-color: #ccc;
+        background-image: repeating-linear-gradient(
+                45deg,
+                #ffffff 25%,
+                transparent 25%,
+                transparent 75%,
+                #ffffff 75%,
+                #ffffff
+            ),
+            repeating-linear-gradient(45deg, #ffffff 25%, #ccc 25%, #ccc 75%, #ffffff 75%, #ffffff);
+        background-position: 0 0, 9px 9px;
+        background-size: 18px 18px;
     }
 </style>
