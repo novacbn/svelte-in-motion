@@ -158,9 +158,9 @@ export function encodequeue(): IEncodeQueueStore {
         },
 
         yield(identifier) {
-            const render = get_encode(identifier);
+            const encode = get_encode(identifier);
 
-            if (render.state === ENCODE_STATES.ended) {
+            if (encode.state === ENCODE_STATES.ended) {
                 throw new ReferenceError(
                     `bad argument #0 'encodequeue.yield' (encode '${identifier}' already ended)`
                 );
@@ -168,7 +168,7 @@ export function encodequeue(): IEncodeQueueStore {
 
             return new Promise<Uint8Array>((resolve) => {
                 const destroy = EVENT_END.subscribe(({encode, video}) => {
-                    if (identifier === render.identifier) {
+                    if (identifier === encode.identifier) {
                         resolve(video);
                         destroy();
                     }

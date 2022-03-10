@@ -1,49 +1,256 @@
+import type {IEncodeQueueOptions} from "./encodes";
 import {encodes} from "./encodes";
+import type {IRenderQueueOptions} from "./renders";
 import {renders} from "./renders";
 
-const MAX_FRAMES = 270;
+import type {Readable} from "svelte/store";
+import {get, writable} from "svelte/store";
+
+import type {IEvent} from "@svelte-in-motion/core";
+import {event, generate_id} from "@svelte-in-motion/core";
+
+export enum JOB_STATES {
+    ended = "ended",
+
+    encoding = "encoding",
+
+    rendering = "rendering",
+
+    started = "started",
+
+    uninitialized = "uninitialized",
+}
+
+export interface IJobEvent {
+    job: IJob;
+}
+
+export interface IJobEndEvent extends IJobEvent {
+    video: Uint8Array;
+}
+
+export interface IJobEncodingEvent extends IJobEvent {
+    job: IJobEncoding;
+
+    encode: string;
+}
+
+export interface IJobRenderingEvent extends IJobEvent {
+    job: IJobRendering;
+
+    render: string;
+}
+
+export interface IJobBase {
+    identifier: string;
+
+    state: `${JOB_STATES}`;
+
+    encode?: string;
+
+    render?: string;
+}
+
+export interface IJobEncoding extends IJobBase {
+    state: `${JOB_STATES.encoding}`;
+
+    encode: string;
+}
+
+export interface IJobRendering extends IJobBase {
+    state: `${JOB_STATES.rendering}`;
+
+    render: string;
+}
+
+export type IJob = IJobBase | IJobEncoding | IJobRendering;
+
+export type IJobQueueOptions = {
+    file: string;
+
+    encode: Omit<IEncodeQueueOptions, "frames">;
+
+    render: Omit<IRenderQueueOptions, "file">;
+};
+
+export interface IJobQueueStore extends Readable<IJob[]> {
+    EVENT_ENCODING: IEvent<IJobEncodingEvent>;
+
+    EVENT_END: IEvent<IJobEndEvent>;
+
+    EVENT_RENDERING: IEvent<IJobRenderingEvent>;
+
+    EVENT_START: IEvent<IJobEvent>;
+
+    queue(options: IJobQueueOptions): string;
+
+    yield(identifier: string): Promise<Uint8Array>;
+}
+
+export function jobqueue(): IJobQueueStore {
+    const store = writable<IJob[]>([]);
+
+    const EVENT_END = event<IJobEndEvent>();
+    const EVENT_START = event<IJobEvent>();
+
+    const EVENT_ENCODING = event<IJobEncodingEvent>();
+    const EVENT_RENDERING = event<IJobRenderingEvent>();
+
+    function add_job(encode: IJob): IJob {
+        const renders = get(store);
+
+        store.set([...renders, encode]);
+        return encode;
+    }
+
+    function get_job(identifier: string): IJob {
+        const jobs = get(store);
+        const index = jobs.findIndex((job) => job.identifier === identifier);
+
+        if (index < 0) {
+            throw new ReferenceError(
+                `bad argument #0 to 'get_job' (invalid identifer '${identifier}')`
+            );
+        }
+
+        return jobs[index];
+    }
+
+    async function start_job(identifier: string, options: IJobQueueOptions): Promise<void> {
+        const {file, encode, render} = options;
+
+        const render_job = renders.queue({
+            ...render,
+            file,
+        });
+
+        let job = update_job(identifier, {
+            state: JOB_STATES.rendering,
+            render: render_job,
+        });
+
+        EVENT_RENDERING.dispatch({
+            job: job as IJobRendering,
+            render: render_job,
+        });
+
+        const frames = await renders.yield(render_job);
+
+        const encode_job = encodes.queue({...encode, frames});
+
+        job = update_job(identifier, {
+            state: JOB_STATES.encoding,
+            encode: encode_job,
+            render: undefined,
+        });
+
+        EVENT_ENCODING.dispatch({
+            job: job as IJobEncoding,
+            encode: encode_job,
+        });
+
+        const video = await encodes.yield(encode_job);
+
+        job = update_job(identifier, {
+            state: JOB_STATES.ended,
+            encode: undefined,
+        });
+
+        EVENT_END.dispatch({
+            job,
+            video,
+        });
+    }
+
+    function update_job(identifier: string, partial: Partial<IJob>): IJob {
+        const jobs = get(store);
+        const index = jobs.findIndex((job) => job.identifier === identifier);
+
+        if (index < 0) {
+            throw new ReferenceError(
+                `bad argument #0 to 'update_job' (invalid identifer '${identifier}')`
+            );
+        }
+
+        const job = (jobs[index] = {...jobs[index], ...partial});
+
+        store.set(jobs);
+        return job;
+    }
+
+    return {
+        EVENT_END,
+        EVENT_START,
+
+        EVENT_ENCODING,
+        EVENT_RENDERING,
+
+        subscribe: store.subscribe,
+
+        queue(options) {
+            const identifier = generate_id();
+
+            add_job({
+                identifier,
+                state: JOB_STATES.uninitialized,
+            });
+
+            start_job(identifier, options);
+
+            return identifier;
+        },
+
+        yield(identifier) {
+            const job = get_job(identifier);
+
+            if (job.state === JOB_STATES.ended) {
+                throw new ReferenceError(
+                    `bad argument #0 'jobqueue.yield' (job '${identifier}' already ended)`
+                );
+            }
+
+            return new Promise<Uint8Array>((resolve) => {
+                const destroy = EVENT_END.subscribe(({job, video}) => {
+                    if (identifier === job.identifier) {
+                        resolve(video);
+                        destroy();
+                    }
+                });
+            });
+        },
+    };
+}
+
+export const jobs = jobqueue();
 
 window._testrun = async (WORKERS: number) => {
     console.log("STARTO");
 
-    const PER_WORKER = Math.floor(MAX_FRAMES / WORKERS) + 1;
+    const identifier = jobs.queue({
+        file: "Sample.svelte",
 
-    console.log("RENDER STARTED");
+        encode: {
+            codec: "vp9",
+            crf: 31,
+            framerate: 60,
+            height: 1080,
+            pixel_format: "yuv420p",
+            width: 1920,
+        },
 
-    const frames = (
-        await Promise.all(
-            new Array(WORKERS).fill(null).map(async (value, index) => {
-                const render_job = renders.queue({
-                    file: "Sample.svelte",
-                    start: PER_WORKER * index,
-                    end: PER_WORKER * (index + 1) - 1,
-                    width: 1920,
-                    height: 1080,
-                });
-
-                return renders.yield(render_job);
-            })
-        )
-    ).flat();
-
-    console.log({frames: frames.length});
-    console.log("RENDER ENDED");
-
-    const encode_job = encodes.queue({
-        codec: "vp9",
-        crf: 0,
-        framerate: 60,
-        frames,
-        height: 1080,
-        pixel_format: "yuv420p",
-        width: 1920,
+        render: {
+            end: 270,
+            start: 0,
+            height: 1080,
+            width: 1920,
+        },
     });
 
-    console.log("ENCODING STARTED");
+    jobs.EVENT_RENDERING.subscribe(() => console.log("RENDERING!"));
 
-    const buffer = await encodes.yield(encode_job);
+    jobs.EVENT_ENCODING.subscribe(() => console.log("ENCODING!"));
 
-    console.log("ENCODING FINISHED");
+    const buffer = await jobs.yield(identifier);
 
     const blob = new Blob([buffer], {type: "video/webm"});
     const url = URL.createObjectURL(blob);
