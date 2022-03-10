@@ -7,6 +7,7 @@ import type {IFrameRateStore} from "./framerate";
 import {CONTEXT_FRAMERATE} from "./framerate";
 import type {IInterpolateOptions} from "./interpolate";
 import {interpolate} from "./interpolate";
+import type {ReadableOnly} from "./util";
 
 export type IStateStore = Readable<number>;
 
@@ -15,9 +16,9 @@ export interface IStateOptions extends IInterpolateOptions {
 
     duration?: number;
 
-    frame: IFrameStore;
+    frame: ReadableOnly<IFrameStore>;
 
-    framerate: IFrameRateStore;
+    framerate: ReadableOnly<IFrameRateStore>;
 }
 
 export const CONTEXT_STATE = {
