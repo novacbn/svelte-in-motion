@@ -1,6 +1,7 @@
 /node_modules/
 
 /packages/@svelte-in-motion-core/node_modules/
+/packages/@svelte-in-motion-editor/.vercel/
 /packages/@svelte-in-motion-editor/dist/
 /packages/@svelte-in-motion-editor/node_modules/
 /packages/@svelte-in-motion-encoding/node_modules/
