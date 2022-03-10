@@ -1,7 +1,7 @@
 export * from "./actions/actions";
 export * from "./actions/transition";
 
-export {default as Compositor} from "./components/Compositor.svelte";
+export {default as Playback} from "./components/Playback.svelte";
 export {default as Transition} from "./components/Transition.svelte";
 
 export * as Fade from "./components/fade";
