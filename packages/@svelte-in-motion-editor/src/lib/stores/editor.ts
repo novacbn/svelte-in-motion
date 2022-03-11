@@ -1,5 +1,5 @@
-import type {Readable} from "svelte/store";
-import {derived} from "svelte/store";
+import type {Readable, Writable} from "svelte/store";
+import {derived, writable} from "svelte/store";
 
 import type {
     IFrameRateStore,
@@ -34,6 +34,12 @@ export interface IEditorContext {
     maxframes: Omit<IMaxFramesStore, "set" | "update">;
 
     playing: IPlayingStore;
+
+    show_checkerboard: Writable<boolean>;
+
+    show_script: Writable<boolean>;
+
+    zen_mode: Writable<boolean>;
 }
 
 export function editor(path: string, content: IFileStore = file_store(path)): IEditorContext {
@@ -45,6 +51,11 @@ export function editor(path: string, content: IFileStore = file_store(path)): IE
     const framerate = derived(configuration, ($configuration) => $configuration.framerate);
     const maxframes = derived(configuration, ($configuration) => $configuration.maxframes);
 
+    const show_checkerboard = writable<boolean>(true);
+    const show_script = writable<boolean>(false);
+
+    const zen_mode = writable<boolean>(false);
+
     return {
         configuration,
         content,
@@ -53,6 +64,9 @@ export function editor(path: string, content: IFileStore = file_store(path)): IE
         framerate,
         maxframes,
         playing,
+        show_checkerboard,
+        show_script,
+        zen_mode,
     };
 }
 

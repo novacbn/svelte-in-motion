@@ -5,7 +5,7 @@ import type {IEvent} from "@svelte-in-motion/core";
 import {event, generate_id} from "@svelte-in-motion/core";
 
 import {subscribe} from "../messages";
-import type {IRenderEndMessage, IRenderFrameMessage, IRenderStartMessage} from "../types/render";
+import type {IRenderEndMessage, IRenderProgressMessage, IRenderStartMessage} from "../types/render";
 
 export enum RENDER_STATES {
     ended = "ended",
@@ -38,15 +38,9 @@ export interface IRenderRange {
 export interface IRender {
     identifier: string;
 
-    element: HTMLIFrameElement;
-
     state: `${RENDER_STATES}`;
 
-    frame?: number;
-
-    dimensions: IRenderDimensions;
-
-    range: IRenderRange;
+    completion: number;
 }
 
 export type IRenderQueueOptions = {
@@ -130,16 +124,14 @@ function renderqueue(): IRenderQueueStore {
 
             add_render({
                 identifier,
-                element: iframe_element,
                 state: RENDER_STATES.uninitialized,
-                dimensions: {width, height},
-                range: {start, end},
+                completion: 0,
             });
 
             iframe_element.addEventListener("load", () => {
-                const destroy_frame = subscribe<IRenderFrameMessage>(
-                    "RENDER_FRAME",
-                    (detail) => update_render(identifier, {frame: detail.frame}),
+                const destroy_frame = subscribe<IRenderProgressMessage>(
+                    "RENDER_PROGRESS",
+                    (detail) => update_render(identifier, {completion: detail.progress}),
                     iframe_element
                 );
 

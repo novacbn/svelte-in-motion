@@ -48,6 +48,7 @@ importers:
 
   packages/@svelte-in-motion-editor:
     specifiers:
+      '@kahi-ui/framework': ^0.6.2
       '@novacbn/svelte-codejar': ^0.1.2
       '@novacbn/svelte-pipeline': 0.3.1
       '@svelte-in-motion/animations': workspace:^
@@ -58,6 +59,7 @@ importers:
       '@tsconfig/svelte': ^2.0.1
       '@types/prismjs': ^1.26.0
       html-to-image: ^1.9.0
+      lucide-svelte: ^0.17.9
       prismjs: ^1.27.0
       svelte: ^3.44.0
       svelte-check: ^2.2.7
@@ -68,6 +70,7 @@ importers:
       urlpattern-polyfill: ^1.0.0-rc5
       vite: ^2.8.0
     dependencies:
+      '@kahi-ui/framework': 0.6.2
       '@novacbn/svelte-codejar': 0.1.2
       '@novacbn/svelte-pipeline': 0.3.1
       '@svelte-in-motion/animations': link:../@svelte-in-motion-animations
@@ -75,6 +78,7 @@ importers:
       '@svelte-in-motion/encoding': link:../@svelte-in-motion-encoding
       '@svelte-in-motion/metadata': link:../@svelte-in-motion-metadata
       html-to-image: 1.9.0
+      lucide-svelte: 0.17.9_svelte@3.46.4
       prismjs: 1.27.0
       unstorage: 0.3.3
       urlpattern-polyfill: 1.0.0-rc5
@@ -133,6 +137,12 @@ packages:
       resolve-url: 0.2.1
     transitivePeerDependencies:
       - encoding
+    dev: false
+
+  /@kahi-ui/framework/0.6.2:
+    resolution: {integrity: sha512-sG/l61XZD2Hnq4Nlt7kGqZRPiU8+69L9ZL0HjnqgVs2VPs5Ot4UY17YdnZAPqnzUZxUAmBiQs1DPEzJDcsf1MQ==}
+    dependencies:
+      svelte: 3.46.4
     dev: false
 
   /@nodelib/fs.scandir/2.1.5:
@@ -851,6 +861,15 @@ packages:
 
   /lodash.isarguments/3.1.0:
     resolution: {integrity: sha1-L1c9hcaiQon/AGY7SRwdM4/zRYo=}
+    dev: false
+
+  /lucide-svelte/0.17.9_svelte@3.46.4:
+    resolution: {integrity: sha512-6Zhg/pRvCctEuiHxxXwNciExW7lMf6N4xDho0YtlP81Wgnk5cvnU+G6gAo4SMc7doYh3jOsR1aBUlp3g3TMenA==}
+    peerDependencies:
+      svelte: ^3.45.0
+      svelte2tsx: ^0.4.12
+    dependencies:
+      svelte: 3.46.4
     dev: false
 
   /magic-string/0.25.9:

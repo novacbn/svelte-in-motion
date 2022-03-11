@@ -19,7 +19,11 @@ import {parse_configuration} from "@svelte-in-motion/metadata";
 
 import {dispatch} from "./lib/messages";
 import {REPL_CONTEXT, REPL_IMPORTS} from "./lib/repl";
-import type {IRenderEndMessage, IRenderFrameMessage, IRenderStartMessage} from "./lib/types/render";
+import type {
+    IRenderEndMessage,
+    IRenderProgressMessage,
+    IRenderStartMessage,
+} from "./lib/types/render";
 import {STORAGE_USER} from "./lib/storage";
 
 (async () => {
@@ -48,6 +52,8 @@ import {STORAGE_USER} from "./lib/storage";
 
     const parsed_end = clamp(parseInt(end) || 0, 0, CONFIGURATION.maxframes);
     const parsed_start = Math.max(parseInt(start) || 1, 0);
+
+    const total_frames = parsed_end - parsed_start;
 
     if (parsed_end <= parsed_start) {
         throw new RangeError(
@@ -109,8 +115,8 @@ import {STORAGE_USER} from "./lib/storage";
 
             FRAMES[$frame] = await toPng(document.documentElement);
 
-            dispatch<IRenderFrameMessage>("RENDER_FRAME", {
-                frame: $frame,
+            dispatch<IRenderProgressMessage>("RENDER_PROGRESS", {
+                progress: ($frame - parsed_start) / total_frames,
             });
 
             _frame.set($frame + 1);

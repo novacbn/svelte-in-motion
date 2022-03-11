@@ -2,9 +2,8 @@
     import {routes} from "./lib/router";
 
     import * as Index from "./routes/index.svelte";
-    import * as Editor from "./routes/editor.svelte";
 
-    const [navigating, router] = routes(Editor, Index);
+    const [navigating, router] = routes(Index);
 </script>
 
 {#if $navigating}

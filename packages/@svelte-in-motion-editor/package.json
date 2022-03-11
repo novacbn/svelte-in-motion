@@ -11,6 +11,7 @@
         "check": "svelte-check --tsconfig ./tsconfig.json"
     },
     "dependencies": {
+        "@kahi-ui/framework": "^0.6.2",
         "@novacbn/svelte-codejar": "^0.1.2",
         "@novacbn/svelte-pipeline": "0.3.1",
         "@svelte-in-motion/animations": "workspace:^",
@@ -18,6 +19,7 @@
         "@svelte-in-motion/encoding": "workspace:^",
         "@svelte-in-motion/metadata": "workspace:^",
         "html-to-image": "^1.9.0",
+        "lucide-svelte": "^0.17.9",
         "prismjs": "^1.27.0",
         "unstorage": "^0.3.3",
         "urlpattern-polyfill": "^1.0.0-rc5"

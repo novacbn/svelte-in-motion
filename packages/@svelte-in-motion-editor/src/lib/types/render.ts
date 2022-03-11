@@ -8,11 +8,11 @@ export interface IRenderEndMessage extends IMessage {
     };
 }
 
-export interface IRenderFrameMessage extends IMessage {
-    name: "RENDER_FRAME";
+export interface IRenderProgressMessage extends IMessage {
+    name: "RENDER_PROGRESS";
 
     detail: {
-        frame: number;
+        progress: number;
     };
 }
 
