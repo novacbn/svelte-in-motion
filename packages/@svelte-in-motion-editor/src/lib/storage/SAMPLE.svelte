@@ -9,8 +9,6 @@
 </script>
 
 <script>
-    import {Rotate} from "@svelte-in-motion/animations";
-
     const rotation = CONTEXT_STATE.get({
         delay: 1.5,
         duration: 0.5,
