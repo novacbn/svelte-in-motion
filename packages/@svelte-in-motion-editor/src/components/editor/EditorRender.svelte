@@ -22,6 +22,9 @@
     let _container_height: number;
     let _container_width: number;
 
+    let _preview_height: number;
+    let _preview_width: number;
+
     let _ready: boolean = false;
     let _show_resolution: boolean = true;
 
@@ -63,6 +66,9 @@
         _container_height;
         _container_width;
 
+        _preview_height = iframe_element?.clientHeight ?? 0;
+        _preview_width = iframe_element?.clientWidth ?? 0;
+
         _show_resolution = true;
         hide_resolution();
     }
@@ -71,13 +77,12 @@
 <Box class="sim--editor-render" padding="large">
     <div
         class="sim--editor-render--container"
-        style="--preview-width:{$configuration.width};--preview-height:{$configuration.height};"
+        style="--configuration-width:{$configuration.width};--configuration-height:{$configuration.height};"
         bind:clientWidth={_container_width}
         bind:clientHeight={_container_height}
     >
         <iframe
             class="sim--editor-render--preview"
-            style="--container-width:{_container_width};--container-height:{_container_height};"
             bind:this={iframe_element}
             src="/preview.html?file={file}"
             data-checkerboard={$show_checkerboard}
@@ -90,7 +95,7 @@
                 on:pointerenter={on_resolution_enter}
                 on:pointerleave={on_resolution_exit}
             >
-                {_container_width}x{_container_height}
+                {_preview_width}x{_preview_height}
                 ({$configuration.width}x{$configuration.height})
             </Badge>
         </Position>
@@ -113,23 +118,22 @@
     }
 
     :global(.sim--editor-render--container) {
+        display: flex;
         position: relative;
+
+        aspect-ratio: var(--configuration-width) / var(--configuration-height);
 
         border: 2px solid hsla(var(--palette-foreground-bold), 0.2);
 
-        aspect-ratio: calc(var(--preview-width) / var(--preview-height));
-
-        max-width: min(100%, calc(var(--preview-width) * 1px));
-        max-height: min(100%, calc(var(--preview-height) * 1px));
-        height: 100%;
+        width: 100%;
+        max-width: calc(var(--configuration-width) * 1px);
     }
 
     :global(.sim--editor-render--preview) {
         --color-background: transparent;
         --color-foreground: transparent;
 
-        width: calc(var(--container-width) * 1px);
-        height: calc(var(--container-height) * 1px);
+        flex-grow: 1;
 
         border: none;
 
