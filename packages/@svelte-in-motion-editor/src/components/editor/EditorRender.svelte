@@ -96,7 +96,7 @@
         </Position>
     </div>
 
-    <hr class="divider sim--editor-render--divider" data-palette="inverse" data-margin="none" />
+    <Divider class="sim--editor-render--divider" palette="inverse" margin="none" />
 </Box>
 
 <style>

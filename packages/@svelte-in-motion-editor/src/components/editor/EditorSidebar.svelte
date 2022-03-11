@@ -43,11 +43,11 @@
         {/each}
     </Menu.Container>
 
-    <hr
-        class="divider sim--editor-sidebar--divider"
-        data-orientation="vertical"
-        data-palette="inverse"
-        data-margin="none"
+    <Divider
+        class="sim--editor-sidebar--divider"
+        orientation="vertical"
+        palette="inverse"
+        margin="none"
     />
 </Box>
 

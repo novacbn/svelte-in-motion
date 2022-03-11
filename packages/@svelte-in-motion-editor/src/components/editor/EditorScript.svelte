@@ -1,4 +1,6 @@
 <script context="module" lang="ts">
+    import {Divider} from "@kahi-ui/framework";
+
     import {highlight as code_highlight} from "../../lib/highlight";
 
     const highlight = (text: string) => code_highlight(text, "svelte");
@@ -15,11 +17,11 @@
 <div class="sim--editor-script" style="display:{$show_script ? 'block' : 'none'}">
     <CodeJar class="sim--editor-script--editor" syntax="svelte" {highlight} bind:value={$content} />
 
-    <hr
-        class="divider sim--editor-script--divider"
-        data-orientation="vertical"
-        data-palette="inverse"
-        data-margin="none"
+    <Divider
+        class="sim--editor-script--divider"
+        orientation="vertical"
+        palette="inverse"
+        margin="none"
     />
 </div>
 
