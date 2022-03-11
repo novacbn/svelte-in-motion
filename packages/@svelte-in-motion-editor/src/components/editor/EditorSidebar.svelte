@@ -5,7 +5,7 @@
 
     import {debounce} from "@svelte-in-motion/core";
 
-    import {CONTEXT_EDITOR} from "../../lib/stores/editor";
+    import {CONTEXT_EDITOR} from "../../lib/editor";
     import {STORAGE_FILESYSTEM, STORAGE_USER} from "../../lib/storage";
 
     const {file: file_context, zen_mode} = CONTEXT_EDITOR.get()!;

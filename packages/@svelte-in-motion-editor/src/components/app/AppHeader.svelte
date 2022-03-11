@@ -5,7 +5,7 @@
 <script lang="ts">
     import {Box, Divider, Dropdown, Menu, Stack, Text} from "@kahi-ui/framework";
 
-    import {CONTEXT_EDITOR} from "../../lib/stores/editor";
+    import {CONTEXT_EDITOR} from "../../lib/editor";
 
     const {zen_mode} = CONTEXT_EDITOR.get()!;
 </script>

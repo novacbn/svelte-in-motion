@@ -3,7 +3,7 @@
 
     import {duration, seek, truncate} from "@svelte-in-motion/core";
 
-    import {CONTEXT_EDITOR} from "../../lib/stores/editor";
+    import {CONTEXT_EDITOR} from "../../lib/editor";
 
     const {configuration, frame, framerate, maxframes} = CONTEXT_EDITOR.get()!;
 

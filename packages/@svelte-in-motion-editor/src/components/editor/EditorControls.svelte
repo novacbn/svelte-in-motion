@@ -1,11 +1,21 @@
 <script lang="ts">
-    import {Box, Menu, Spacer} from "@kahi-ui/framework";
+    import type {IKeybindEvent} from "@kahi-ui/framework";
+    import {Box, Menu, Spacer, Text} from "@kahi-ui/framework";
     import {Edit, Grid, Palmtree, Pause, Play, SkipBack, SkipForward} from "lucide-svelte";
 
     import {clamp} from "@svelte-in-motion/core";
 
-    import {CONTEXT_EDITOR} from "../../lib/stores/editor";
-    import {EVENT_END, jobs} from "../../lib/stores/jobs";
+    import {CONTEXT_EDITOR, is_editing} from "../../lib/editor";
+    import {
+        action_next_frame,
+        action_previous_frame,
+        action_toggle_checkerboard,
+        action_toggle_play,
+        action_toggle_script,
+        action_toggle_zen,
+    } from "../../lib/keybinds";
+
+    import {jobs} from "../../lib/stores/jobs";
 
     import Tooltip from "../Tooltip.svelte";
 
@@ -14,7 +24,7 @@
 
     let job_id: string | null = null;
 
-    function on_create_click(event: MouseEvent): void {
+    async function on_create_click(event: MouseEvent): Promise<void> {
         job_id = jobs.queue({
             file,
             encode: {
@@ -32,37 +42,83 @@
                 width: $configuration.width,
             },
         });
+
+        const video = await jobs.yield(job_id);
+
+        const blob = new Blob([video], {type: "video/webm"});
+        const url = URL.createObjectURL(blob);
+
+        window.open(url);
     }
 
-    function on_checkerboard_click(event: MouseEvent): void {
+    function on_checkerboard_toggle(event: IKeybindEvent | MouseEvent): void {
+        if (typeof event.detail === "object") {
+            if (is_editing()) return;
+            event.preventDefault();
+
+            if (!event.detail.active) return;
+        }
+
         $show_checkerboard = !$show_checkerboard;
     }
 
-    function on_frame_click(event: MouseEvent, delta: number): void {
+    function on_frame_increment(event: IKeybindEvent | MouseEvent, delta: number): void {
+        if ($playing) return;
+
+        if (typeof event.detail === "object") {
+            if (is_editing()) return;
+            event.preventDefault();
+
+            if (!event.detail.active) return;
+        }
+
         $frame = clamp($frame + delta, 0, $configuration.maxframes);
     }
 
-    function on_script_click(event: MouseEvent): void {
+    function on_playing_toggle(event: IKeybindEvent | MouseEvent): void {
+        if (typeof event.detail === "object") {
+            if (is_editing()) return;
+            event.preventDefault();
+
+            if (!event.detail.active) return;
+        }
+
+        $playing = !$playing;
+    }
+
+    function on_script_toggle(event: IKeybindEvent | MouseEvent): void {
+        if (typeof event.detail === "object") {
+            if (is_editing()) return;
+            event.preventDefault();
+
+            if (!event.detail.active) return;
+        }
+
         $show_script = !$show_script;
     }
 
-    function on_zen_click(event: MouseEvent): void {
+    function on_zen_mode(event: IKeybindEvent | MouseEvent): void {
+        if (typeof event.detail === "object") {
+            if (is_editing()) return;
+            event.preventDefault();
+
+            if (!event.detail.active) return;
+        }
+
         $zen_mode = !$zen_mode;
     }
 
     $: _job = job_id ? $jobs.find((job) => job.identifier === job_id) : null;
-    $: {
-        if (job_id) {
-            const event = $EVENT_END;
-            if (event && event.job.identifier === job_id) {
-                const blob = new Blob([event.video], {type: "video/webm"});
-                const url = URL.createObjectURL(blob);
-
-                window.open(url);
-            }
-        }
-    }
 </script>
+
+<svelte:window
+    use:action_next_frame={{on_bind: (event) => on_frame_increment(event, 1)}}
+    use:action_previous_frame={{on_bind: (event) => on_frame_increment(event, -1)}}
+    use:action_toggle_checkerboard={{on_bind: on_checkerboard_toggle}}
+    use:action_toggle_play={{on_bind: on_playing_toggle}}
+    use:action_toggle_script={{on_bind: on_script_toggle}}
+    use:action_toggle_zen={{on_bind: on_zen_mode}}
+/>
 
 <Box class="sim--editor-controls" palette="auto">
     <Menu.Container orientation="horizontal" sizing="tiny" margin_x="auto" padding="small">
@@ -71,18 +127,18 @@
                 <Menu.Button
                     disabled={$playing}
                     palette="inverse"
-                    on:click={(event) => on_frame_click(event, -1)}
+                    on:click={(event) => on_frame_increment(event, -1)}
                 >
                     <SkipBack size="1em" />
                 </Menu.Button>
             </svelte:fragment>
 
-            Skip one frame forward
+            Skip one frame forward <Text is="strong">LEFTARROW</Text>
         </Tooltip>
 
         <Tooltip placement="top" alignment_x="right">
             <svelte:fragment slot="activator">
-                <Menu.Button palette="inverse" on:click={() => ($playing = !$playing)}>
+                <Menu.Button palette="inverse" on:click={on_playing_toggle}>
                     {#if $playing}
                         <Pause size="1em" />
                     {:else}
@@ -103,25 +159,25 @@
                 <Menu.Button
                     disabled={$playing}
                     palette="inverse"
-                    on:click={(event) => on_frame_click(event, 1)}
+                    on:click={(event) => on_frame_increment(event, 1)}
                 >
                     <SkipForward size="1em" />
                 </Menu.Button>
             </svelte:fragment>
 
-            Skip one frame forward
+            Skip one frame forward <Text is="strong">RIGHTARROW</Text>
         </Tooltip>
 
         <Spacer spacing="medium" />
 
         <Tooltip placement="top" alignment_x="right">
             <svelte:fragment slot="activator">
-                <Menu.Button active={$show_script} palette="inverse" on:click={on_script_click}>
+                <Menu.Button active={$show_script} palette="inverse" on:click={on_script_toggle}>
                     <Edit size="1em" />
                 </Menu.Button>
             </svelte:fragment>
 
-            Toggle script editor
+            Toggle script editor <Text is="strong">S</Text>
         </Tooltip>
 
         <Tooltip placement="top" alignment_x="right">
@@ -129,23 +185,23 @@
                 <Menu.Button
                     active={$show_checkerboard}
                     palette="inverse"
-                    on:click={on_checkerboard_click}
+                    on:click={on_checkerboard_toggle}
                 >
                     <Grid size="1em" />
                 </Menu.Button>
             </svelte:fragment>
 
-            Toggle transparency checkerboard pattern
+            Toggle transparency checkerboard pattern <Text is="strong">C</Text>
         </Tooltip>
 
         <Tooltip placement="top" alignment_x="right">
             <svelte:fragment slot="activator">
-                <Menu.Button active={$zen_mode} palette="inverse" on:click={on_zen_click}>
+                <Menu.Button active={$zen_mode} palette="inverse" on:click={on_zen_mode}>
                     <Palmtree size="1em" />
                 </Menu.Button>
             </svelte:fragment>
 
-            Toggle zen mode
+            Toggle zen mode <Text is="strong">Z</Text>
         </Tooltip>
 
         <Menu.Button disabled={!!job_id} palette="inverse" on:click={on_create_click}>

@@ -9,7 +9,7 @@
 <script lang="ts">
     import {CodeJar} from "@novacbn/svelte-codejar";
 
-    import {CONTEXT_EDITOR} from "../../lib/stores/editor";
+    import {CONTEXT_EDITOR} from "../../lib/editor";
 
     const {content, show_script} = CONTEXT_EDITOR.get()!;
 </script>

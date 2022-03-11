@@ -15,8 +15,8 @@ import {
 import type {IConfiguration} from "@svelte-in-motion/metadata";
 import {parse_configuration} from "@svelte-in-motion/metadata";
 
-import {IFileStore, preload_file} from "./file";
-import {file as file_store} from "./file";
+import {IFileStore, preload_file} from "./stores/file";
+import {file as file_store} from "./stores/file";
 
 export const CONTEXT_EDITOR = make_scoped_context<IEditorContext>("editor");
 
@@ -68,6 +68,10 @@ export function editor(path: string, content: IFileStore = file_store(path)): IE
         show_script,
         zen_mode,
     };
+}
+
+export function is_editing(): boolean {
+    return document.activeElement?.hasAttribute("contenteditable") ?? false;
 }
 
 export async function preload_editor(path: string): Promise<IEditorContext> {

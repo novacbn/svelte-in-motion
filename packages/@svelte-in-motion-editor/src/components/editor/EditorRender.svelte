@@ -5,7 +5,8 @@
     import {advance, debounce} from "@svelte-in-motion/core";
 
     import {dispatch, subscribe} from "../../lib/messages";
-    import {CONTEXT_EDITOR} from "../../lib/stores/editor";
+    import {CONTEXT_EDITOR} from "../../lib/editor";
+
     import type {
         IPreviewFrameMessage,
         IPreviewPlayingMessage,

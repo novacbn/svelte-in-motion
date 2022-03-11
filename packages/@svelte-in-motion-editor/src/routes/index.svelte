@@ -2,7 +2,7 @@
     import type {ILoadCallback} from "../lib/router";
     import {GUARD_STORAGE} from "../lib/router";
     import {STORAGE_USER} from "../lib/storage";
-    import {preload_editor} from "../lib/stores/editor";
+    import {preload_editor} from "../lib/editor";
 
     export const pattern: string = "/:file";
 
@@ -26,8 +26,8 @@
 <script lang="ts">
     import "../lib/stores/jobs";
 
-    import type {IEditorContext} from "../lib/stores/editor";
-    import {CONTEXT_EDITOR} from "../lib/stores/editor";
+    import type {IEditorContext} from "../lib/editor";
+    import {CONTEXT_EDITOR} from "../lib/editor";
 
     import AppHeader from "../components/app/AppHeader.svelte";
 
