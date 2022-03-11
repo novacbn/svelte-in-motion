@@ -56,7 +56,7 @@
 
     <AppNotifications />
 
-    <AppPrompts />
-
     <AppHeader />
+
+    <AppPrompts />
 </EditorLayout>

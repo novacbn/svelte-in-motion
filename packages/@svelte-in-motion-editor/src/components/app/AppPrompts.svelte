@@ -18,6 +18,10 @@
         logic_state = false;
     }
 
+    function on_transition_end(event: TransitionEvent): void {
+        if (!logic_state) prompts.clear();
+    }
+
     // HACK: Svelte's first subscription listen of the `event` will always be undefined
     $: if ($EVENT_PROMPT) logic_state = true;
 </script>
@@ -25,7 +29,7 @@
 <Overlay.Container class="app-prompts" logic_id="app-prompts" bind:logic_state>
     <Overlay.Backdrop />
 
-    <Overlay.Section>
+    <Overlay.Section on:transitionend={on_transition_end}>
         {#if $prompts}
             <Card.Container sizing="nano" max_size="75">
                 <svelte:component

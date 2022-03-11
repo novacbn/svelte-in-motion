@@ -5,7 +5,7 @@
 
     import {clamp} from "@svelte-in-motion/core";
 
-    import {CONTEXT_EDITOR, is_editing} from "../../lib/editor";
+    import {CONTEXT_EDITOR, has_focus} from "../../lib/editor";
     import {
         action_next_frame,
         action_previous_frame,
@@ -52,8 +52,9 @@
     }
 
     function on_checkerboard_toggle(event: IKeybindEvent | MouseEvent): void {
+        if (!has_focus()) return;
+
         if (typeof event.detail === "object") {
-            if (is_editing()) return;
             event.preventDefault();
 
             if (!event.detail.active) return;
@@ -63,10 +64,9 @@
     }
 
     function on_frame_increment(event: IKeybindEvent | MouseEvent, delta: number): void {
-        if ($playing) return;
+        if ($playing || !has_focus()) return;
 
         if (typeof event.detail === "object") {
-            if (is_editing()) return;
             event.preventDefault();
 
             if (!event.detail.active) return;
@@ -76,8 +76,9 @@
     }
 
     function on_playing_toggle(event: IKeybindEvent | MouseEvent): void {
+        if (!has_focus()) return;
+
         if (typeof event.detail === "object") {
-            if (is_editing()) return;
             event.preventDefault();
 
             if (!event.detail.active) return;
@@ -87,8 +88,9 @@
     }
 
     function on_script_toggle(event: IKeybindEvent | MouseEvent): void {
+        if (!has_focus()) return;
+
         if (typeof event.detail === "object") {
-            if (is_editing()) return;
             event.preventDefault();
 
             if (!event.detail.active) return;
@@ -98,8 +100,9 @@
     }
 
     function on_zen_mode(event: IKeybindEvent | MouseEvent): void {
+        if (!has_focus()) return;
+
         if (typeof event.detail === "object") {
-            if (is_editing()) return;
             event.preventDefault();
 
             if (!event.detail.active) return;

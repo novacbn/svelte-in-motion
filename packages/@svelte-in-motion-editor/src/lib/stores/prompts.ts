@@ -38,6 +38,8 @@ export interface IPromptStore extends Readable<IPrompt<any> | null> {
 
     EVENT_RESOLVE: IEvent<IPromptResolveEvent<any>>;
 
+    clear(): void;
+
     prompt_about(): Promise<void>;
 }
 
@@ -74,13 +76,17 @@ function _prompts(): IPromptStore {
         EVENT_REJECT,
         EVENT_RESOLVE,
 
-        subscribe,
+        clear() {
+            set(null);
+        },
 
         prompt_about() {
             return prompt<void>({
                 Component: AboutPrompt,
             });
         },
+
+        subscribe,
     };
 }
 

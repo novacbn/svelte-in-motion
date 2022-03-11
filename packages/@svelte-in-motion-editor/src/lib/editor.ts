@@ -1,5 +1,5 @@
 import type {Readable, Writable} from "svelte/store";
-import {derived, writable} from "svelte/store";
+import {derived, get, writable} from "svelte/store";
 
 import type {
     IFrameRateStore,
@@ -15,8 +15,9 @@ import {
 import type {IConfiguration} from "@svelte-in-motion/metadata";
 import {parse_configuration} from "@svelte-in-motion/metadata";
 
-import {IFileStore, preload_file} from "./stores/file";
-import {file as file_store} from "./stores/file";
+import type {IFileStore} from "./stores/file";
+import {file as file_store, preload_file} from "./stores/file";
+import {prompts} from "./stores/prompts";
 
 export const CONTEXT_EDITOR = make_scoped_context<IEditorContext>("editor");
 
@@ -70,8 +71,8 @@ export function editor(path: string, content: IFileStore = file_store(path)): IE
     };
 }
 
-export function is_editing(): boolean {
-    return document.activeElement?.hasAttribute("contenteditable") ?? false;
+export function has_focus(): boolean {
+    return !document.activeElement?.hasAttribute("contenteditable") && !get(prompts);
 }
 
 export async function preload_editor(path: string): Promise<IEditorContext> {
