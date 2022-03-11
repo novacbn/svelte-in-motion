@@ -31,6 +31,7 @@
 
     import AppHeader from "../components/app/AppHeader.svelte";
     import AppNotifications from "../components/app/AppNotifications.svelte";
+    import AppPrompts from "../components/app/AppPrompts.svelte";
 
     import EditorLayout from "../components/editor/EditorLayout.svelte";
     import EditorScript from "../components/editor/EditorScript.svelte";
@@ -54,5 +55,8 @@
     <EditorSidebar />
 
     <AppNotifications />
+
+    <AppPrompts />
+
     <AppHeader />
 </EditorLayout>

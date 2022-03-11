@@ -7,7 +7,17 @@
 
     import {CONTEXT_EDITOR} from "../../lib/editor";
 
+    import {prompts} from "../../lib/stores/prompts";
+
     const {zen_mode} = CONTEXT_EDITOR.get()!;
+
+    async function on_about_click(event: MouseEvent): Promise<void> {
+        (document.activeElement as HTMLElement).blur();
+
+        try {
+            await prompts.prompt_about();
+        } catch (err) {}
+    }
 </script>
 
 <Box class="sim--app-header" palette="auto" style="display:{$zen_mode ? 'none' : 'block'}">
@@ -55,7 +65,7 @@
                     </Menu.Anchor>
 
                     <Menu.Heading />
-                    <Menu.Button disabled>About</Menu.Button>
+                    <Menu.Button on:click={on_about_click}>About</Menu.Button>
                 </Menu.Container>
             </Dropdown>
         </Menu.Container>
