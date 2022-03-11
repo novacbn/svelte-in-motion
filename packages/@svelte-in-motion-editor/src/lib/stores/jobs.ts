@@ -1,13 +1,17 @@
+import {Check, Clock, Film, Video} from "lucide-svelte";
+import type {Readable} from "svelte/store";
+
+import type {IEvent} from "@svelte-in-motion/core";
+import {event} from "@svelte-in-motion/core";
+
 import type {IEncodeQueueOptions} from "./encodes";
 import {encodes} from "./encodes";
 import type {IRenderQueueOptions} from "./renders";
 import {renders} from "./renders";
 
-import type {Readable} from "svelte/store";
-import {get, writable} from "svelte/store";
-
-import type {IEvent} from "@svelte-in-motion/core";
-import {event, generate_id} from "@svelte-in-motion/core";
+import type {ICollectionItem} from "./collection";
+import {collection} from "./collection";
+import {notifications} from "./notifications";
 
 export enum JOB_STATES {
     ended = "ended",
@@ -41,9 +45,7 @@ export interface IJobRenderingEvent extends IJobEvent {
     render: string;
 }
 
-export interface IJobBase {
-    identifier: string;
-
+export interface IJobBase extends ICollectionItem {
     state: `${JOB_STATES}`;
 
     encode?: string;
@@ -88,7 +90,7 @@ export interface IJobQueueStore extends Readable<IJob[]> {
 }
 
 export function jobqueue(): IJobQueueStore {
-    const store = writable<IJob[]>([]);
+    const {get, push, subscribe, remove, update} = collection<IJob>();
 
     const EVENT_END = event<IJobEndEvent>();
     const EVENT_START = event<IJobEvent>();
@@ -96,35 +98,21 @@ export function jobqueue(): IJobQueueStore {
     const EVENT_ENCODING = event<IJobEncodingEvent>();
     const EVENT_RENDERING = event<IJobRenderingEvent>();
 
-    function add_job(encode: IJob): IJob {
-        const renders = get(store);
-
-        store.set([...renders, encode]);
-        return encode;
-    }
-
-    function get_job(identifier: string): IJob {
-        const jobs = get(store);
-        const index = jobs.findIndex((job) => job.identifier === identifier);
-
-        if (index < 0) {
-            throw new ReferenceError(
-                `bad argument #0 to 'get_job' (invalid identifer '${identifier}')`
-            );
-        }
-
-        return jobs[index];
-    }
-
     async function start_job(identifier: string, options: IJobQueueOptions): Promise<void> {
         const {file, encode, render} = options;
+
+        const notification_identifier = notifications.push({
+            icon: Clock,
+            header: "Starting Job",
+            text: file,
+        });
 
         const render_job = renders.queue({
             ...render,
             file,
         });
 
-        let job = update_job(identifier, {
+        let job = update(identifier, {
             state: JOB_STATES.rendering,
             render: render_job,
         });
@@ -134,11 +122,17 @@ export function jobqueue(): IJobQueueStore {
             render: render_job,
         });
 
+        notifications.update(notification_identifier, {
+            icon: Video,
+            header: "Rendering",
+        });
+
         const frames = await renders.yield(render_job);
+        renders.remove(render_job);
 
         const encode_job = encodes.queue({...encode, frames});
 
-        job = update_job(identifier, {
+        job = update(identifier, {
             state: JOB_STATES.encoding,
             encode: encode_job,
             render: undefined,
@@ -149,9 +143,15 @@ export function jobqueue(): IJobQueueStore {
             encode: encode_job,
         });
 
-        const video = await encodes.yield(encode_job);
+        notifications.update(notification_identifier, {
+            icon: Film,
+            header: "Encoding",
+        });
 
-        job = update_job(identifier, {
+        const video = await encodes.yield(encode_job);
+        encodes.remove(encode_job);
+
+        job = update(identifier, {
             state: JOB_STATES.ended,
             encode: undefined,
         });
@@ -160,22 +160,14 @@ export function jobqueue(): IJobQueueStore {
             job,
             video,
         });
-    }
 
-    function update_job(identifier: string, partial: Partial<IJob>): IJob {
-        const jobs = get(store);
-        const index = jobs.findIndex((job) => job.identifier === identifier);
+        notifications.update(notification_identifier, {
+            icon: Check,
+            dismissible: true,
+            header: "Job Finished",
 
-        if (index < 0) {
-            throw new ReferenceError(
-                `bad argument #0 to 'update_job' (invalid identifer '${identifier}')`
-            );
-        }
-
-        const job = (jobs[index] = {...jobs[index], ...partial});
-
-        store.set(jobs);
-        return job;
+            on_remove: () => remove(identifier),
+        });
     }
 
     return {
@@ -185,23 +177,19 @@ export function jobqueue(): IJobQueueStore {
         EVENT_ENCODING,
         EVENT_RENDERING,
 
-        subscribe: store.subscribe,
+        subscribe,
 
         queue(options) {
-            const identifier = generate_id();
-
-            add_job({
-                identifier,
+            const identifier = push({
                 state: JOB_STATES.uninitialized,
             });
 
             start_job(identifier, options);
-
             return identifier;
         },
 
         yield(identifier) {
-            const job = get_job(identifier);
+            const job = get(identifier);
 
             if (job.state === JOB_STATES.ended) {
                 throw new ReferenceError(

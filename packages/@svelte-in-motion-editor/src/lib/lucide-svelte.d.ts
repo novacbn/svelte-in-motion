@@ -22,12 +22,17 @@ declare module "lucide-svelte" {
 
     // NOTE: Only put icons here being used by the Application
 
+    export declare class Check extends SvelteComponentTyped<IconProps, IconEvents, {}> {}
+    export declare class Clock extends SvelteComponentTyped<IconProps, IconEvents, {}> {}
     export declare class FileCode extends SvelteComponentTyped<IconProps, IconEvents, {}> {}
     export declare class Edit extends SvelteComponentTyped<IconProps, IconEvents, {}> {}
+    export declare class Film extends SvelteComponentTyped<IconProps, IconEvents, {}> {}
     export declare class Grid extends SvelteComponentTyped<IconProps, IconEvents, {}> {}
     export declare class Palmtree extends SvelteComponentTyped<IconProps, IconEvents, {}> {}
     export declare class Pause extends SvelteComponentTyped<IconProps, IconEvents, {}> {}
     export declare class Play extends SvelteComponentTyped<IconProps, IconEvents, {}> {}
     export declare class SkipBack extends SvelteComponentTyped<IconProps, IconEvents, {}> {}
     export declare class SkipForward extends SvelteComponentTyped<IconProps, IconEvents, {}> {}
+    export declare class Video extends SvelteComponentTyped<IconProps, IconEvents, {}> {}
+    export declare class X extends SvelteComponentTyped<IconProps, IconEvents, {}> {}
 }

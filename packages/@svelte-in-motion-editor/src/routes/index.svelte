@@ -30,6 +30,7 @@
     import {CONTEXT_EDITOR} from "../lib/editor";
 
     import AppHeader from "../components/app/AppHeader.svelte";
+    import AppNotifications from "../components/app/AppNotifications.svelte";
 
     import EditorLayout from "../components/editor/EditorLayout.svelte";
     import EditorScript from "../components/editor/EditorScript.svelte";
@@ -51,5 +52,7 @@
     <EditorTimeline />
 
     <EditorSidebar />
+
+    <AppNotifications />
     <AppHeader />
 </EditorLayout>

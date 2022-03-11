@@ -1,9 +1,10 @@
 import type {Readable} from "svelte/store";
-import {get, writable} from "svelte/store";
 
 import type {IEvent} from "@svelte-in-motion/core";
-import {event, generate_id} from "@svelte-in-motion/core";
+import {event} from "@svelte-in-motion/core";
 
+import type {ICollectionItem} from "./collection";
+import {collection} from "./collection";
 import {subscribe} from "../messages";
 import type {IRenderEndMessage, IRenderProgressMessage, IRenderStartMessage} from "../types/render";
 
@@ -35,9 +36,7 @@ export interface IRenderRange {
     start: number;
 }
 
-export interface IRender {
-    identifier: string;
-
+export interface IRender extends ICollectionItem {
     state: `${RENDER_STATES}`;
 
     completion: number;
@@ -55,60 +54,30 @@ export interface IRenderQueueStore extends Readable<IRender[]> {
 
     queue(options: IRenderQueueOptions): string;
 
+    remove(identifier: string): IRender;
+
     yield(identifier: string): Promise<Uint8Array[]>;
 }
 
 function renderqueue(): IRenderQueueStore {
-    const store = writable<IRender[]>([]);
+    const {get, push, subscribe: subscribe_store, remove, update} = collection<IRender>();
 
     const EVENT_END = event<IRenderEndEvent>();
     const EVENT_START = event<IRenderEvent>();
-
-    function add_render(render: IRender): IRender {
-        const renders = get(store);
-
-        store.set([...renders, render]);
-        return render;
-    }
-
-    function get_render(identifier: string): IRender {
-        const renders = get(store);
-        const index = renders.findIndex((render) => render.identifier === identifier);
-
-        if (index < 0) {
-            throw new ReferenceError(
-                `bad argument #0 to 'get_render' (invalid identifer '${identifier}')`
-            );
-        }
-
-        return renders[index];
-    }
-
-    function update_render(identifier: string, partial: Partial<IRender>): IRender {
-        const renders = get(store);
-        const index = renders.findIndex((render) => render.identifier === identifier);
-
-        if (index < 0) {
-            throw new ReferenceError(
-                `bad argument #0 to 'update_render' (invalid identifer '${identifier}')`
-            );
-        }
-
-        const render = (renders[index] = {...renders[index], ...partial});
-
-        store.set(renders);
-        return render;
-    }
 
     return {
         EVENT_END,
         EVENT_START,
 
-        subscribe: store.subscribe,
+        subscribe: subscribe_store,
 
         queue(options) {
             const {file, end, height, start, width} = options;
-            const identifier = generate_id();
+
+            const identifier = push({
+                state: RENDER_STATES.uninitialized,
+                completion: 0,
+            });
 
             const iframe_element = document.createElement("IFRAME") as HTMLIFrameElement;
 
@@ -122,23 +91,17 @@ function renderqueue(): IRenderQueueStore {
 
             iframe_element.src = `/render.html?identifier=${identifier}&file=${file}&start=${start}&end=${end}`;
 
-            add_render({
-                identifier,
-                state: RENDER_STATES.uninitialized,
-                completion: 0,
-            });
-
             iframe_element.addEventListener("load", () => {
                 const destroy_frame = subscribe<IRenderProgressMessage>(
                     "RENDER_PROGRESS",
-                    (detail) => update_render(identifier, {completion: detail.progress}),
+                    (detail) => update(identifier, {completion: detail.progress}),
                     iframe_element
                 );
 
                 const destroy_start = subscribe<IRenderStartMessage>(
                     "RENDER_START",
                     () => {
-                        const render = update_render(identifier, {state: RENDER_STATES.started});
+                        const render = update(identifier, {state: RENDER_STATES.started});
                         EVENT_START.dispatch({render});
                     },
 
@@ -163,7 +126,7 @@ function renderqueue(): IRenderQueueStore {
 
                         iframe_element.remove();
 
-                        const render = update_render(identifier, {state: RENDER_STATES.ended});
+                        const render = update(identifier, {state: RENDER_STATES.ended});
                         EVENT_END.dispatch({render, frames});
                     },
                     iframe_element
@@ -174,8 +137,21 @@ function renderqueue(): IRenderQueueStore {
             return identifier;
         },
 
+        remove(identifier) {
+            const encode = get(identifier);
+
+            if (encode.state !== RENDER_STATES.ended) {
+                throw new ReferenceError(
+                    `bad argument #0 'renderqueue.remove' (encode '${identifier}' has not ended)`
+                );
+            }
+
+            remove(identifier);
+            return encode;
+        },
+
         yield(identifier) {
-            const render = get_render(identifier);
+            const render = get(identifier);
 
             if (render.state === RENDER_STATES.ended) {
                 throw new ReferenceError(
