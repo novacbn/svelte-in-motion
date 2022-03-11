@@ -152,6 +152,8 @@
             {:else}
                 Play the preview
             {/if}
+
+            <Text is="strong">SPACEBAR</Text>
         </Tooltip>
 
         <Tooltip placement="top" alignment_x="right">
