@@ -11,7 +11,7 @@
         "check": "svelte-check --tsconfig ./tsconfig.json"
     },
     "dependencies": {
-        "@kahi-ui/framework": "^0.6.2",
+        "@kahi-ui/framework": "0.6.3",
         "@novacbn/svelte-codejar": "^0.1.2",
         "@novacbn/svelte-pipeline": "0.3.1",
         "@svelte-in-motion/animations": "workspace:^",
