@@ -15,6 +15,7 @@
         "@novacbn/svelte-codejar": "^0.1.2",
         "@novacbn/svelte-pipeline": "0.3.1",
         "@svelte-in-motion/animations": "workspace:^",
+        "@svelte-in-motion/bundling": "workspace:^",
         "@svelte-in-motion/core": "workspace:^",
         "@svelte-in-motion/encoding": "workspace:^",
         "@svelte-in-motion/metadata": "workspace:^",

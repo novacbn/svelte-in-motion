@@ -27,6 +27,23 @@ importers:
       svelte-check: 2.4.5_svelte@3.46.4
       typescript: 4.6.2
 
+  packages/@svelte-in-motion-bundling:
+    specifiers:
+      '@svelte-in-motion/core': workspace:^
+      '@svelte-in-motion/storage': workspace:^
+      esbuild-wasm: ^0.14.25
+      prettier: ^2.3.1
+      svelte: ^3.46.4
+      typescript: ^4.3.5
+    dependencies:
+      '@svelte-in-motion/core': link:../@svelte-in-motion-core
+      '@svelte-in-motion/storage': link:../@svelte-in-motion-storage
+      esbuild-wasm: 0.14.25
+      svelte: 3.46.4
+    devDependencies:
+      prettier: 2.5.1
+      typescript: 4.6.2
+
   packages/@svelte-in-motion-core:
     specifiers:
       '@types/mersenne-twister': ^1.1.2
@@ -52,6 +69,7 @@ importers:
       '@novacbn/svelte-codejar': ^0.1.2
       '@novacbn/svelte-pipeline': 0.3.1
       '@svelte-in-motion/animations': workspace:^
+      '@svelte-in-motion/bundling': workspace:^
       '@svelte-in-motion/core': workspace:^
       '@svelte-in-motion/encoding': workspace:^
       '@svelte-in-motion/metadata': workspace:^
@@ -74,6 +92,7 @@ importers:
       '@novacbn/svelte-codejar': 0.1.2
       '@novacbn/svelte-pipeline': 0.3.1
       '@svelte-in-motion/animations': link:../@svelte-in-motion-animations
+      '@svelte-in-motion/bundling': link:../@svelte-in-motion-bundling
       '@svelte-in-motion/core': link:../@svelte-in-motion-core
       '@svelte-in-motion/encoding': link:../@svelte-in-motion-encoding
       '@svelte-in-motion/metadata': link:../@svelte-in-motion-metadata
@@ -535,6 +554,12 @@ packages:
     requiresBuild: true
     dev: true
     optional: true
+
+  /esbuild-wasm/0.14.25:
+    resolution: {integrity: sha512-QZ8wt4jBN1IGVCp/A+u87BzNYOZeIp87d8TMQznU8w7NvZEvdwEWHVfjrOBZ6qqlOJj2/Y/kOUZLy0nk2n9anw==}
+    engines: {node: '>=12'}
+    hasBin: true
+    dev: false
 
   /esbuild-windows-32/0.14.25:
     resolution: {integrity: sha512-HGAxVUofl3iUIz9W10Y9XKtD0bNsK9fBXv1D55N/ljNvkrAYcGB8YCm0v7DjlwtyS6ws3dkdQyXadbxkbzaKOA==}

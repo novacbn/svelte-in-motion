@@ -1,3 +1,3 @@
-# @svelte-in-motion/core
+# @svelte-in-motion/storage
 
 > ...

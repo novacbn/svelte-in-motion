@@ -2,6 +2,7 @@ import {pipeline_svelte} from "@novacbn/svelte-pipeline";
 import {PipelineRenderComponent} from "@novacbn/svelte-pipeline/components";
 import {get} from "svelte/store";
 
+import {bundle} from "@svelte-in-motion/bundling";
 import {
     CONTEXT_FRAME,
     CONTEXT_FRAMERATE,
@@ -43,6 +44,13 @@ import type {
     }
 
     const _file = await preload_file(file);
+
+    const testscript = await bundle({
+        file,
+        storage: STORAGE_USER,
+    });
+
+    console.log(testscript);
 
     const pipeline_store = pipeline_svelte({
         context: REPL_CONTEXT,
