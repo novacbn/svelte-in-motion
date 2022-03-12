@@ -297,7 +297,7 @@ export function indexeddb(
             const is_directory = directory_value !== undefined;
             const is_file = file_value !== undefined;
 
-            if (directory_value !== undefined || file_value !== undefined) return null;
+            if (directory_value !== undefined && file_value !== undefined) return null;
             return {
                 is_directory,
                 is_file,
