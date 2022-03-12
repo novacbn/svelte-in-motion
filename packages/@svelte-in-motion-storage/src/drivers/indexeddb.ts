@@ -165,8 +165,8 @@ export function indexeddb(
             }
 
             let node_keys: Awaited<ReturnType<typeof keys>>;
-            if (exclude_directories) node_keys = await keys(directory_store);
-            else if (exclude_files) node_keys = await keys(file_store);
+            if (exclude_directories) node_keys = await keys(file_store);
+            else if (exclude_files) node_keys = await keys(directory_store);
             else {
                 const [directory_keys, file_keys] = await Promise.all([
                     keys(directory_store),
