@@ -72,6 +72,10 @@ function EncodingOptions(options: IEncodingOptions): Required<IEncodingOptions> 
 }
 
 export function encode(options: IEncodingOptions): IEncodingHandle {
+    if (!IS_BROWSER) {
+        throw new Error("bad dispatch to 'encode' (platforms besides Browsers are not supported");
+    }
+
     const {codec, crf, frames, framerate, height, pixel_format, width} = EncodingOptions(options);
 
     const [crf_minimum, crf_maximum] = get_supported_crf_range(codec);

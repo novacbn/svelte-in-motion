@@ -12,15 +12,17 @@ export interface IBundleOptions {
     file: string;
 
     storage: IDriver;
+
+    worker?: boolean;
 }
 
 export async function bundle(options: IBundleOptions): Promise<string> {
-    const {file, storage} = options;
+    const {file, storage, worker = false} = options;
 
     if (!has_initialized) {
         await initialize({
             wasmURL: "/extern/wasm/esbuild.wasm",
-            worker: false,
+            worker,
         });
 
         has_initialized = true;
