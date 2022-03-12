@@ -12,6 +12,7 @@ export function append_pathname(uri: string, path: string): string {
 
     pathname = pathname.endsWith("/") ? pathname.slice(0, -1) + path : pathname + path;
     if (pathname === "") pathname = "/";
+    else if (pathname !== "/" && pathname.endsWith("/")) pathname = pathname.slice(0, -1);
 
     origin = origin === DEFAULT_ORIGIN ? "" : origin;
     return origin + pathname + search + hash;
