@@ -1,10 +1,7 @@
-import {createStorage, prefixStorage} from "unstorage";
-import localStorageDriver from "unstorage/drivers/localstorage";
+import {indexeddb} from "@svelte-in-motion/storage";
 
-export const STORAGE_FILESYSTEM = createStorage({
-    driver: localStorageDriver({base: "filesystem"}),
-});
+export const STORAGE_FILESYSTEM = indexeddb("svelte-in-motion");
 
-export const STORAGE_CONFIG = prefixStorage(STORAGE_FILESYSTEM, "config");
+export const STORAGE_CONFIG = STORAGE_FILESYSTEM.create_view("/.svelte-in-motion");
 
-export const STORAGE_USER = prefixStorage(STORAGE_FILESYSTEM, "user");
+export const STORAGE_USER = STORAGE_FILESYSTEM;

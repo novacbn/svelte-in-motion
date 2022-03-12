@@ -19,12 +19,13 @@ import {parse_configuration} from "@svelte-in-motion/metadata";
 
 import {dispatch} from "./lib/messages";
 import {REPL_CONTEXT, REPL_IMPORTS} from "./lib/repl";
+import {STORAGE_USER} from "./lib/storage";
+
 import type {
     IRenderEndMessage,
     IRenderProgressMessage,
     IRenderStartMessage,
 } from "./lib/types/render";
-import {STORAGE_USER} from "./lib/storage";
 
 (async () => {
     const url = new URL(location.href);
@@ -43,11 +44,11 @@ import {STORAGE_USER} from "./lib/storage";
         throw new ReferenceError("bad navigation to '/render.html' (no file specified)");
     }
 
-    if (!(await STORAGE_USER.hasItem(file))) {
+    if (!(await STORAGE_USER.exists(file))) {
         throw new ReferenceError(`bad navigation to '/render.html' (file '${file}' is invalid)`);
     }
 
-    const SCRIPT = (await STORAGE_USER.getItem(file)) as string;
+    const SCRIPT = (await STORAGE_USER.read_file_text(file)) as string;
     const CONFIGURATION = parse_configuration(SCRIPT);
 
     const parsed_end = clamp(parseInt(end) || 0, 0, CONFIGURATION.maxframes);

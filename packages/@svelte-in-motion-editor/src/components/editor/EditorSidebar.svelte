@@ -6,24 +6,26 @@
     import {debounce} from "@svelte-in-motion/core";
 
     import {CONTEXT_EDITOR} from "../../lib/editor";
-    import {STORAGE_FILESYSTEM, STORAGE_USER} from "../../lib/storage";
+    import {STORAGE_USER} from "../../lib/storage";
 
     const {file: file_context, zen_mode} = CONTEXT_EDITOR.get()!;
 
     let files: string[] = [];
 
     const update = debounce(async () => {
-        files = await STORAGE_FILESYSTEM.getKeys("filesystem:user:");
-
-        files = files
-            .filter((file, index) => file.toLowerCase().endsWith(".svelte"))
-            .map((file, index) => file.replaceAll("filesystem:user:", ""));
+        files = await STORAGE_USER.read_directory("/", {exclude_directories: true});
     }, 100);
 
-    onMount(() => {
+    onMount(async () => {
         update();
 
-        STORAGE_USER.watch((event, key) => update());
+        const destroy = await STORAGE_USER.watch_directory("/", {
+            on_watch() {
+                update();
+            },
+        });
+
+        return () => destroy();
     });
 </script>
 
@@ -38,7 +40,7 @@
             <Menu.Anchor href="#/{file}" active={file === file_context}>
                 <FileCode size="1em" />
 
-                Sample.svelte
+                {file}
             </Menu.Anchor>
         {/each}
     </Menu.Container>

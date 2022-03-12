@@ -5,7 +5,7 @@ import "@kahi-ui/framework/dist/kahi-ui.theme.default.min.css";
 
 import App from "./App.svelte";
 
-location.hash = "/Sample.svelte";
+location.hash = "/Sample.sim.svelte";
 
 const app = new App({
     target: document.body,

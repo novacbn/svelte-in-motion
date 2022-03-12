@@ -9,7 +9,7 @@
     export const load: ILoadCallback = GUARD_STORAGE(async ({results}) => {
         const {file} = results.pathname.groups;
 
-        if (!(await STORAGE_USER.hasItem(file))) {
+        if (!(await STORAGE_USER.exists(file))) {
             throw new ReferenceError(`bad navigation to '/:file' (file '${file}' not found)`);
         }
 

@@ -1,0 +1,34 @@
+{
+    "name": "@svelte-in-motion/storage",
+    "author": "novacbn",
+    "version": "0.0.1",
+    "type": "module",
+    "main": "./src/index.ts",
+    "exports": {
+        ".": "./src/index.ts",
+        "./package.json": "./package.json"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/novacbn/svelte-in-motion/tree/main/packages/%40svelte-in-motion-storage"
+    },
+    "scripts": {
+        "format": "npm run format:package",
+        "format:package": "prettier --config ../../.prettierrc --write ./src",
+        "lint": "npm run lint:format",
+        "lint:format": "prettier --config ../../.prettierrc --check ./src",
+        "test": "npm run test:types",
+        "test:types": "tsc --noEmit"
+    },
+    "devDependencies": {
+        "prettier": "^2.3.1",
+        "typescript": "^4.3.5"
+    },
+    "dependencies": {
+        "@svelte-in-motion/core": "workspace:^",
+        "base85": "^3.1.0",
+        "idb-keyval": "^6.1.0",
+        "lzutf8": "^0.6.1",
+        "urlpattern-polyfill": "^1.0.0-rc5"
+    }
+}

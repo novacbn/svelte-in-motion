@@ -50,12 +50,12 @@ export function event<T>(start?: IEventNotifier<T>): IEvent<T> {
 
     let stop: IEventUnsubscriber | null;
 
-    const dispatch = (details: T) => {
+    const dispatch = (detail: T) => {
         if (subscribers.length > 0) {
             for (let index = 0; index < subscribers.length; index++) {
                 const [run] = subscribers[index];
 
-                run(details);
+                run(detail);
             }
         }
     };

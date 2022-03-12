@@ -17,6 +17,10 @@ import {parse_configuration} from "@svelte-in-motion/metadata";
 
 import {dispatch, subscribe} from "./lib/messages";
 import {REPL_CONTEXT, REPL_IMPORTS} from "./lib/repl";
+import {STORAGE_USER} from "./lib/storage";
+
+import {preload_file} from "./lib/stores/file";
+
 import type {
     IPreviewDestroyMessage,
     IPreviewErrorMessage,
@@ -25,8 +29,6 @@ import type {
     IPreviewMountMessage,
     IPreviewReadyMessage,
 } from "./lib/types/preview";
-import {STORAGE_USER} from "./lib/storage";
-import {preload_file} from "./lib/stores/file";
 
 (async () => {
     const url = new URL(location.href);
@@ -36,7 +38,7 @@ import {preload_file} from "./lib/stores/file";
         throw new ReferenceError("bad navigation to '/preview.html' (no file specified)");
     }
 
-    if (!(await STORAGE_USER.hasItem(file))) {
+    if (!(await STORAGE_USER.exists(file))) {
         throw new ReferenceError(`bad navigation to '/preview.html' (file '${file}' is invalid)`);
     }
 
