@@ -6,6 +6,8 @@ import {javascript_plugin} from "./plugins/javascript";
 import {storage_plugin} from "./plugins/storage";
 import {svelte_plugin} from "./plugins/svelte";
 
+let has_initialized: boolean = false;
+
 export interface IBundleOptions {
     file: string;
 
@@ -15,10 +17,14 @@ export interface IBundleOptions {
 export async function bundle(options: IBundleOptions): Promise<string> {
     const {file, storage} = options;
 
-    await initialize({
-        wasmURL: "/extern/wasm/esbuild.wasm",
-        worker: false,
-    });
+    if (!has_initialized) {
+        await initialize({
+            wasmURL: "/extern/wasm/esbuild.wasm",
+            worker: false,
+        });
+
+        has_initialized = true;
+    }
 
     const result = await build({
         entryPoints: [file],

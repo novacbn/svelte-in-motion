@@ -18,7 +18,6 @@ export function storage_plugin(options: IStorageOptions): Plugin {
                 const path = append_pathname(args.resolveDir, args.path);
                 const stats = await storage.stats(path);
 
-                console.log("sim-storage", {args, stats});
                 return stats && stats.is_file ? {path} : null;
             });
         },

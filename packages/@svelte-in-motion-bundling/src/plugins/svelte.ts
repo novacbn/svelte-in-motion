@@ -16,8 +16,6 @@ export function svelte_plugin(options: ISvelteOptions): Plugin {
 
         setup(build) {
             build.onLoad({filter: /\.svelte$/}, async (args) => {
-                console.log("sim-svelte", {args});
-
                 const file = base_pathname(args.path);
                 const name = (file.split(".")[0] ?? "/App").slice(1);
 

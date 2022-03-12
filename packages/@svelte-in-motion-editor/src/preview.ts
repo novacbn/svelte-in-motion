@@ -1,5 +1,4 @@
-import {pipeline_svelte} from "@novacbn/svelte-pipeline";
-import {PipelineRenderComponent} from "@novacbn/svelte-pipeline/components";
+import type {SvelteComponent} from "svelte";
 import {get} from "svelte/store";
 
 import {bundle} from "@svelte-in-motion/bundling";
@@ -8,13 +7,14 @@ import {
     CONTEXT_FRAMERATE,
     CONTEXT_MAXFRAMES,
     CONTEXT_PLAYING,
-    debounce,
+    evaluate_code,
     frame as frame_store,
     framerate as framerate_store,
+    generate_id,
     maxframes as maxframes_store,
     playing as playing_store,
 } from "@svelte-in-motion/core";
-import {parse_configuration} from "@svelte-in-motion/metadata";
+import type {IConfiguration} from "@svelte-in-motion/metadata";
 
 import {dispatch, subscribe} from "./lib/messages";
 import {REPL_CONTEXT, REPL_IMPORTS} from "./lib/repl";
@@ -45,49 +45,14 @@ import type {
 
     const _file = await preload_file(file);
 
-    const testscript = await bundle({
-        file,
-        storage: STORAGE_USER,
-    });
-
-    console.log(testscript);
-
-    const pipeline_store = pipeline_svelte({
-        context: REPL_CONTEXT,
-        imports: REPL_IMPORTS,
-
-        compiler: {
-            dev: true,
-            generate: "dom",
-            name: "App",
-            filename: "App.svelte",
-        },
-    });
-
     const _frame = frame_store();
     const _framerate = framerate_store();
     const _maxframes = maxframes_store();
 
     const _playing = playing_store();
 
-    const context = new Map<Symbol, any>([
-        [CONTEXT_FRAME.symbol, _frame],
-        [CONTEXT_FRAMERATE.symbol, _framerate],
-        [CONTEXT_MAXFRAMES.symbol, _maxframes],
-        [CONTEXT_PLAYING.symbol, _playing],
-    ]);
-
-    const render_component = new PipelineRenderComponent({
-        target: document.body,
-        context,
-        props: {
-            class: "sim--render",
-            pipeline: pipeline_store,
-        },
-    });
-
-    render_component.$on("error", (event) => {
-        const {message, name, stack} = event.detail.error;
+    window.addEventListener("error", (event) => {
+        const {message, name, stack} = event.error;
 
         dispatch<IPreviewErrorMessage>("PREVIEW_ERROR", {
             name,
@@ -96,31 +61,57 @@ import type {
         });
     });
 
-    render_component.$on("destroy", () => {
-        dispatch<IPreviewDestroyMessage>("PREVIEW_DESTROY", {});
-    });
-
-    render_component.$on("mount", () => {
-        dispatch<IPreviewMountMessage>("PREVIEW_MOUNT", {});
-    });
-
     subscribe<IPreviewFrameMessage>("PREVIEW_FRAME", ({frame}) => _frame.set(frame));
     subscribe<IPreviewPlayingMessage>("PREVIEW_PLAYING", ({playing}) => _playing.set(playing));
 
-    _file.subscribe(
-        debounce(async (text) => {
-            // TODO: handle if file gets removed
-            const CONFIGURATION = parse_configuration(text);
+    let _component: SvelteComponent | null = null;
+    let _nonce: string;
 
-            _framerate.set(CONFIGURATION.framerate);
-            _maxframes.set(CONFIGURATION.maxframes);
+    _file.subscribe(async (text) => {
+        const nonce = (_nonce = generate_id());
 
-            const frame = get(_frame);
+        const bundled_script = await bundle({
+            file,
+            storage: STORAGE_USER,
+        });
 
-            _frame.set(Math.min(frame, CONFIGURATION.maxframes));
-            pipeline_store.set(text);
-        }, 100)
-    );
+        if (_nonce !== nonce) return;
+
+        const module = evaluate_code<typeof SvelteComponent, {CONFIGURATION: IConfiguration}>(
+            bundled_script,
+            REPL_CONTEXT,
+            REPL_IMPORTS
+        );
+
+        const {default: Component} = module;
+        const {CONFIGURATION} = module.exports;
+
+        _framerate.set(CONFIGURATION.framerate);
+        _maxframes.set(CONFIGURATION.maxframes);
+
+        const frame = get(_frame);
+
+        _frame.set(Math.min(frame, CONFIGURATION.maxframes));
+
+        if (_component) {
+            _component.$destroy();
+            _component = null;
+
+            dispatch<IPreviewDestroyMessage>("PREVIEW_DESTROY", {});
+        }
+
+        _component = new Component({
+            target: document.body,
+            context: new Map<Symbol, any>([
+                [CONTEXT_FRAME.symbol, _frame],
+                [CONTEXT_FRAMERATE.symbol, _framerate],
+                [CONTEXT_MAXFRAMES.symbol, _maxframes],
+                [CONTEXT_PLAYING.symbol, _playing],
+            ]),
+        });
+
+        dispatch<IPreviewMountMessage>("PREVIEW_MOUNT", {});
+    });
 
     dispatch<IPreviewReadyMessage>("PREVIEW_READY", {});
 })();

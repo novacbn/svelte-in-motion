@@ -13,6 +13,7 @@ export * from "./stores/util";
 
 export * from "./util/channel";
 export * from "./util/contexts";
+export * from "./util/eval";
 export * from "./util/environment";
 export * from "./util/event";
 export * from "./util/math";

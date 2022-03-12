@@ -14,7 +14,6 @@ export function javascript_plugin(options: IStorageOptions): Plugin {
 
         setup(build) {
             build.onLoad({filter: /\.js$/}, async (args) => {
-                console.log("sim-javascript", {args});
                 const script = await storage.read_file_text(args.path);
 
                 return {

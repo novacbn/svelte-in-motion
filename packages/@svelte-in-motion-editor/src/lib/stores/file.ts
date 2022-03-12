@@ -11,7 +11,7 @@ export type IFileStore = Writable<string>;
 
 export const CONTEXT_FRAME = make_scoped_context<IFileStore>("file");
 
-export function file(file: string, text: string = "", debounce: number = 100): IFileStore {
+export function file(file: string, text: string = "", debounce: number = 250): IFileStore {
     const store = writable(text, (set) => {
         const read = _debounce(async () => {
             const text = await STORAGE_USER.read_file_text(file);
