@@ -67,7 +67,6 @@ importers:
     specifiers:
       '@kahi-ui/framework': 0.6.3
       '@novacbn/svelte-codejar': ^0.1.2
-      '@novacbn/svelte-pipeline': 0.3.1
       '@svelte-in-motion/animations': workspace:^
       '@svelte-in-motion/bundling': workspace:^
       '@svelte-in-motion/core': workspace:^
@@ -90,7 +89,6 @@ importers:
     dependencies:
       '@kahi-ui/framework': 0.6.3
       '@novacbn/svelte-codejar': 0.1.2
-      '@novacbn/svelte-pipeline': 0.3.1
       '@svelte-in-motion/animations': link:../@svelte-in-motion-animations
       '@svelte-in-motion/bundling': link:../@svelte-in-motion-bundling
       '@svelte-in-motion/core': link:../@svelte-in-motion-core
@@ -208,12 +206,6 @@ packages:
     resolution: {integrity: sha512-lZd6r+dbdU+zN8d4QW005QEmTT6WDKjpTXvbPIcqIWGSnbWBVoEMFPOwJ0C3PYM4hHAjb2GHF4DBywlWQogNLw==}
     dependencies:
       codejar: 3.5.0
-      svelte: 3.46.4
-    dev: false
-
-  /@novacbn/svelte-pipeline/0.3.1:
-    resolution: {integrity: sha512-kLLgGi+yg0gbZ/Ho2HXVEABWkzuntJrx31yCr+5OcawjfpyxehLglj7vxbvtm5ZKqqOZOMX/f12jrRkfyLzGrQ==}
-    dependencies:
       svelte: 3.46.4
     dev: false
 

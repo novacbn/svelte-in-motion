@@ -1,17 +1,17 @@
-export type IEvalulationContext = Record<string, any>;
+export type IEvaluationContext = Record<string, any>;
 
 export type IEvalulationModule<Default = null, Exports extends object = {}> = {
     default: Default;
     exports: Exports;
 };
 
-export type IEvaluationImports = Record<string, IEvalulationModule>;
+export type IEvaluationImports = Record<string, any>;
 
-export type IEvalulationRequire = (name: string) => IEvalulationModule;
+export type IEvaluationRequire = (name: string) => IEvalulationModule;
 
 export function evaluate_code<Default = null, Exports extends object = {}>(
     script: string,
-    context: IEvalulationContext = {},
+    context: IEvaluationContext = {},
     imports: IEvaluationImports = {}
 ): IEvalulationModule<Default, Exports> {
     const keys = Object.keys(context);
@@ -41,7 +41,7 @@ export function evaluate_code<Default = null, Exports extends object = {}>(
     };
 }
 
-export function make_require(imports: IEvaluationImports = {}): IEvalulationRequire {
+export function make_require(imports: IEvaluationImports = {}): IEvaluationRequire {
     return (name) => {
         if (name in imports) return imports[name];
         throw new ReferenceError(`bad argument #0 to 'require' (module '${name}' not found)`);

@@ -8,6 +8,18 @@ export interface IRenderEndMessage extends IMessage {
     };
 }
 
+export interface IRenderErrorMessage extends IMessage {
+    name: "RENDER_ERROR";
+
+    detail: {
+        message: string;
+
+        name: string;
+
+        stack?: string;
+    };
+}
+
 export interface IRenderProgressMessage extends IMessage {
     name: "RENDER_PROGRESS";
 

@@ -1,3 +1,11 @@
+export function animation(): Promise<void> {
+    return new Promise((resolve, reject) => {
+        requestAnimationFrame(() => {
+            resolve();
+        });
+    });
+}
+
 export function debounce<F extends (...args: any[]) => any | Promise<any>>(
     func: F,
     duration: number = 0

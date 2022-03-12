@@ -5,12 +5,12 @@ import * as svelte_internal from "svelte/internal";
 import * as svelte_motion from "svelte/motion";
 import * as svelte_store from "svelte/store";
 import * as svelte_transition from "svelte/transition";
-import type {IPipelineContext, IPipelineImports} from "@novacbn/svelte-pipeline";
 
 import * as animations from "@svelte-in-motion/animations";
+import type {IEvaluationContext, IEvaluationImports} from "@svelte-in-motion/core";
 import * as core from "@svelte-in-motion/core";
 
-export const REPL_CONTEXT: IPipelineContext = {
+export const REPL_CONTEXT: IEvaluationContext = {
     ...svelte,
     ...svelte_animate,
     ...svelte_easing,
@@ -22,7 +22,7 @@ export const REPL_CONTEXT: IPipelineContext = {
     ...core,
 };
 
-export const REPL_IMPORTS: IPipelineImports = {
+export const REPL_IMPORTS: IEvaluationImports = {
     svelte: svelte,
     "svelte/animate": svelte_animate,
     "svelte/easing": svelte_easing,

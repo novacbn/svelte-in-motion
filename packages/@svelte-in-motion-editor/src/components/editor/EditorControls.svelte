@@ -49,6 +49,8 @@
         const url = URL.createObjectURL(blob);
 
         window.open(url);
+
+        job_id = null;
     }
 
     function on_checkerboard_toggle(event: IKeybindEvent | MouseEvent): void {
