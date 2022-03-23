@@ -1,6 +1,8 @@
 <script lang="ts">
     import {Card, Overlay} from "@kahi-ui/framework";
 
+    import {idle} from "@svelte-in-motion/core";
+
     import type {IPromptRejectEvent, IPromptResolveEvent} from "../../lib/stores/prompts";
     import {EVENT_PROMPT, prompts} from "../../lib/stores/prompts";
 
@@ -18,7 +20,9 @@
         logic_state = false;
     }
 
-    function on_transition_end(event: TransitionEvent): void {
+    async function on_transition_end(event: TransitionEvent): Promise<void> {
+        await idle();
+
         if (!logic_state) prompts.clear();
     }
 
