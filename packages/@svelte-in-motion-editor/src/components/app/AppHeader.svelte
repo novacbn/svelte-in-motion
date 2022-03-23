@@ -9,13 +9,26 @@
 
     import {prompts} from "../../lib/stores/prompts";
 
-    const {zen_mode} = CONTEXT_EDITOR.get()!;
+    const {configuration, zen_mode} = CONTEXT_EDITOR.get()!;
 
     async function on_about_click(event: MouseEvent): Promise<void> {
         (document.activeElement as HTMLElement).blur();
 
         try {
             await prompts.prompt_about();
+        } catch (err) {}
+    }
+
+    async function on_export_video_click(event: MouseEvent): Promise<void> {
+        (document.activeElement as HTMLElement).blur();
+
+        try {
+            const result = await prompts.prompt_export_video({
+                frame_min: 0,
+                frame_max: $configuration.maxframes,
+            });
+
+            console.log(result);
         } catch (err) {}
     }
 </script>
@@ -49,7 +62,17 @@
 
                 <Menu.Container sizing="nano">
                     <Menu.Button disabled>Export Frames</Menu.Button>
-                    <Menu.Button disabled>Export Video</Menu.Button>
+                    <Menu.Button on:click={on_export_video_click}>Export Video</Menu.Button>
+                </Menu.Container>
+            </Dropdown>
+
+            <Dropdown variation="control">
+                <svelte:fragment slot="activator">
+                    <Menu.Button>View</Menu.Button>
+                </svelte:fragment>
+
+                <Menu.Container sizing="nano">
+                    <Menu.Button disabled>Jobs</Menu.Button>
                 </Menu.Container>
             </Dropdown>
 

@@ -4,8 +4,28 @@ import {writable} from "svelte/store";
 
 import type {IEvent} from "@svelte-in-motion/core";
 import {event} from "@svelte-in-motion/core";
+import type {ICodecNames, IPixelFormatNames} from "@svelte-in-motion/encoding";
 
 import AboutPrompt from "../../components/prompts/AboutPrompt.svelte";
+import ExportVideoPrompt from "../../components/prompts/ExportVideoPrompt.svelte";
+
+export interface IExportVideoPromptOptions {
+    frame_min: number;
+
+    frame_max: number;
+}
+
+export interface IExportVideoPromptEvent {
+    codec: ICodecNames;
+
+    crf: number;
+
+    pixel_format: IPixelFormatNames;
+
+    end: number;
+
+    start: number;
+}
 
 export interface IPromptEvent {
     prompt: IPrompt<any>;
@@ -41,6 +61,8 @@ export interface IPromptStore extends Readable<IPrompt<any> | null> {
     clear(): void;
 
     prompt_about(): Promise<void>;
+
+    prompt_export_video(props: IExportVideoPromptOptions): Promise<IExportVideoPromptEvent>;
 }
 
 function _prompts(): IPromptStore {
@@ -50,7 +72,7 @@ function _prompts(): IPromptStore {
     const EVENT_REJECT = event<IPromptRejectEvent>();
     const EVENT_RESOLVE = event<IPromptResolveEvent<any>>();
 
-    function prompt<T>(prompt: IPrompt<T>): Promise<T> {
+    function prompt<Options, Result>(prompt: IPrompt<Options>): Promise<Result> {
         set(prompt);
         EVENT_PROMPT.dispatch({prompt});
 
@@ -81,8 +103,15 @@ function _prompts(): IPromptStore {
         },
 
         prompt_about() {
-            return prompt<void>({
+            return prompt<void, void>({
                 Component: AboutPrompt,
+            });
+        },
+
+        prompt_export_video(props) {
+            return prompt<IExportVideoPromptOptions, IExportVideoPromptEvent>({
+                Component: ExportVideoPrompt,
+                props,
             });
         },
 

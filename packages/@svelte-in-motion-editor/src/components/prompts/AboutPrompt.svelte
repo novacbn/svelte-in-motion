@@ -7,12 +7,16 @@
 
     import type {IPromptRejectEvent} from "../../lib/stores/prompts";
 
+    type $$Events = {
+        reject: CustomEvent<IPromptRejectEvent>;
+    };
+
     const dispatch = createEventDispatcher();
 
     function on_close_click(event: MouseEvent): void {
         dispatch("reject", {
             error: PromptDismissError(),
-        } as IPromptRejectEvent);
+        });
     }
 </script>
 

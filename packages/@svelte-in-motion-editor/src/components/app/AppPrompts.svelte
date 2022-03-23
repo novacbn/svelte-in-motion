@@ -13,7 +13,7 @@
     }
 
     function on_resolve(event: CustomEvent<IPromptResolveEvent<any>>): void {
-        prompts.EVENT_RESOLVE.dispatch(event.detail);
+        prompts.EVENT_RESOLVE.dispatch({result: event.detail});
 
         logic_state = false;
     }
