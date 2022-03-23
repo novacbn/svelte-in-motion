@@ -1,5 +1,5 @@
 <script lang="ts">
-    import {Badge, Box, Divider, Position} from "@kahi-ui/framework";
+    import {Badge, Divider, Position} from "@kahi-ui/framework";
     import {onMount} from "svelte";
 
     import {advance, debounce} from "@svelte-in-motion/core";
@@ -12,16 +12,19 @@
         IPreviewPlayingMessage,
         IPreviewReadyMessage,
     } from "../../lib/types/preview";
+    import {CONFIGURATION} from "../../lib/storage/SAMPLE.svelte";
 
     const {configuration, file, frame, framerate, maxframes, playing, show_checkerboard} =
         CONTEXT_EDITOR.get()!;
 
     const _advance = advance({frame, framerate, maxframes, playing});
 
+    let container_element: HTMLDivElement | undefined;
+    let render_element: HTMLDivElement | undefined;
     let iframe_element: HTMLIFrameElement | undefined;
 
-    let _container_height: number;
-    let _container_width: number;
+    let _render_height: number;
+    let _render_width: number;
 
     let _preview_height: number;
     let _preview_width: number;
@@ -36,7 +39,7 @@
     }
 
     function on_resolution_exit(event: PointerEvent): void {
-        hide_resolution();
+        _show_resolution = false;
     }
 
     onMount(() => {
@@ -62,25 +65,59 @@
     $: if (iframe_element && _ready)
         dispatch<IPreviewPlayingMessage>("PREVIEW_PLAYING", {playing: $playing}, iframe_element);
 
+    let _container_width: number;
+    let _container_height: number;
+
     $: {
-        // HACK: These are just here to make the block reactive
-        _container_height;
-        _container_width;
+        if (render_element) {
+            const computed = getComputedStyle(render_element);
 
-        _preview_height = iframe_element?.clientHeight ?? 0;
-        _preview_width = iframe_element?.clientWidth ?? 0;
+            const padding_top = parseInt(computed.paddingTop.slice(0, -2));
+            const padding_bottom = parseInt(computed.paddingBottom.slice(0, -2));
+            const padding_left = parseInt(computed.paddingLeft.slice(0, -2));
+            const padding_right = parseInt(computed.paddingRight.slice(0, -2));
 
-        _show_resolution = true;
-        hide_resolution();
+            const available_width = _render_width - (padding_left + padding_right);
+            const available_height = _render_height - (padding_top + padding_bottom);
+
+            const preferred_height = available_width * (CONFIGURATION.height / CONFIGURATION.width);
+            const preferred_width = available_height * (CONFIGURATION.width / CONFIGURATION.height);
+
+            if (preferred_height > available_height) {
+                _container_width = preferred_width;
+                _container_height = available_height;
+            } else {
+                _container_width = available_width;
+                _container_height = preferred_height;
+            }
+        }
+    }
+
+    $: {
+        if (container_element && iframe_element) {
+            const computed = getComputedStyle(container_element);
+            const border_width = parseInt(computed.borderWidth.slice(0, -2)) * 2;
+
+            _preview_height = Math.trunc(_container_height - border_width);
+            _preview_width = Math.trunc(_container_width - border_width);
+
+            _show_resolution = true;
+            hide_resolution();
+        }
     }
 </script>
 
-<Box class="sim--editor-render" padding="large">
+<div
+    bind:this={render_element}
+    class="box sim--editor-render"
+    data-padding="large"
+    bind:clientWidth={_render_width}
+    bind:clientHeight={_render_height}
+>
     <div
+        bind:this={container_element}
         class="sim--editor-render--container"
-        style="--configuration-width:{$configuration.width};--configuration-height:{$configuration.height};"
-        bind:clientWidth={_container_width}
-        bind:clientHeight={_container_height}
+        style="--configuration-width:{$configuration.width};--configuration-height:{$configuration.height};width:{_container_width}px;height:{_container_height}px"
     >
         <iframe
             class="sim--editor-render--preview"
@@ -103,7 +140,7 @@
     </div>
 
     <Divider class="sim--editor-render--divider" palette="inverse" margin="none" />
-</Box>
+</div>
 
 <style>
     :global(.sim--editor-render) {
@@ -122,12 +159,7 @@
         display: flex;
         position: relative;
 
-        aspect-ratio: var(--configuration-width) / var(--configuration-height);
-
         border: 2px solid hsla(var(--palette-foreground-bold), 0.2);
-
-        width: 100%;
-        max-width: calc(var(--configuration-width) * 1px);
     }
 
     :global(.sim--editor-render--preview) {
