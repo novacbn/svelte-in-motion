@@ -146,16 +146,16 @@ function renderqueue(): IRenderQueueStore {
         },
 
         remove(identifier) {
-            const encode = get(identifier);
+            const render = get(identifier);
 
-            if (encode.state !== RENDER_STATES.ended) {
+            if (render.state !== RENDER_STATES.ended) {
                 throw new ReferenceError(
                     `bad argument #0 'renderqueue.remove' (render '${identifier}' has not ended)`
                 );
             }
 
             remove(identifier);
-            return encode;
+            return render;
         },
 
         track(identifier: string) {
