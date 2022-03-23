@@ -59,15 +59,19 @@ export interface IEncodeQueueStore extends Readable<IEncode[]> {
 
     EVENT_START: IEvent<IEncodeEvent>;
 
+    has(identifier: string): boolean;
+
     queue(options: IEncodeQueueOptions): string;
 
     remove(identifier: string): IEncode;
+
+    track(identifier: string): string;
 
     yield(identifier: string): Promise<Uint8Array>;
 }
 
 export function encodequeue(): IEncodeQueueStore {
-    const {get, push, subscribe, remove, update} = collection<IEncode>();
+    const {get, has, push, subscribe, remove, update} = collection<IEncode>();
 
     const EVENT_END = event<IEncodeEndEvent>();
     const EVENT_START = event<IEncodeEvent>();
@@ -77,6 +81,8 @@ export function encodequeue(): IEncodeQueueStore {
         EVENT_START,
 
         subscribe,
+
+        has,
 
         queue(options) {
             const {codec, crf, framerate, frames, height, pixel_format, width} = options;
@@ -134,6 +140,14 @@ export function encodequeue(): IEncodeQueueStore {
 
             remove(identifier);
             return encode;
+        },
+
+        track(identifier: string) {
+            if (!encodes.has(identifier)) {
+                throw new Error(
+                    `bad argument #0 to 'encodequeue.track' (encode '${identifier}' is not valid)`
+                );
+            }
         },
 
         yield(identifier) {

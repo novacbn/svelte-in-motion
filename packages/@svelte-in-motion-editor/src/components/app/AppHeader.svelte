@@ -4,14 +4,18 @@
 
 <script lang="ts">
     import {Box, Divider, Dropdown, Menu, Stack, Text} from "@kahi-ui/framework";
+    import {Archive, Download} from "lucide-svelte";
 
     import {CONTEXT_EDITOR} from "../../lib/editor";
     import {is_prompt_dismiss_error} from "../../lib/errors";
+    import {download_blob, zip_frames} from "../../lib/io";
+    import {notifications} from "../../lib/stores/notifications";
 
     import type {IExportFramesPromptEvent, IExportVideoPromptEvent} from "../../lib/stores/prompts";
     import {prompts} from "../../lib/stores/prompts";
+    import {renders} from "../../lib/stores/renders";
 
-    const {configuration, zen_mode} = CONTEXT_EDITOR.get()!;
+    const {configuration, file, zen_mode} = CONTEXT_EDITOR.get()!;
 
     async function on_about_click(event: MouseEvent): Promise<void> {
         (document.activeElement as HTMLElement).blur();
@@ -24,9 +28,9 @@
     async function on_export_frames_click(event: MouseEvent): Promise<void> {
         (document.activeElement as HTMLElement).blur();
 
-        let result: IExportFramesPromptEvent;
+        let export_configuration: IExportFramesPromptEvent;
         try {
-            result = await prompts.prompt_export_frames({
+            export_configuration = await prompts.prompt_export_frames({
                 frame_min: 0,
                 frame_max: $configuration.maxframes,
             });
@@ -35,7 +39,35 @@
             throw err;
         }
 
-        console.log(result);
+        const render_identifier = renders.queue({
+            end: export_configuration.end,
+            file,
+            height: $configuration.height,
+            start: export_configuration.start,
+            width: $configuration.width,
+        });
+
+        const notification_identifier = renders.track(render_identifier);
+        const frames = await renders.yield(render_identifier);
+
+        notifications.update(notification_identifier, {
+            icon: Archive,
+            header: "Archving Render",
+            dismissible: false,
+        });
+
+        const zip = await zip_frames(frames);
+
+        notifications.update(notification_identifier, {
+            icon: Download,
+            header: "Downloading Render",
+            dismissible: true,
+        });
+
+        download_blob(
+            zip,
+            `svelte-in-motion.frames.${file}.${export_configuration.start}-${export_configuration.end}.zip`
+        );
     }
 
     async function on_export_video_click(event: MouseEvent): Promise<void> {

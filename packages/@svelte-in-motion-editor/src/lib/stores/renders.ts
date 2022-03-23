@@ -1,3 +1,4 @@
+import {Check, Clock, Video} from "lucide-svelte";
 import type {Readable} from "svelte/store";
 
 import type {IEvent} from "@svelte-in-motion/core";
@@ -7,6 +8,7 @@ import type {ICollectionItem} from "./collection";
 import {collection} from "./collection";
 import {subscribe} from "../messages";
 import type {IRenderEndMessage, IRenderProgressMessage, IRenderStartMessage} from "../types/render";
+import {notifications} from "./notifications";
 
 export enum RENDER_STATES {
     ended = "ended",
@@ -52,15 +54,19 @@ export interface IRenderQueueStore extends Readable<IRender[]> {
 
     EVENT_START: IEvent<IRenderEvent>;
 
+    has(identifier: string): boolean;
+
     queue(options: IRenderQueueOptions): string;
 
     remove(identifier: string): IRender;
+
+    track(identifier: string): string;
 
     yield(identifier: string): Promise<Uint8Array[]>;
 }
 
 function renderqueue(): IRenderQueueStore {
-    const {get, push, subscribe: subscribe_store, remove, update} = collection<IRender>();
+    const {get, has, push, subscribe: subscribe_store, remove, update} = collection<IRender>();
 
     const EVENT_END = event<IRenderEndEvent>();
     const EVENT_START = event<IRenderEvent>();
@@ -70,6 +76,8 @@ function renderqueue(): IRenderQueueStore {
         EVENT_START,
 
         subscribe: subscribe_store,
+
+        has,
 
         queue(options) {
             const {file, end, height, start, width} = options;
@@ -142,12 +150,74 @@ function renderqueue(): IRenderQueueStore {
 
             if (encode.state !== RENDER_STATES.ended) {
                 throw new ReferenceError(
-                    `bad argument #0 'renderqueue.remove' (encode '${identifier}' has not ended)`
+                    `bad argument #0 'renderqueue.remove' (render '${identifier}' has not ended)`
                 );
             }
 
             remove(identifier);
             return encode;
+        },
+
+        track(identifier: string) {
+            if (!has(identifier)) {
+                throw new Error(
+                    `bad argument #0 to 'renderqueue.track' (render '${identifier}' is not valid)`
+                );
+            }
+
+            const notification_identifier = notifications.push({
+                header: "Tracking render...",
+                text: identifier,
+            });
+
+            function update(): void {
+                const render = get(identifier);
+
+                switch (render.state) {
+                    case RENDER_STATES.ended:
+                        notifications.update(notification_identifier, {
+                            icon: Check,
+                            header: "Render Finished",
+                            dismissible: true,
+                        });
+
+                        break;
+
+                    case RENDER_STATES.started:
+                        notifications.update(notification_identifier, {
+                            icon: Video,
+                            header: "Rendering",
+                        });
+
+                        break;
+
+                    case RENDER_STATES.uninitialized:
+                        notifications.update(notification_identifier, {
+                            icon: Clock,
+                            header: "Starting Render",
+                        });
+
+                        break;
+                }
+            }
+
+            const destroy_start = EVENT_START.subscribe(({render}) => {
+                if (render.identifier !== identifier) return;
+
+                update();
+            });
+
+            const destroy_end = EVENT_END.subscribe(({render}) => {
+                if (render.identifier !== identifier) return;
+
+                destroy_end();
+                destroy_start();
+
+                update();
+            });
+
+            update();
+            return notification_identifier;
         },
 
         yield(identifier) {

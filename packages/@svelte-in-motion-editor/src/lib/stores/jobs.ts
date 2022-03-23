@@ -84,7 +84,11 @@ export interface IJobQueueStore extends Readable<IJob[]> {
 
     EVENT_START: IEvent<IJobEvent>;
 
+    has(identifier: string): boolean;
+
     queue(options: IJobQueueOptions): string;
+
+    track(identifier: string): string;
 
     yield(identifier: string): Promise<Uint8Array>;
 }
@@ -186,6 +190,14 @@ export function jobqueue(): IJobQueueStore {
 
             start_job(identifier, options);
             return identifier;
+        },
+
+        track(identifier: string) {
+            if (!encodes.has(identifier)) {
+                throw new Error(
+                    `bad argument #0 to 'jobqueue.track' (job '${identifier}' is not valid)`
+                );
+            }
         },
 
         yield(identifier) {
