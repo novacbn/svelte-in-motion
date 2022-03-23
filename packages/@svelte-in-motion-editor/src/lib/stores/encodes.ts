@@ -1,4 +1,4 @@
-import {Check, Clock, Video} from "lucide-svelte";
+import {Check, Clock, Film} from "lucide-svelte";
 import type {Readable} from "svelte/store";
 
 import type {IEvent} from "@svelte-in-motion/core";
@@ -171,7 +171,7 @@ export function encodequeue(): IEncodeQueueStore {
 
                     case ENCODE_STATES.started:
                         notifications.update(notification_identifier, {
-                            icon: Video,
+                            icon: Film,
                             header: "Encoding",
                         });
 
