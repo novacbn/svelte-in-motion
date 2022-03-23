@@ -40,6 +40,8 @@ export function collection<T extends ICollectionItem>(items: T[] = []): ICollect
         },
 
         has(identifier) {
+            const items = get(store);
+
             return !!items.find((_item) => _item.identifier === identifier);
         },
 
