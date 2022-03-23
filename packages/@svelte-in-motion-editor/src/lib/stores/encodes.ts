@@ -145,7 +145,7 @@ export function encodequeue(): IEncodeQueueStore {
         },
 
         track(identifier: string) {
-            if (!encodes.has(identifier)) {
+            if (!has(identifier)) {
                 throw new Error(
                     `bad argument #0 to 'encodequeue.track' (encode '${identifier}' is not valid)`
                 );
