@@ -6,7 +6,9 @@
     import {Box, Divider, Dropdown, Menu, Stack, Text} from "@kahi-ui/framework";
 
     import {CONTEXT_EDITOR} from "../../lib/editor";
+    import {is_prompt_dismiss_error} from "../../lib/errors";
 
+    import type {IExportFramesPromptEvent, IExportVideoPromptEvent} from "../../lib/stores/prompts";
     import {prompts} from "../../lib/stores/prompts";
 
     const {configuration, zen_mode} = CONTEXT_EDITOR.get()!;
@@ -19,17 +21,38 @@
         } catch (err) {}
     }
 
-    async function on_export_video_click(event: MouseEvent): Promise<void> {
+    async function on_export_frames_click(event: MouseEvent): Promise<void> {
         (document.activeElement as HTMLElement).blur();
 
+        let result: IExportFramesPromptEvent;
         try {
-            const result = await prompts.prompt_export_video({
+            result = await prompts.prompt_export_frames({
                 frame_min: 0,
                 frame_max: $configuration.maxframes,
             });
+        } catch (err) {
+            if (!is_prompt_dismiss_error(err)) return;
+            throw err;
+        }
 
-            console.log(result);
-        } catch (err) {}
+        console.log(result);
+    }
+
+    async function on_export_video_click(event: MouseEvent): Promise<void> {
+        (document.activeElement as HTMLElement).blur();
+
+        let result: IExportVideoPromptEvent;
+        try {
+            result = await prompts.prompt_export_video({
+                frame_min: 0,
+                frame_max: $configuration.maxframes,
+            });
+        } catch (err) {
+            if (!is_prompt_dismiss_error(err)) return;
+            throw err;
+        }
+
+        console.log(result);
     }
 </script>
 
@@ -61,7 +84,7 @@
                 </svelte:fragment>
 
                 <Menu.Container sizing="nano">
-                    <Menu.Button disabled>Export Frames</Menu.Button>
+                    <Menu.Button on:click={on_export_frames_click}>Export Frames</Menu.Button>
                     <Menu.Button on:click={on_export_video_click}>Export Video</Menu.Button>
                 </Menu.Container>
             </Dropdown>

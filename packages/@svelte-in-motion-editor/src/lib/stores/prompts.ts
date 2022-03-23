@@ -7,24 +7,31 @@ import {event} from "@svelte-in-motion/core";
 import type {ICodecNames, IPixelFormatNames} from "@svelte-in-motion/encoding";
 
 import AboutPrompt from "../../components/prompts/AboutPrompt.svelte";
+import ExportFramesPrompt from "../../components/prompts/ExportFramesPrompt.svelte";
 import ExportVideoPrompt from "../../components/prompts/ExportVideoPrompt.svelte";
 
-export interface IExportVideoPromptOptions {
+import type {IError} from "../errors";
+
+export interface IExportFramesPromptProps {
     frame_min: number;
 
     frame_max: number;
 }
 
-export interface IExportVideoPromptEvent {
+export interface IExportVideoPromptProps extends IExportFramesPromptProps {}
+
+export interface IExportFramesPromptEvent {
+    end: number;
+
+    start: number;
+}
+
+export interface IExportVideoPromptEvent extends IExportFramesPromptEvent {
     codec: ICodecNames;
 
     crf: number;
 
     pixel_format: IPixelFormatNames;
-
-    end: number;
-
-    start: number;
 }
 
 export interface IPromptEvent {
@@ -36,11 +43,7 @@ export interface IPromptResolveEvent<T> {
 }
 
 export interface IPromptRejectEvent {
-    error: {
-        name: Error["name"];
-
-        message: Error["message"];
-    };
+    error: IError;
 }
 
 export interface IPrompt<T extends Record<string, any>> {
@@ -62,7 +65,9 @@ export interface IPromptStore extends Readable<IPrompt<any> | null> {
 
     prompt_about(): Promise<void>;
 
-    prompt_export_video(props: IExportVideoPromptOptions): Promise<IExportVideoPromptEvent>;
+    prompt_export_frames(props: IExportFramesPromptProps): Promise<IExportFramesPromptEvent>;
+
+    prompt_export_video(props: IExportVideoPromptProps): Promise<IExportVideoPromptEvent>;
 }
 
 function _prompts(): IPromptStore {
@@ -72,7 +77,7 @@ function _prompts(): IPromptStore {
     const EVENT_REJECT = event<IPromptRejectEvent>();
     const EVENT_RESOLVE = event<IPromptResolveEvent<any>>();
 
-    function prompt<Options, Result>(prompt: IPrompt<Options>): Promise<Result> {
+    function prompt<Props, Result>(prompt: IPrompt<Props>): Promise<Result> {
         set(prompt);
         EVENT_PROMPT.dispatch({prompt});
 
@@ -108,8 +113,15 @@ function _prompts(): IPromptStore {
             });
         },
 
+        prompt_export_frames(props) {
+            return prompt<IExportFramesPromptProps, IExportFramesPromptEvent>({
+                Component: ExportFramesPrompt,
+                props,
+            });
+        },
+
         prompt_export_video(props) {
-            return prompt<IExportVideoPromptOptions, IExportVideoPromptEvent>({
+            return prompt<IExportVideoPromptProps, IExportVideoPromptEvent>({
                 Component: ExportVideoPrompt,
                 props,
             });
