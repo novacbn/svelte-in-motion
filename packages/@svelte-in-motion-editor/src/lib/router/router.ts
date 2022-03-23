@@ -4,7 +4,7 @@ import {derived, writable} from "svelte/store";
 import type {URLPatternResult} from "urlpattern-polyfill/dist/url-pattern.interfaces";
 import {URLPattern} from "urlpattern-polyfill";
 
-import {normalize_relative} from "../url";
+import {normalize_relative} from "@svelte-in-motion/core";
 
 export type ILoadCallback = (input: ILoadInput) => ILoadOutput | void | Promise<ILoadOutput | void>;
 
