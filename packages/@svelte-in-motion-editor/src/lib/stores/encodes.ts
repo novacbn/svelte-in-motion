@@ -1,3 +1,4 @@
+import {Check, Clock, Video} from "lucide-svelte";
 import type {Readable} from "svelte/store";
 
 import type {IEvent} from "@svelte-in-motion/core";
@@ -7,6 +8,7 @@ import {encode} from "@svelte-in-motion/encoding";
 
 import type {ICollectionItem} from "./collection";
 import {collection} from "./collection";
+import {notifications} from "./notifications";
 
 export enum ENCODE_STATES {
     ended = "ended",
@@ -148,6 +150,60 @@ export function encodequeue(): IEncodeQueueStore {
                     `bad argument #0 to 'encodequeue.track' (encode '${identifier}' is not valid)`
                 );
             }
+
+            const notification_identifier = notifications.push({
+                header: "Tracking encode...",
+                text: identifier,
+            });
+
+            function update(): void {
+                const render = get(identifier);
+
+                switch (render.state) {
+                    case ENCODE_STATES.ended:
+                        notifications.update(notification_identifier, {
+                            icon: Check,
+                            header: "Encode Finished",
+                            dismissible: true,
+                        });
+
+                        break;
+
+                    case ENCODE_STATES.started:
+                        notifications.update(notification_identifier, {
+                            icon: Video,
+                            header: "Encoding",
+                        });
+
+                        break;
+
+                    case ENCODE_STATES.uninitialized:
+                        notifications.update(notification_identifier, {
+                            icon: Clock,
+                            header: "Starting Encode",
+                        });
+
+                        break;
+                }
+            }
+
+            const destroy_start = EVENT_START.subscribe(({encode}) => {
+                if (encode.identifier !== identifier) return;
+
+                update();
+            });
+
+            const destroy_end = EVENT_END.subscribe(({encode}) => {
+                if (encode.identifier !== identifier) return;
+
+                destroy_end();
+                destroy_start();
+
+                update();
+            });
+
+            update();
+            return notification_identifier;
         },
 
         yield(identifier) {
