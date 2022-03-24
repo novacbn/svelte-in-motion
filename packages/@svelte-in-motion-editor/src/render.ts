@@ -50,7 +50,7 @@ import type {
         });
     });
 
-    const bundled_script = await bundle({
+    const [bundled_script] = await bundle({
         file,
         storage: STORAGE_USER,
     });

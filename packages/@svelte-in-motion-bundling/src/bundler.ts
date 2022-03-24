@@ -16,7 +16,7 @@ export interface IBundleOptions {
     worker?: boolean;
 }
 
-export async function bundle(options: IBundleOptions): Promise<string> {
+export async function bundle(options: IBundleOptions): Promise<[string, string[]]> {
     const {file, storage, worker = false} = options;
 
     if (!has_initialized) {
@@ -33,6 +33,8 @@ export async function bundle(options: IBundleOptions): Promise<string> {
 
         format: "cjs",
         platform: "browser",
+
+        metafile: true,
 
         bundle: true,
         write: false,
@@ -65,5 +67,7 @@ export async function bundle(options: IBundleOptions): Promise<string> {
     });
 
     const [output] = result.outputFiles;
-    return output.text;
+    const dependencies = Object.keys(result.metafile!.inputs);
+
+    return [output.text, dependencies];
 }
