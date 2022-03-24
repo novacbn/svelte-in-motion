@@ -1,5 +1,4 @@
-import {IFrameRateStore, IFrameStore, parse_style} from "@svelte-in-motion/core";
-import {state} from "@svelte-in-motion/core";
+import {CONTEXT_FRAME, CONTEXT_FRAMERATE, parse_style, state} from "@svelte-in-motion/core";
 
 import type {ITransition} from "../transitions/transitions";
 
@@ -16,10 +15,6 @@ export type ITransitionActionHandle<T extends ITransition> = IActionHandle<
 >;
 
 export interface ITransitionActionOptions<T extends ITransition> {
-    frame: IFrameStore;
-
-    framerate: IFrameRateStore;
-
     inverse?: boolean;
 
     parameters: Parameters<T>[1];
@@ -31,6 +26,20 @@ export function transition<T extends ITransition>(
     element: HTMLElement,
     options: ITransitionActionOptions<T>
 ): ITransitionActionHandle<T> {
+    const frame = CONTEXT_FRAME.get();
+    if (!frame) {
+        throw new ReferenceError(
+            `bad dispatch to 'transition' (context 'CONTEXT_FRAME' not available)`
+        );
+    }
+
+    const framerate = CONTEXT_FRAMERATE.get();
+    if (!framerate) {
+        throw new ReferenceError(
+            `bad dispatch to 'transition' (context 'CONTEXT_FRAMERATE' not available)`
+        );
+    }
+
     let destroy: (() => void) | null = null;
 
     function update(options: ITransitionActionOptions<T>): void {
@@ -39,7 +48,7 @@ export function transition<T extends ITransition>(
             destroy = null;
         }
 
-        const {frame, framerate, inverse, parameters = {}, transition} = options;
+        const {inverse, parameters = {}, transition} = options;
         const {css, delay, duration, easing, tick} = {
             ...parameters,
             ...transition(element, parameters),
@@ -49,7 +58,10 @@ export function transition<T extends ITransition>(
             delay,
             duration,
             easing,
+            // @ts-expect-error - HACK: TypeScript doesn't understand that the upper
+            // scope already validated the Stores were not `undefined`
             frame,
+            // @ts-expect-error
             framerate,
         });
 
@@ -57,11 +69,6 @@ export function transition<T extends ITransition>(
             if (typeof state === "number") {
                 const in_tick = inverse ? 1 - state : state;
                 const out_tick = inverse ? state : 1 - state;
-
-                // TODO: cycle through every CSS step ahead of time to generate
-                // a `@keyframes` animation like Svelte to have the engine handle it
-                //
-                // Is that even possible?
 
                 if (css) {
                     const style = css(in_tick, out_tick);

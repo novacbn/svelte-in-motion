@@ -21,20 +21,6 @@
         parameters?: ITransitionParameters;
     };
 
-    const frame = CONTEXT_FRAME.get();
-    if (!frame) {
-        throw new ReferenceError(
-            `bad mount to 'Transition' (context 'CONTEXT_FRAME' not available)`
-        );
-    }
-
-    const framerate = CONTEXT_FRAMERATE.get();
-    if (!framerate) {
-        throw new ReferenceError(
-            `bad mount to 'Transition' (context 'CONTEXT_FRAMERATE' not available)`
-        );
-    }
-
     export let element: $$Props["element"] = null;
 
     let _class: $$Props["class"] = "";
@@ -56,8 +42,6 @@
             transition,
             inverse,
             parameters: parameters ?? {},
-            frame,
-            framerate,
         }}
     >
         <slot />
@@ -70,8 +54,6 @@
             transition,
             inverse,
             parameters: parameters ?? {},
-            frame,
-            framerate,
         }}
     >
         <slot />
