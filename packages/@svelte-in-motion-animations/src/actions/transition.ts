@@ -14,13 +14,11 @@ export type ITransitionActionHandle<T extends ITransition> = IActionHandle<
     ITransitionActionOptions<T>
 >;
 
-export interface ITransitionActionOptions<T extends ITransition> {
+export type ITransitionActionOptions<T extends ITransition> = {
     inverse?: boolean;
 
-    parameters: Parameters<T>[1];
-
     transition: T;
-}
+} & T;
 
 export function transition<T extends ITransition>(
     element: HTMLElement,
@@ -48,7 +46,7 @@ export function transition<T extends ITransition>(
             destroy = null;
         }
 
-        const {inverse, parameters = {}, transition} = options;
+        const {inverse, transition, ...parameters} = options;
         const {css, delay, duration, easing, tick} = {
             ...parameters,
             ...transition(element, parameters),

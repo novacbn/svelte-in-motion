@@ -32,6 +32,8 @@
 
     export let inverse: $$Props["inverse"] = undefined;
     export let parameters: $$Props["parameters"] = {};
+
+    $: _parameters = parameters as any;
 </script>
 
 {#if is === "span"}
@@ -41,7 +43,7 @@
         use:transition_action={{
             transition,
             inverse,
-            parameters: parameters ?? {},
+            ...(_parameters ?? {}),
         }}
     >
         <slot />
@@ -53,7 +55,7 @@
         use:transition_action={{
             transition,
             inverse,
-            parameters: parameters ?? {},
+            ...(_parameters ?? {}),
         }}
     >
         <slot />
