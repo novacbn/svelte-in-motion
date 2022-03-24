@@ -15,43 +15,10 @@
         action_toggle_zen,
     } from "../../lib/keybinds";
 
-    import {jobs} from "../../lib/stores/jobs";
-
     import Tooltip from "../Tooltip.svelte";
 
-    const {configuration, file, frame, playing, show_checkerboard, show_script, zen_mode} =
+    const {configuration, frame, playing, show_checkerboard, show_script, zen_mode} =
         CONTEXT_EDITOR.get()!;
-
-    let job_id: string | null = null;
-
-    async function on_create_click(event: MouseEvent): Promise<void> {
-        job_id = jobs.queue({
-            file,
-            encode: {
-                codec: "vp9",
-                crf: 31,
-                framerate: $configuration.framerate,
-                height: $configuration.height,
-                pixel_format: "yuv420p",
-                width: $configuration.width,
-            },
-            render: {
-                end: $configuration.maxframes,
-                start: 0,
-                height: $configuration.height,
-                width: $configuration.width,
-            },
-        });
-
-        const video = await jobs.yield(job_id);
-
-        const blob = new Blob([video], {type: "video/webm"});
-        const url = URL.createObjectURL(blob);
-
-        window.open(url);
-
-        job_id = null;
-    }
 
     function on_checkerboard_toggle(event: IKeybindEvent | MouseEvent): void {
         if (!has_focus()) return;
@@ -112,8 +79,6 @@
 
         $zen_mode = !$zen_mode;
     }
-
-    $: _job = job_id ? $jobs.find((job) => job.identifier === job_id) : null;
 </script>
 
 <svelte:window
@@ -210,20 +175,6 @@
 
             Toggle zen mode <Text is="strong">Z</Text>
         </Tooltip>
-
-        <Menu.Button disabled={!!job_id} palette="inverse" on:click={on_create_click}>
-            {#if _job}
-                {#if _job.render}
-                    RENDERING
-                {:else if _job.encode}
-                    ENCODING
-                {:else}
-                    WORKING
-                {/if}
-            {:else}
-                CREATE VIDEO
-            {/if}
-        </Menu.Button>
     </Menu.Container>
 </Box>
 

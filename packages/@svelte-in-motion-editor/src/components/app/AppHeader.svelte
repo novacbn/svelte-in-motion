@@ -8,7 +8,8 @@
 
     import {CONTEXT_EDITOR} from "../../lib/editor";
     import {is_prompt_dismiss_error} from "../../lib/errors";
-    import {download_blob, zip_frames} from "../../lib/io";
+    import {download_blob, download_buffer, zip_frames} from "../../lib/io";
+    import {jobs} from "../../lib/stores/jobs";
     import {notifications} from "../../lib/stores/notifications";
 
     import type {IExportFramesPromptEvent, IExportVideoPromptEvent} from "../../lib/stores/prompts";
@@ -47,12 +48,14 @@
             width: $configuration.width,
         });
 
-        const notification_identifier = renders.track(render_identifier);
+        const notification_identifier = renders.track(render_identifier, () =>
+            renders.remove(render_identifier)
+        );
         const frames = await renders.yield(render_identifier);
 
         notifications.update(notification_identifier, {
             icon: Archive,
-            header: "Archving Render",
+            header: "Archiving Frames",
             dismissible: false,
         });
 
@@ -60,22 +63,22 @@
 
         notifications.update(notification_identifier, {
             icon: Download,
-            header: "Downloading Render",
+            header: "Downloading Archive",
             dismissible: true,
         });
 
         download_blob(
             zip,
-            `svelte-in-motion.frames.${file}.${export_configuration.start}-${export_configuration.end}.zip`
+            `svelte-in-motion.frames.${export_configuration.start}-${export_configuration.end}.${file}.zip`
         );
     }
 
     async function on_export_video_click(event: MouseEvent): Promise<void> {
         (document.activeElement as HTMLElement).blur();
 
-        let result: IExportVideoPromptEvent;
+        let export_configuration: IExportVideoPromptEvent;
         try {
-            result = await prompts.prompt_export_video({
+            export_configuration = await prompts.prompt_export_video({
                 frame_min: 0,
                 frame_max: $configuration.maxframes,
             });
@@ -84,7 +87,44 @@
             throw err;
         }
 
-        console.log(result);
+        const job_identifier = jobs.queue({
+            file,
+
+            encode: {
+                codec: export_configuration.codec,
+                crf: export_configuration.crf,
+                framerate: $configuration.framerate,
+                height: $configuration.height,
+                pixel_format: export_configuration.pixel_format,
+                width: $configuration.width,
+            },
+
+            render: {
+                end: export_configuration.end,
+                start: export_configuration.start,
+                height: $configuration.height,
+                width: $configuration.width,
+            },
+        });
+
+        const notification_identifier = jobs.track(job_identifier, () =>
+            jobs.remove(job_identifier)
+        );
+        const video = await jobs.yield(job_identifier);
+
+        notifications.update(notification_identifier, {
+            icon: Download,
+            header: "Downloading Video",
+            dismissible: true,
+        });
+
+        // HACK: / TODO: Update later to support variable video container format
+
+        download_buffer(
+            video,
+            `svelte-in-motion.video.${export_configuration.start}-${export_configuration.end}.${file}.webm`,
+            `video/webm`
+        );
     }
 </script>
 

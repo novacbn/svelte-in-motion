@@ -11,6 +11,7 @@ import {renders} from "./renders";
 
 import type {ICollectionItem} from "./collection";
 import {collection} from "./collection";
+import type {INotification} from "./notifications";
 import {notifications} from "./notifications";
 
 export enum JOB_STATES {
@@ -19,8 +20,6 @@ export enum JOB_STATES {
     encoding = "encoding",
 
     rendering = "rendering",
-
-    started = "started",
 
     uninitialized = "uninitialized",
 }
@@ -88,13 +87,15 @@ export interface IJobQueueStore extends Readable<IJob[]> {
 
     queue(options: IJobQueueOptions): string;
 
-    track(identifier: string): string;
+    remove(identifier: string): IJob;
+
+    track(identifier: string, on_remove?: INotification["on_remove"]): string;
 
     yield(identifier: string): Promise<Uint8Array>;
 }
 
 export function jobqueue(): IJobQueueStore {
-    const {get, push, subscribe, remove, update} = collection<IJob>();
+    const {get, has, push, subscribe, remove, update} = collection<IJob>();
 
     const EVENT_END = event<IJobEndEvent>();
     const EVENT_START = event<IJobEvent>();
@@ -104,12 +105,6 @@ export function jobqueue(): IJobQueueStore {
 
     async function start_job(identifier: string, options: IJobQueueOptions): Promise<void> {
         const {file, encode, render} = options;
-
-        const notification_identifier = notifications.push({
-            icon: Clock,
-            header: "Starting Job",
-            text: file,
-        });
 
         const render_job = renders.queue({
             ...render,
@@ -124,11 +119,6 @@ export function jobqueue(): IJobQueueStore {
         EVENT_RENDERING.dispatch({
             job: job as IJobRendering,
             render: render_job,
-        });
-
-        notifications.update(notification_identifier, {
-            icon: Video,
-            header: "Rendering",
         });
 
         const frames = await renders.yield(render_job);
@@ -147,11 +137,6 @@ export function jobqueue(): IJobQueueStore {
             encode: encode_job,
         });
 
-        notifications.update(notification_identifier, {
-            icon: Film,
-            header: "Encoding",
-        });
-
         const video = await encodes.yield(encode_job);
         encodes.remove(encode_job);
 
@@ -164,14 +149,6 @@ export function jobqueue(): IJobQueueStore {
             job,
             video,
         });
-
-        notifications.update(notification_identifier, {
-            icon: Check,
-            dismissible: true,
-            header: "Job Finished",
-
-            on_remove: () => remove(identifier),
-        });
     }
 
     return {
@@ -183,6 +160,8 @@ export function jobqueue(): IJobQueueStore {
 
         subscribe,
 
+        has,
+
         queue(options) {
             const identifier = push({
                 state: JOB_STATES.uninitialized,
@@ -192,12 +171,94 @@ export function jobqueue(): IJobQueueStore {
             return identifier;
         },
 
-        track(identifier: string) {
-            if (!encodes.has(identifier)) {
+        remove(identifier) {
+            const job = get(identifier);
+
+            if (job.state !== JOB_STATES.ended) {
+                throw new ReferenceError(
+                    `bad argument #0 'jobqueue.remove' (job '${identifier}' has not ended)`
+                );
+            }
+
+            remove(identifier);
+            return job;
+        },
+
+        track(identifier, on_remove = undefined) {
+            if (!has(identifier)) {
                 throw new Error(
                     `bad argument #0 to 'jobqueue.track' (job '${identifier}' is not valid)`
                 );
             }
+
+            const notification_identifier = notifications.push({
+                header: "Tracking job...",
+                text: identifier,
+                on_remove,
+            });
+
+            function update(): void {
+                const job = get(identifier);
+
+                switch (job.state) {
+                    case JOB_STATES.ended:
+                        notifications.update(notification_identifier, {
+                            icon: Check,
+                            header: "Job Finished",
+                            dismissible: true,
+                        });
+
+                        break;
+
+                    case JOB_STATES.encoding:
+                        notifications.update(notification_identifier, {
+                            icon: Film,
+                            header: "Encoding Video",
+                        });
+
+                        break;
+
+                    case JOB_STATES.rendering:
+                        notifications.update(notification_identifier, {
+                            icon: Video,
+                            header: "Rendering Frames",
+                        });
+
+                        break;
+
+                    case JOB_STATES.uninitialized:
+                        notifications.update(notification_identifier, {
+                            icon: Clock,
+                            header: "Starting Job",
+                        });
+
+                        break;
+                }
+            }
+
+            function on_event({job}: IJobEvent): void {
+                if (job.identifier !== identifier) return;
+
+                update();
+            }
+
+            const destroy_encoding = EVENT_ENCODING.subscribe(on_event);
+            const destroy_rendering = EVENT_RENDERING.subscribe(on_event);
+            const destroy_start = EVENT_START.subscribe(on_event);
+
+            const destroy_end = EVENT_END.subscribe(({job}) => {
+                if (job.identifier !== identifier) return;
+
+                destroy_encoding();
+                destroy_end();
+                destroy_rendering();
+                destroy_start();
+
+                update();
+            });
+
+            update();
+            return notification_identifier;
         },
 
         yield(identifier) {

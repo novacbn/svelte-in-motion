@@ -4,10 +4,12 @@ import type {Readable} from "svelte/store";
 import type {IEvent} from "@svelte-in-motion/core";
 import {event} from "@svelte-in-motion/core";
 
+import type {IRenderEndMessage, IRenderProgressMessage, IRenderStartMessage} from "../types/render";
+
 import type {ICollectionItem} from "./collection";
 import {collection} from "./collection";
 import {subscribe} from "../messages";
-import type {IRenderEndMessage, IRenderProgressMessage, IRenderStartMessage} from "../types/render";
+import type {INotification} from "./notifications";
 import {notifications} from "./notifications";
 
 export enum RENDER_STATES {
@@ -60,7 +62,7 @@ export interface IRenderQueueStore extends Readable<IRender[]> {
 
     remove(identifier: string): IRender;
 
-    track(identifier: string): string;
+    track(identifier: string, on_remove?: INotification["on_remove"]): string;
 
     yield(identifier: string): Promise<Uint8Array[]>;
 }
@@ -158,7 +160,7 @@ function renderqueue(): IRenderQueueStore {
             return render;
         },
 
-        track(identifier: string) {
+        track(identifier, on_remove = undefined) {
             if (!has(identifier)) {
                 throw new Error(
                     `bad argument #0 to 'renderqueue.track' (render '${identifier}' is not valid)`
@@ -168,6 +170,7 @@ function renderqueue(): IRenderQueueStore {
             const notification_identifier = notifications.push({
                 header: "Tracking render...",
                 text: identifier,
+                on_remove,
             });
 
             function update(): void {
@@ -186,7 +189,7 @@ function renderqueue(): IRenderQueueStore {
                     case RENDER_STATES.started:
                         notifications.update(notification_identifier, {
                             icon: Video,
-                            header: "Rendering",
+                            header: "Rendering Frames",
                         });
 
                         break;

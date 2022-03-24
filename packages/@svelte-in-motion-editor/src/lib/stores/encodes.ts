@@ -8,6 +8,7 @@ import {encode} from "@svelte-in-motion/encoding";
 
 import type {ICollectionItem} from "./collection";
 import {collection} from "./collection";
+import type {INotification} from "./notifications";
 import {notifications} from "./notifications";
 
 export enum ENCODE_STATES {
@@ -67,7 +68,7 @@ export interface IEncodeQueueStore extends Readable<IEncode[]> {
 
     remove(identifier: string): IEncode;
 
-    track(identifier: string): string;
+    track(identifier: string, on_remove?: INotification["on_remove"]): string;
 
     yield(identifier: string): Promise<Uint8Array>;
 }
@@ -144,7 +145,7 @@ export function encodequeue(): IEncodeQueueStore {
             return encode;
         },
 
-        track(identifier: string) {
+        track(identifier, on_remove = undefined) {
             if (!has(identifier)) {
                 throw new Error(
                     `bad argument #0 to 'encodequeue.track' (encode '${identifier}' is not valid)`
@@ -154,12 +155,13 @@ export function encodequeue(): IEncodeQueueStore {
             const notification_identifier = notifications.push({
                 header: "Tracking encode...",
                 text: identifier,
+                on_remove,
             });
 
             function update(): void {
-                const render = get(identifier);
+                const encode = get(identifier);
 
-                switch (render.state) {
+                switch (encode.state) {
                     case ENCODE_STATES.ended:
                         notifications.update(notification_identifier, {
                             icon: Check,
@@ -172,7 +174,7 @@ export function encodequeue(): IEncodeQueueStore {
                     case ENCODE_STATES.started:
                         notifications.update(notification_identifier, {
                             icon: Film,
-                            header: "Encoding",
+                            header: "Encoding Video",
                         });
 
                         break;
