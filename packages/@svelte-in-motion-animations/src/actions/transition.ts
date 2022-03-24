@@ -1,4 +1,4 @@
-import type {IFrameRateStore, IFrameStore} from "@svelte-in-motion/core";
+import {IFrameRateStore, IFrameStore, parse_style} from "@svelte-in-motion/core";
 import {state} from "@svelte-in-motion/core";
 
 import type {ITransition} from "../transitions/transitions";
@@ -60,7 +60,15 @@ export function transition<T extends ITransition>(
 
                 // TODO: cycle through every CSS step ahead of time to generate
                 // a `@keyframes` animation like Svelte to have the engine handle it
-                if (css) element.style.cssText = css(in_tick, out_tick);
+                //
+                // Is that even possible?
+
+                if (css) {
+                    const style = css(in_tick, out_tick);
+                    const declarations = parse_style(style);
+
+                    Object.assign(element.style, declarations);
+                }
                 if (tick) tick(in_tick, out_tick);
             }
         });

@@ -18,5 +18,6 @@ export * from "./util/environment";
 export * from "./util/event";
 export * from "./util/math";
 export * from "./util/random";
+export * from "./util/style";
 export * from "./util/timing";
 export * from "./util/url";
