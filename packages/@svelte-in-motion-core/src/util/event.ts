@@ -46,35 +46,26 @@ export interface IEvent<T> {
  * @param start
  */
 export function event<T>(start?: IEventNotifier<T>): IEvent<T> {
-    const subscribers: IEventSubscriber<T>[] = [];
+    const subscribers: Set<IEventSubscriber<T>> = new Set();
 
     let stop: IEventUnsubscriber | null;
 
     const dispatch = (detail: T) => {
-        if (subscribers.length > 0) {
-            for (let index = 0; index < subscribers.length; index++) {
-                const [run] = subscribers[index];
-
-                run(detail);
-            }
-        }
+        for (const [run] of subscribers) run(detail);
     };
 
     const subscribe = (run: IEventCallback<T>) => {
         const subscriber: IEventSubscriber<T> = [run];
 
-        subscribers.push(subscriber);
-        if (start && subscribers.length === 1) stop = start(dispatch);
+        subscribers.add(subscriber);
+        if (start && subscribers.size === 1) stop = start(dispatch);
 
         return () => {
-            const index = subscribers.indexOf(subscriber);
-            if (index > 0) {
-                subscribers.splice(index, 1);
+            subscribers.delete(subscriber);
 
-                if (stop && subscribers.length == 0) {
-                    stop();
-                    stop = null;
-                }
+            if (stop && subscribers.size === 0) {
+                stop();
+                stop = null;
             }
         };
     };
