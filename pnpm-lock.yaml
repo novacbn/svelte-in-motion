@@ -77,6 +77,7 @@ importers:
       '@tsconfig/svelte': ^2.0.1
       '@types/prismjs': ^1.26.0
       '@zip.js/zip.js': ^2.4.7
+      buffer: ^6.0.3
       html-to-image: ^1.9.0
       lucide-svelte: ^0.17.9
       prismjs: ^1.27.0
@@ -97,6 +98,7 @@ importers:
       '@svelte-in-motion/metadata': link:../@svelte-in-motion-metadata
       '@svelte-in-motion/storage': link:../@svelte-in-motion-storage
       '@zip.js/zip.js': 2.4.7
+      buffer: 6.0.3
       html-to-image: 1.9.0
       lucide-svelte: 0.17.9_svelte@3.46.4
       prismjs: 1.27.0

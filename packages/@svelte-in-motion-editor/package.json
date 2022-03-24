@@ -20,6 +20,7 @@
         "@svelte-in-motion/metadata": "workspace:^",
         "@svelte-in-motion/storage": "workspace:^",
         "@zip.js/zip.js": "^2.4.7",
+        "buffer": "^6.0.3",
         "html-to-image": "^1.9.0",
         "lucide-svelte": "^0.17.9",
         "prismjs": "^1.27.0",
