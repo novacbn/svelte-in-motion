@@ -1,4 +1,4 @@
-import type {IExtrapolateModesLiteral, IFrameRateStore, IFrameStore} from "@svelte-in-motion/core";
+import type {IFrameRateStore, IFrameStore} from "@svelte-in-motion/core";
 import {state} from "@svelte-in-motion/core";
 
 import type {ITransition} from "../transitions/transitions";
@@ -22,10 +22,6 @@ export interface ITransitionActionOptions<T extends ITransition> {
 
     inverse?: boolean;
 
-    max?: IExtrapolateModesLiteral;
-
-    min?: IExtrapolateModesLiteral;
-
     parameters: Parameters<T>[1];
 
     transition: T;
@@ -43,7 +39,7 @@ export function transition<T extends ITransition>(
             destroy = null;
         }
 
-        const {frame, framerate, max, min, inverse, parameters = {}, transition} = options;
+        const {frame, framerate, inverse, parameters = {}, transition} = options;
         const {css, delay, duration, easing, tick} = {
             ...parameters,
             ...transition(element, parameters),
@@ -53,8 +49,6 @@ export function transition<T extends ITransition>(
             delay,
             duration,
             easing,
-            max,
-            min,
             frame,
             framerate,
         });
