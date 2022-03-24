@@ -1,6 +1,4 @@
 <script lang="ts">
-    import {CONTEXT_FRAME, CONTEXT_FRAMERATE} from "@svelte-in-motion/core";
-
     import {transition as transition_action} from "../actions/transition";
     import type {ITransition} from "../transitions/transitions";
 
