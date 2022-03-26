@@ -8,7 +8,7 @@
     import {CONTEXT_EDITOR} from "../../lib/editor";
     import {STORAGE_USER} from "../../lib/storage";
 
-    const {file: file_context, zen_mode} = CONTEXT_EDITOR.get()!;
+    const {path, zen_mode} = CONTEXT_EDITOR.get()!;
 
     let files: string[] = [];
 
@@ -37,10 +37,10 @@
 >
     <Menu.Container sizing="nano" padding="medium">
         {#each files as file}
-            <Menu.Anchor href="#/{file}" active={file === file_context}>
+            <Menu.Anchor href="#/{file}" active={file === $path}>
                 <FileCode size="1em" />
 
-                {file}
+                {file.slice(1)}
             </Menu.Anchor>
         {/each}
     </Menu.Container>

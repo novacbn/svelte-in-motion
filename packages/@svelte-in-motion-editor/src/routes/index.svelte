@@ -2,7 +2,6 @@
     import type {ILoadCallback} from "../lib/router";
     import {GUARD_STORAGE} from "../lib/router";
     import {STORAGE_USER} from "../lib/storage";
-    import {preload_editor} from "../lib/editor";
 
     export const pattern: string = "/:file";
 
@@ -13,11 +12,9 @@
             throw new ReferenceError(`bad navigation to '/:file' (file '${file}' not found)`);
         }
 
-        const editor = await preload_editor(file);
-
         return {
             props: {
-                editor,
+                file,
             },
         };
     });
@@ -26,8 +23,7 @@
 <script lang="ts">
     import "../lib/stores/jobs";
 
-    import type {IEditorContext} from "../lib/editor";
-    import {CONTEXT_EDITOR} from "../lib/editor";
+    import {CONTEXT_EDITOR, editor} from "../lib/editor";
 
     import AppHeader from "../components/app/AppHeader.svelte";
     import AppNotifications from "../components/app/AppNotifications.svelte";
@@ -40,9 +36,12 @@
     import EditorSidebar from "../components/editor/EditorSidebar.svelte";
     import EditorTimeline from "../components/editor/EditorTimeline.svelte";
 
-    export let editor: IEditorContext;
+    export let file: string;
 
-    CONTEXT_EDITOR.set(editor);
+    const editor_context = editor(file);
+    CONTEXT_EDITOR.set(editor_context);
+
+    $: editor_context.path.set(file);
 </script>
 
 <EditorLayout>

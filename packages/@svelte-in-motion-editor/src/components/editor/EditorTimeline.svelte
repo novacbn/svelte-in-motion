@@ -5,7 +5,7 @@
 
     import {CONTEXT_EDITOR} from "../../lib/editor";
 
-    const {configuration, frame, framerate, maxframes} = CONTEXT_EDITOR.get()!;
+    const {frame, framerate, maxframes} = CONTEXT_EDITOR.get()!;
 
     const _duration = duration({
         framerate,
@@ -24,19 +24,10 @@
 
     <Stack.Container alignment_x="left" padding_x="tiny" padding_bottom="tiny">
         <Code>
-            ({$frame}/{$configuration.maxframes}) ({truncate($_seek, 3)}s/{truncate(
-                $_duration,
-                3
-            )}s)
+            ({$frame}/{$maxframes}) ({truncate($_seek, 3)}s/{truncate($_duration, 3)}s)
         </Code>
 
-        <input
-            type="range"
-            min={0}
-            max={$configuration.maxframes}
-            data-width="100"
-            bind:value={$frame}
-        />
+        <input type="range" min={0} max={$maxframes} data-width="100" bind:value={$frame} />
     </Stack.Container>
 </Box>
 

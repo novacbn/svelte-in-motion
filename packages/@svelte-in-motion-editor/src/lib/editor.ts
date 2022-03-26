@@ -6,33 +6,35 @@ import type {
     IFrameStore,
     IMaxFramesStore,
     IPlayingStore,
+    ReadableOnly,
 } from "@svelte-in-motion/core";
 import {
     frame as frame_store,
     make_scoped_context,
     playing as playing_store,
 } from "@svelte-in-motion/core";
-import type {IConfiguration} from "@svelte-in-motion/metadata";
-import {parse_configuration} from "@svelte-in-motion/metadata";
 
-import type {IFileStore} from "./stores/file";
-import {file as file_store, preload_file} from "./stores/file";
+import type {IContentStore} from "./stores/content";
+import {content as make_content_store} from "./stores/content";
+import type {IPathStore} from "./stores/path";
+import {path as make_path_store} from "./stores/path";
 import {prompts} from "./stores/prompts";
+import {configuration as make_configuration_store} from "./stores/configuration";
 
 export const CONTEXT_EDITOR = make_scoped_context<IEditorContext>("editor");
 
 export interface IEditorContext {
-    configuration: Readable<IConfiguration>;
-
-    content: IFileStore;
-
-    file: string;
+    content: IContentStore;
 
     frame: IFrameStore;
 
-    framerate: Omit<IFrameRateStore, "set" | "update">;
+    framerate: ReadableOnly<IFrameRateStore>;
 
-    maxframes: Omit<IMaxFramesStore, "set" | "update">;
+    maxframes: ReadableOnly<IMaxFramesStore>;
+
+    height: Readable<number>;
+
+    path: IPathStore;
 
     playing: IPlayingStore;
 
@@ -40,17 +42,22 @@ export interface IEditorContext {
 
     show_script: Writable<boolean>;
 
+    width: Readable<number>;
+
     zen_mode: Writable<boolean>;
 }
 
-export function editor(path: string, content: IFileStore = file_store(path)): IEditorContext {
-    const configuration = derived(content, ($file) => parse_configuration($file));
+function make_editor_context(path: IPathStore, content: IContentStore): IEditorContext {
+    const configuration = make_configuration_store(content);
 
     const frame = frame_store(0);
     const playing = playing_store(false);
 
-    const framerate = derived(configuration, ($configuration) => $configuration.framerate);
-    const maxframes = derived(configuration, ($configuration) => $configuration.maxframes);
+    const framerate = derived(configuration, ($configuration) => $configuration?.framerate ?? 0);
+    const maxframes = derived(configuration, ($configuration) => $configuration?.maxframes ?? 0);
+
+    const height = derived(configuration, ($configuration) => $configuration?.height ?? 0);
+    const width = derived(configuration, ($configuration) => $configuration?.width ?? 0);
 
     const show_checkerboard = writable<boolean>(true);
     const show_script = writable<boolean>(false);
@@ -58,25 +65,27 @@ export function editor(path: string, content: IFileStore = file_store(path)): IE
     const zen_mode = writable<boolean>(false);
 
     return {
-        configuration,
         content,
-        file: path,
         frame,
         framerate,
+        height,
         maxframes,
+        path,
         playing,
         show_checkerboard,
         show_script,
+        width,
         zen_mode,
     };
 }
 
-export function has_focus(): boolean {
-    return !document.activeElement?.hasAttribute("contenteditable") && !get(prompts);
+export function editor(path: string): IEditorContext {
+    const path_store = make_path_store(path);
+    const content_store = make_content_store(path_store);
+
+    return make_editor_context(path_store, content_store);
 }
 
-export async function preload_editor(path: string): Promise<IEditorContext> {
-    const content = await preload_file(path);
-
-    return editor(path, content);
+export function has_focus(): boolean {
+    return !document.activeElement?.hasAttribute("contenteditable") && !get(prompts);
 }

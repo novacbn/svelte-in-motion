@@ -17,7 +17,7 @@
 
     import Tooltip from "../Tooltip.svelte";
 
-    const {configuration, frame, playing, show_checkerboard, show_script, zen_mode} =
+    const {frame, maxframes, playing, show_checkerboard, show_script, zen_mode} =
         CONTEXT_EDITOR.get()!;
 
     function on_checkerboard_toggle(event: IKeybindEvent | MouseEvent): void {
@@ -41,7 +41,7 @@
             if (!event.detail.active) return;
         }
 
-        $frame = clamp($frame + delta, 0, $configuration.maxframes);
+        $frame = clamp($frame + delta, 0, $maxframes);
     }
 
     function on_playing_toggle(event: IKeybindEvent | MouseEvent): void {

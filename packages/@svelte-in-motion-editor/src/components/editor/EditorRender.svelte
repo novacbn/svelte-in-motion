@@ -8,13 +8,16 @@
     import {CONTEXT_EDITOR} from "../../lib/editor";
 
     import type {
+        IPreviewDestroyMessage,
         IPreviewFrameMessage,
+        IPreviewMountMessage,
         IPreviewPlayingMessage,
         IPreviewReadyMessage,
     } from "../../lib/types/preview";
-    import {CONFIGURATION} from "../../lib/storage/SAMPLE.svelte";
 
-    const {configuration, file, frame, framerate, maxframes, playing, show_checkerboard} =
+    import Loader from "../Loader.svelte";
+
+    const {frame, framerate, height, maxframes, path, playing, show_checkerboard, width} =
         CONTEXT_EDITOR.get()!;
 
     const _advance = advance({frame, framerate, maxframes, playing});
@@ -29,7 +32,9 @@
     let _preview_height: number;
     let _preview_width: number;
 
+    let _mounted: boolean = false;
     let _ready: boolean = false;
+
     let _show_resolution: boolean = true;
 
     const hide_resolution = debounce(() => (_show_resolution = false), 2500);
@@ -47,13 +52,29 @@
             throw ReferenceError("bad mount to 'EditorRender' (could not query iframe)");
         }
 
-        const destroy = subscribe<IPreviewReadyMessage>(
+        const destroy_destroy = subscribe<IPreviewDestroyMessage>(
+            "PREVIEW_DESTROY",
+            () => (_mounted = false),
+            iframe_element
+        );
+
+        const destroy_mounted = subscribe<IPreviewMountMessage>(
+            "PREVIEW_MOUNT",
+            () => (_mounted = true),
+            iframe_element
+        );
+
+        const destroy_ready = subscribe<IPreviewReadyMessage>(
             "PREVIEW_READY",
             () => (_ready = true),
             iframe_element
         );
 
-        return () => destroy();
+        return () => {
+            destroy_destroy();
+            destroy_mounted();
+            destroy_ready();
+        };
     });
 
     // HACK: Need to subscribe to it, so it'll run
@@ -80,8 +101,8 @@
             const available_width = _render_width - (padding_left + padding_right);
             const available_height = _render_height - (padding_top + padding_bottom);
 
-            const preferred_height = available_width * (CONFIGURATION.height / CONFIGURATION.width);
-            const preferred_width = available_height * (CONFIGURATION.width / CONFIGURATION.height);
+            const preferred_height = available_width * ($height / $width);
+            const preferred_width = available_height * ($width / $height);
 
             if (preferred_height > available_height) {
                 _container_width = preferred_width;
@@ -117,12 +138,12 @@
     <div
         bind:this={container_element}
         class="sim--editor-render--container"
-        style="--configuration-width:{$configuration.width};--configuration-height:{$configuration.height};width:{_container_width}px;height:{_container_height}px"
+        style="--configuration-width:{$width};--configuration-height:{$height};width:{_container_width}px;height:{_container_height}px"
     >
         <iframe
             class="sim--editor-render--preview"
             bind:this={iframe_element}
-            src="/preview.html?file={file}"
+            src="/preview.html?file={$path}"
             data-checkerboard={$show_checkerboard}
         />
 
@@ -134,9 +155,11 @@
                 on:pointerleave={on_resolution_exit}
             >
                 {_preview_width}x{_preview_height}
-                ({$configuration.width}x{$configuration.height})
+                ({$width}x{$height})
             </Badge>
         </Position>
+
+        <Loader hidden={_mounted} />
     </div>
 
     <Divider class="sim--editor-render--divider" palette="inverse" margin="none" />

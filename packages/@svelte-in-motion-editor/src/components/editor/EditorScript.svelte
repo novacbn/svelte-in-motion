@@ -11,11 +11,20 @@
 
     import {CONTEXT_EDITOR} from "../../lib/editor";
 
+    import Loader from "../Loader.svelte";
+
     const {content, show_script} = CONTEXT_EDITOR.get()!;
 </script>
 
 <div class="sim--editor-script" style="display:{$show_script ? 'block' : 'none'}">
-    <CodeJar class="sim--editor-script--editor" syntax="svelte" {highlight} bind:value={$content} />
+    {#if $content !== null}
+        <CodeJar
+            class="sim--editor-script--editor"
+            syntax="svelte"
+            {highlight}
+            bind:value={$content}
+        />
+    {/if}
 
     <Divider
         class="sim--editor-script--divider"
@@ -23,6 +32,8 @@
         palette="inverse"
         margin="none"
     />
+
+    <Loader hidden={$content !== null} />
 </div>
 
 <style>

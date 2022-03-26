@@ -192,7 +192,7 @@ export function indexeddb(
                         (matcher ? matcher.test(key) : true)
                     );
                 })
-                .map((key) => key.toString().slice(path.length));
+                .map((key) => key.toString().slice(path.length - 1));
         },
 
         async read_file(path) {

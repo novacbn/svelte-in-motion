@@ -16,7 +16,7 @@
     import {prompts} from "../../lib/stores/prompts";
     import {renders} from "../../lib/stores/renders";
 
-    const {configuration, file, zen_mode} = CONTEXT_EDITOR.get()!;
+    const {framerate, height, maxframes, path, width, zen_mode} = CONTEXT_EDITOR.get()!;
 
     async function on_about_click(event: MouseEvent): Promise<void> {
         (document.activeElement as HTMLElement).blur();
@@ -33,7 +33,7 @@
         try {
             export_configuration = await prompts.prompt_export_frames({
                 frame_min: 0,
-                frame_max: $configuration.maxframes,
+                frame_max: $maxframes,
             });
         } catch (err) {
             if (!is_prompt_dismiss_error(err)) return;
@@ -42,10 +42,10 @@
 
         const render_identifier = renders.queue({
             end: export_configuration.end,
-            file,
-            height: $configuration.height,
+            file: $path,
+            height: $height,
             start: export_configuration.start,
-            width: $configuration.width,
+            width: $width,
         });
 
         const notification_identifier = renders.track(render_identifier, () =>
@@ -69,7 +69,7 @@
 
         download_blob(
             zip,
-            `svelte-in-motion.frames.${export_configuration.start}-${export_configuration.end}.${file}.zip`
+            `svelte-in-motion.frames.${export_configuration.start}-${export_configuration.end}.${$path}.zip`
         );
     }
 
@@ -80,7 +80,7 @@
         try {
             export_configuration = await prompts.prompt_export_video({
                 frame_min: 0,
-                frame_max: $configuration.maxframes,
+                frame_max: $maxframes,
             });
         } catch (err) {
             if (!is_prompt_dismiss_error(err)) return;
@@ -88,22 +88,22 @@
         }
 
         const job_identifier = jobs.queue({
-            file,
+            file: $path,
 
             encode: {
                 codec: export_configuration.codec,
                 crf: export_configuration.crf,
-                framerate: $configuration.framerate,
-                height: $configuration.height,
+                framerate: $framerate,
+                height: $height,
                 pixel_format: export_configuration.pixel_format,
-                width: $configuration.width,
+                width: $width,
             },
 
             render: {
                 end: export_configuration.end,
                 start: export_configuration.start,
-                height: $configuration.height,
-                width: $configuration.width,
+                height: $height,
+                width: $width,
             },
         });
 
@@ -122,7 +122,7 @@
 
         download_buffer(
             video,
-            `svelte-in-motion.video.${export_configuration.start}-${export_configuration.end}.${file}.webm`,
+            `svelte-in-motion.video.${export_configuration.start}-${export_configuration.end}.${$path}.webm`,
             `video/webm`
         );
     }
