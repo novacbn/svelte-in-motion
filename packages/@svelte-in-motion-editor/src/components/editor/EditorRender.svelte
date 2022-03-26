@@ -9,15 +9,17 @@
 
     import type {
         IPreviewDestroyMessage,
+        IPreviewErrorMessage,
         IPreviewFrameMessage,
         IPreviewMountMessage,
         IPreviewPlayingMessage,
         IPreviewReadyMessage,
     } from "../../lib/types/preview";
 
+    import Errors from "../Errors.svelte";
     import Loader from "../Loader.svelte";
 
-    const {frame, framerate, height, maxframes, path, playing, show_checkerboard, width} =
+    const {errors, frame, framerate, height, maxframes, path, playing, show_checkerboard, width} =
         CONTEXT_EDITOR.get()!;
 
     const _advance = advance({frame, framerate, maxframes, playing});
@@ -58,9 +60,18 @@
             iframe_element
         );
 
+        const destroy_error = subscribe<IPreviewErrorMessage>(
+            "PREVIEW_ERROR",
+            ({message, name}) => ($errors = {name, message}),
+            iframe_element
+        );
+
         const destroy_mounted = subscribe<IPreviewMountMessage>(
             "PREVIEW_MOUNT",
-            () => (_mounted = true),
+            () => {
+                $errors = null;
+                _mounted = true;
+            },
             iframe_element
         );
 
@@ -72,6 +83,7 @@
 
         return () => {
             destroy_destroy();
+            destroy_error();
             destroy_mounted();
             destroy_ready();
         };
@@ -159,8 +171,10 @@
             </Badge>
         </Position>
 
-        <Loader hidden={_mounted} />
+        <Loader hidden={!$errors && _mounted} />
     </div>
+
+    <Errors />
 
     <Divider class="sim--editor-render--divider" palette="inverse" margin="none" />
 </div>

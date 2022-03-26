@@ -15,8 +15,6 @@ export interface IRenderErrorMessage extends IMessage {
         message: string;
 
         name: string;
-
-        stack?: string;
     };
 }
 

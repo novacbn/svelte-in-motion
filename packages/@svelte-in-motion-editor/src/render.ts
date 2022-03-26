@@ -41,22 +41,32 @@ import type {
     }
 
     window.addEventListener("error", (event) => {
-        const {message, name, stack} = event.error;
+        const error = event.error as Error;
 
         dispatch<IRenderErrorMessage>("RENDER_ERROR", {
-            name,
-            message,
-            stack,
+            message: error.message,
+            name: error.name,
         });
     });
 
-    const [bundled_script] = await bundle({
+    const result = await bundle({
         file,
         storage: STORAGE_USER,
     });
 
+    if ("errors" in result) {
+        const [first_error] = result.errors;
+
+        dispatch<IRenderErrorMessage>("RENDER_ERROR", {
+            message: first_error.message,
+            name: first_error.name,
+        });
+
+        return;
+    }
+
     const module = evaluate_code<typeof SvelteComponent, {CONFIGURATION: IConfiguration}>(
-        bundled_script,
+        result.script,
         REPL_CONTEXT,
         REPL_IMPORTS
     );

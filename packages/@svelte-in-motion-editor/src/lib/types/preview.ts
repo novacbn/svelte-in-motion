@@ -13,8 +13,6 @@ export interface IPreviewErrorMessage extends IMessage {
         message: string;
 
         name: string;
-
-        stack?: string;
     };
 }
 

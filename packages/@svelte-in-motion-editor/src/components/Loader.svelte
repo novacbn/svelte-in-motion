@@ -4,7 +4,7 @@
     export let hidden: boolean = false;
 </script>
 
-<Overlay.Container class="loader" {hidden}>
+<Overlay.Container class="sim--loader" {hidden}>
     <Overlay.Section>
         <Box size="100">
             <Center height="100">
@@ -17,7 +17,7 @@
 </Overlay.Container>
 
 <style>
-    :global(.loader) {
+    :global(.sim--loader) {
         position: absolute;
     }
 </style>

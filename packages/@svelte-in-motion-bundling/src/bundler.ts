@@ -1,4 +1,4 @@
-import {build, initialize} from "esbuild-wasm";
+import {build, BuildResult, initialize, Message, OutputFile} from "esbuild-wasm";
 
 import type {IDriver} from "@svelte-in-motion/storage";
 
@@ -8,6 +8,12 @@ import {svelte_plugin} from "./plugins/svelte";
 
 let has_initialized: boolean = false;
 
+interface IError {
+    message: string;
+
+    name: string;
+}
+
 export interface IBundleOptions {
     file: string;
 
@@ -16,7 +22,26 @@ export interface IBundleOptions {
     worker?: boolean;
 }
 
-export async function bundle(options: IBundleOptions): Promise<[string, string[]]> {
+export interface IBundleError {
+    errors: IError[];
+}
+
+export interface IBundleSuccess {
+    dependencies: string[];
+
+    script: string;
+}
+
+function map_messages(messages: Message[]): IError[] {
+    return messages.map((message, index) => {
+        return {
+            name: message.detail.name,
+            message: message.text,
+        };
+    });
+}
+
+export async function bundle(options: IBundleOptions): Promise<IBundleError | IBundleSuccess> {
     const {file, storage, worker = false} = options;
 
     if (!has_initialized) {
@@ -28,46 +53,62 @@ export async function bundle(options: IBundleOptions): Promise<[string, string[]
         has_initialized = true;
     }
 
-    const result = await build({
-        entryPoints: [file],
+    let result: BuildResult & {outputFiles: OutputFile[]};
+    try {
+        result = await build({
+            entryPoints: [file],
 
-        format: "cjs",
-        platform: "browser",
+            format: "cjs",
+            platform: "browser",
 
-        metafile: true,
+            metafile: true,
 
-        bundle: true,
-        write: false,
+            bundle: true,
+            write: false,
 
-        external: [
-            "@svelte-in-motion/animations",
-            "@svelte-in-motion/core",
-            "svelte",
-            "svelte/animate",
-            "svelte/easing",
-            "svelte/internal",
-            "svelte/motion",
-            "svelte/store",
-            "svelte/transition",
-        ],
+            external: [
+                "@svelte-in-motion/animations",
+                "@svelte-in-motion/core",
+                "svelte",
+                "svelte/animate",
+                "svelte/easing",
+                "svelte/internal",
+                "svelte/motion",
+                "svelte/store",
+                "svelte/transition",
+            ],
 
-        plugins: [
-            storage_plugin({
-                storage,
-            }),
+            plugins: [
+                storage_plugin({
+                    storage,
+                }),
 
-            javascript_plugin({
-                storage,
-            }),
+                javascript_plugin({
+                    storage,
+                }),
 
-            svelte_plugin({
-                storage,
-            }),
-        ],
-    });
+                svelte_plugin({
+                    storage,
+                }),
+            ],
+        });
+    } catch (err) {
+        return {
+            errors: map_messages((err as any).errors as Message[]),
+        };
+    }
+
+    if (result.errors.length > 0) {
+        return {
+            errors: map_messages(result.errors),
+        };
+    }
 
     const [output] = result.outputFiles;
     const dependencies = Object.keys(result.metafile!.inputs);
 
-    return [output.text, dependencies];
+    return {
+        dependencies,
+        script: output.text,
+    };
 }

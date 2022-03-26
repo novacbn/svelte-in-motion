@@ -56,17 +56,30 @@ import type {
     async function update(): Promise<void> {
         const nonce = (_nonce = generate_id());
 
-        const bundled = await bundle({
+        const result = await bundle({
             file,
             storage: STORAGE_USER,
         });
 
         if (_nonce !== nonce) return;
 
-        _dependencies = new Set(bundled[1].map((file_path) => normalize_pathname(file_path)));
+        if ("errors" in result) {
+            const [first_error] = result.errors;
+
+            dispatch<IPreviewErrorMessage>("PREVIEW_ERROR", {
+                message: first_error.message,
+                name: first_error.name,
+            });
+
+            return;
+        }
+
+        _dependencies = new Set(
+            result.dependencies.map((file_path) => normalize_pathname(file_path))
+        );
 
         const module = evaluate_code<typeof SvelteComponent, {CONFIGURATION: IConfiguration}>(
-            bundled[0],
+            result.script,
             REPL_CONTEXT,
             REPL_IMPORTS
         );
@@ -102,12 +115,11 @@ import type {
     }
 
     window.addEventListener("error", (event) => {
-        const {message, name, stack} = event.error;
+        const error = event.error as Error;
 
         dispatch<IPreviewErrorMessage>("PREVIEW_ERROR", {
-            name,
-            message,
-            stack,
+            message: error.message,
+            name: error.name,
         });
     });
 
