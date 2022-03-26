@@ -11,6 +11,11 @@ export type IConfigurationStore = Readable<IConfiguration | null>;
 export function configuration(content: IContentStore): IConfigurationStore {
     return derived(content, ($content) => {
         if (!$content) return null;
-        return parse_configuration($content);
+
+        try {
+            return parse_configuration($content);
+        } catch (err) {
+            return null;
+        }
     });
 }
