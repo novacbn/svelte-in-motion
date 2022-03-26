@@ -65,7 +65,7 @@ importers:
 
   packages/@svelte-in-motion-editor:
     specifiers:
-      '@kahi-ui/framework': 0.6.3
+      '@kahi-ui/framework': 0.6.4
       '@novacbn/svelte-codejar': ^0.1.2
       '@svelte-in-motion/animations': workspace:^
       '@svelte-in-motion/bundling': workspace:^
@@ -89,7 +89,7 @@ importers:
       urlpattern-polyfill: ^1.0.0-rc5
       vite: ^2.8.0
     dependencies:
-      '@kahi-ui/framework': 0.6.3
+      '@kahi-ui/framework': 0.6.4
       '@novacbn/svelte-codejar': 0.1.2
       '@svelte-in-motion/animations': link:../@svelte-in-motion-animations
       '@svelte-in-motion/bundling': link:../@svelte-in-motion-bundling
@@ -179,8 +179,8 @@ packages:
       - encoding
     dev: false
 
-  /@kahi-ui/framework/0.6.3:
-    resolution: {integrity: sha512-4XTbB1a33fiAuZsDhtWomQd0mctIGQvQdGALkA0vDF4o1CzHbu011Qa7NPREB25cvgd7o0zg6D2qZGYsK9Z7ng==}
+  /@kahi-ui/framework/0.6.4:
+    resolution: {integrity: sha512-pEtG2W4B9jVoAloETnQx1gIxiwFMC3XqQwDF36en8r5KrIsc5ay7hcPGWA+sA4WJubfGULDRW/HKj/qfYRgtNQ==}
     dependencies:
       svelte: 3.46.4
     dev: false
