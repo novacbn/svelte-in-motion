@@ -1,0 +1,14 @@
+{
+    "name": "@svelte-in-motion/tauri",
+    "version": "0.0.1",
+    "private": true,
+    "scripts": {
+        "tauri": "tauri"
+    },
+    "devDependencies": {
+        "@tauri-apps/cli": "1.0.0-rc.9"
+    },
+    "dependencies": {
+        "@svelte-in-motion/editor": "workspace:^"
+    }
+}

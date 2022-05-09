@@ -1,0 +1,62 @@
+{
+    "package": {
+        "productName": "svelte-in-motion",
+        "version": "0.0.1"
+    },
+    "build": {
+        "distDir": "../node_modules/@svelte-in-motion/editor/dist"
+    },
+    "tauri": {
+        "bundle": {
+            "active": true,
+            "targets": "all",
+            "identifier": "dev.nbn.sim",
+            "icon": [
+                "icons/32x32.png",
+                "icons/128x128.png",
+                "icons/128x128@2x.png",
+                "icons/icon.icns",
+                "icons/icon.ico"
+            ],
+            "resources": [],
+            "externalBin": [],
+            "copyright": "",
+            "category": "DeveloperTool",
+            "shortDescription": "Programatic videos via Web APIs.",
+            "longDescription": "",
+            "deb": {
+                "depends": []
+            },
+            "macOS": {
+                "frameworks": [],
+                "exceptionDomain": "",
+                "signingIdentity": null,
+                "providerShortName": "svelte-in-motion",
+                "entitlements": null
+            },
+            "windows": {
+                "certificateThumbprint": null,
+                "digestAlgorithm": "sha256",
+                "timestampUrl": ""
+            }
+        },
+        "updater": {
+            "active": false
+        },
+        "allowlist": {
+            "all": true
+        },
+        "windows": [
+            {
+                "title": "Svelte-In-Motion",
+                "width": 1280,
+                "height": 720,
+                "resizable": true,
+                "fullscreen": false
+            }
+        ],
+        "security": {
+            "csp": null
+        }
+    }
+}
