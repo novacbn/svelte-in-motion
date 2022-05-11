@@ -1,13 +1,15 @@
 import type {PROPERTY_PALETTE} from "@kahi-ui/framework";
 import type {SvelteComponent} from "svelte";
 
-import type {ICollectionItem, ICollectionStore} from "./collection";
-import {collection} from "./collection";
+import type {ICollectionItem, ICollectionStore} from "@svelte-in-motion/utilities";
+import {collection, generate_uuid} from "@svelte-in-motion/utilities";
 
 export interface INotification extends ICollectionItem {
     dismissible?: boolean;
 
     icon?: typeof SvelteComponent;
+
+    identifier: string;
 
     header: string;
 
@@ -18,25 +20,31 @@ export interface INotification extends ICollectionItem {
     on_remove?: (notification: INotification) => void;
 }
 
-export interface INotificationStore extends ICollectionStore<INotification> {}
+export interface INotificationStore extends ICollectionStore<INotification> {
+    push(item: Omit<INotification, "identifier">): INotification;
+}
 
 function _notifications(): INotificationStore {
-    const {get, has, push, subscribe, remove, update} = collection<INotification>();
+    const {find, has, push, subscribe, remove, update, watch} = collection<INotification>();
 
     return {
-        get,
+        find,
         has,
-        push,
+        push(item) {
+            return push({...item, identifier: generate_uuid()} as INotification);
+        },
+
         subscribe,
 
-        remove(identifier) {
-            const notification = remove(identifier);
+        remove(predicate, value?) {
+            const notification = remove(predicate, value);
 
             if (notification.on_remove) notification.on_remove(notification);
             return notification;
         },
 
         update,
+        watch,
     };
 }
 

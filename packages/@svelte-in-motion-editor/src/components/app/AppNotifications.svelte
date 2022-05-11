@@ -1,12 +1,12 @@
 <script lang="ts">
     import {Button, Overlay, Tile, Text} from "@kahi-ui/framework";
-    import {Clock, X} from "lucide-svelte";
+    import {X} from "lucide-svelte";
 
     import type {INotification} from "../../lib/stores/notifications";
     import {notifications} from "../../lib/stores/notifications";
 
     function on_dismiss_click(event: MouseEvent, notification: INotification): void {
-        notifications.remove(notification.identifier);
+        notifications.remove("identifier", notification.identifier);
     }
 </script>
 

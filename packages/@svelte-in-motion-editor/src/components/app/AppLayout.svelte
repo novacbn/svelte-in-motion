@@ -1,11 +1,15 @@
 <script lang="ts">
     import AppHeader from "./AppHeader.svelte";
+    import AppNotifications from "./AppNotifications.svelte";
     import AppPrompts from "./AppPrompts.svelte";
 </script>
 
 <div class="sim--app-layout">
     <slot />
 
+    <!-- NOTE: This order is specific so they layer properly -->
+
+    <AppNotifications />
     <AppHeader />
     <AppPrompts />
 </div>
