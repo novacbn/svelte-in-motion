@@ -25,7 +25,7 @@
 
         // HACK: Nothing supports `Intl.DurationFormat` yet, so have to manually handle output
         const relative = new Intl.RelativeTimeFormat();
-        const duration = last_datetime.until(current_datetime, {largestUnit: "days"});
+        const duration = current_datetime.until(last_datetime, {largestUnit: "days"});
 
         if (duration.days > 0) return relative.format(duration.days, "days");
         else if (duration.minutes > 0) return relative.format(duration.minutes, "minutes");
