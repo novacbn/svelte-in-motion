@@ -1,9 +1,8 @@
-import {
-    CONFIGURATION_WORKSPACES,
+import type {
     IPreferencesConfiguration,
     IWorkspacesConfiguration,
 } from "@svelte-in-motion/configuration";
-import {CONFIGURATION_PREFERENCES} from "@svelte-in-motion/configuration";
+import {CONFIGURATION_PREFERENCES, CONFIGURATION_WORKSPACES} from "@svelte-in-motion/configuration";
 import type {ICollectionStore, IMapStore} from "@svelte-in-motion/utilities";
 import {collection, make_scoped_context, map} from "@svelte-in-motion/utilities";
 
