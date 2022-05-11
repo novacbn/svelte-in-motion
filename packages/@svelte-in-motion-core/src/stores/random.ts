@@ -1,9 +1,8 @@
 import type {Readable} from "svelte/store";
 import {derived} from "svelte/store";
-import MersenneTwister from "mersenne-twister";
-import stringHash from "string-hash";
 
 import type {ReadableOnly} from "@svelte-in-motion/utilities";
+import {random as make_random_generator} from "@svelte-in-motion/utilities";
 
 import type {IFrameStore} from "./frame";
 import {CONTEXT_FRAME} from "./frame";
@@ -79,27 +78,28 @@ export function random(options: IRandomOptions): IRandomStore {
     const {frame, seed = DEFAULT_SEED} = options;
 
     return derived(frame, ($frame) => {
-        const hash = stringHash(`${seed}${$frame}`);
-        const random = new MersenneTwister(hash);
+        const random = make_random_generator(`${seed}${$frame}`);
 
-        return random.random();
+        return random.next();
     });
 }
 
 export function random_float(options: IRandomRangeOptions): IRandomStore {
-    const {end, start} = options;
+    const {end, frame, seed = DEFAULT_SEED, start} = options;
 
-    const store = random(options);
-    const difference = end - start;
+    return derived(frame, ($frame) => {
+        const random = make_random_generator(`${seed}${$frame}`);
 
-    return derived(store, ($store) => difference * $store);
+        return random.float(start, end);
+    });
 }
 
 export function random_integer(options: IRandomRangeOptions): IRandomStore {
-    const {end, start} = options;
+    const {end, frame, seed = DEFAULT_SEED, start} = options;
 
-    const store = random(options);
-    const difference = Math.floor(end - start);
+    return derived(frame, ($frame) => {
+        const random = make_random_generator(`${seed}${$frame}`);
 
-    return derived(store, ($store) => Math.floor(difference * $store));
+        return random.integer(start, end);
+    });
 }
