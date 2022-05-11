@@ -7,15 +7,13 @@ import {
     CONTEXT_FRAMERATE,
     CONTEXT_MAXFRAMES,
     CONTEXT_PLAYING,
-    evaluate_code,
     frame as frame_store,
     framerate as framerate_store,
-    generate_id,
     maxframes as maxframes_store,
-    normalize_pathname,
     playing as playing_store,
 } from "@svelte-in-motion/core";
 import type {IConfiguration} from "@svelte-in-motion/metadata";
+import {evaluate_code, normalize_pathname} from "@svelte-in-motion/utilities";
 
 import {dispatch, subscribe} from "./lib/messages";
 import {REPL_CONTEXT, REPL_IMPORTS} from "./lib/repl";
@@ -51,10 +49,10 @@ import type {
     let _dependencies: Set<string> = new Set();
 
     let _component: SvelteComponent | null = null;
-    let _nonce: string;
+    let _nonce: object;
 
     async function update(): Promise<void> {
-        const nonce = (_nonce = generate_id());
+        const nonce = (_nonce = {});
 
         const result = await bundle({
             file,

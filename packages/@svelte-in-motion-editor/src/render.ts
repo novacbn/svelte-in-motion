@@ -8,14 +8,13 @@ import {
     CONTEXT_FRAMERATE,
     CONTEXT_MAXFRAMES,
     CONTEXT_PLAYING,
-    clamp,
-    evaluate_code,
     frame as frame_store,
     framerate as framerate_store,
     maxframes as maxframes_store,
     playing as playing_store,
 } from "@svelte-in-motion/core";
 import type {IConfiguration} from "@svelte-in-motion/metadata";
+import {clamp, evaluate_code} from "@svelte-in-motion/utilities";
 
 import {dispatch} from "./lib/messages";
 import {REPL_CONTEXT, REPL_IMPORTS} from "./lib/repl";
