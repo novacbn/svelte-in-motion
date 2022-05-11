@@ -1,16 +1,11 @@
 import {
-    collection,
-    ICollectionStore,
-    IMapStore,
-    make_scoped_context,
-    map,
-} from "@svelte-in-motion/core";
-import {
     CONFIGURATION_WORKSPACES,
     IPreferencesConfiguration,
     IWorkspacesConfiguration,
 } from "@svelte-in-motion/configuration";
 import {CONFIGURATION_PREFERENCES} from "@svelte-in-motion/configuration";
+import type {ICollectionStore, IMapStore} from "@svelte-in-motion/utilities";
+import {collection, make_scoped_context, map} from "@svelte-in-motion/utilities";
 
 //import * as Index from "../routes/index.old.svelte";
 import * as Index from "../routes/index.svelte";

@@ -1,10 +1,10 @@
 import {Check, Clock, Film} from "lucide-svelte";
 import type {Readable} from "svelte/store";
 
-import type {IEvent} from "@svelte-in-motion/core";
-import {event} from "@svelte-in-motion/core";
 import type {ICodecNames, IPixelFormatNames} from "@svelte-in-motion/encoding";
 import {encode} from "@svelte-in-motion/encoding";
+import type {IEvent} from "@svelte-in-motion/utilities";
+import {event} from "@svelte-in-motion/utilities";
 
 import type {ICollectionItem} from "./collection";
 import {collection} from "./collection";

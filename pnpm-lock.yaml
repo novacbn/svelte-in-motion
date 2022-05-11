@@ -13,6 +13,7 @@ importers:
   packages/@svelte-in-motion-animations:
     specifiers:
       '@svelte-in-motion/core': workspace:^
+      '@svelte-in-motion/utilities': workspace:^
       '@tsconfig/svelte': ^2.0.1
       prettier: ^2.3.1
       svelte: ^3.46.4
@@ -22,6 +23,7 @@ importers:
       svelte: 3.46.4
     devDependencies:
       '@svelte-in-motion/core': link:../@svelte-in-motion-core
+      '@svelte-in-motion/utilities': link:../@svelte-in-motion-utilities
       '@tsconfig/svelte': 2.0.1
       prettier: 2.5.1
       svelte-check: 2.4.5_svelte@3.46.4
@@ -29,15 +31,15 @@ importers:
 
   packages/@svelte-in-motion-bundling:
     specifiers:
-      '@svelte-in-motion/core': workspace:^
       '@svelte-in-motion/storage': workspace:^
+      '@svelte-in-motion/utilities': workspace:^
       esbuild-wasm: ^0.14.25
       prettier: ^2.3.1
       svelte: ^3.46.4
       typescript: ^4.3.5
     dependencies:
-      '@svelte-in-motion/core': link:../@svelte-in-motion-core
       '@svelte-in-motion/storage': link:../@svelte-in-motion-storage
+      '@svelte-in-motion/utilities': link:../@svelte-in-motion-utilities
       esbuild-wasm: 0.14.25
       svelte: 3.46.4
     devDependencies:
@@ -65,7 +67,7 @@ importers:
 
   packages/@svelte-in-motion-core:
     specifiers:
-      '@svelte-in-motion/utilities': workspace:^0.0.1
+      '@svelte-in-motion/utilities': workspace:^
       prettier: ^2.3.1
       svelte: ^3.46.4
       typescript: ^4.3.5
@@ -87,6 +89,7 @@ importers:
       '@svelte-in-motion/core': workspace:^
       '@svelte-in-motion/encoding': workspace:^
       '@svelte-in-motion/storage': workspace:^
+      '@svelte-in-motion/utilities': workspace:^
       '@sveltejs/vite-plugin-svelte': ^1.0.0-next.30
       '@tsconfig/svelte': ^2.0.1
       '@types/prismjs': ^1.26.0
@@ -112,6 +115,7 @@ importers:
       '@svelte-in-motion/core': link:../@svelte-in-motion-core
       '@svelte-in-motion/encoding': link:../@svelte-in-motion-encoding
       '@svelte-in-motion/storage': link:../@svelte-in-motion-storage
+      '@svelte-in-motion/utilities': link:../@svelte-in-motion-utilities
       '@zip.js/zip.js': 2.4.7
       buffer: 6.0.3
       html-to-image: 1.9.0
@@ -132,19 +136,19 @@ importers:
   packages/@svelte-in-motion-encoding:
     specifiers:
       '@ffmpeg/ffmpeg': ^0.10.1
-      '@svelte-in-motion/core': workspace:^
+      '@svelte-in-motion/utilities': workspace:^
       prettier: ^2.3.1
       typescript: ^4.3.5
     dependencies:
       '@ffmpeg/ffmpeg': 0.10.1
-      '@svelte-in-motion/core': link:../@svelte-in-motion-core
+      '@svelte-in-motion/utilities': link:../@svelte-in-motion-utilities
     devDependencies:
       prettier: 2.5.1
       typescript: 4.6.2
 
   packages/@svelte-in-motion-storage:
     specifiers:
-      '@svelte-in-motion/core': workspace:^
+      '@svelte-in-motion/utilities': workspace:^
       idb-keyval: ^6.1.0
       lzutf8: ^0.6.1
       prettier: ^2.3.1
@@ -152,7 +156,7 @@ importers:
       typescript: ^4.3.5
       urlpattern-polyfill: ^1.0.0-rc5
     dependencies:
-      '@svelte-in-motion/core': link:../@svelte-in-motion-core
+      '@svelte-in-motion/utilities': link:../@svelte-in-motion-utilities
       idb-keyval: 6.1.0
       lzutf8: 0.6.1
       svelte: 3.48.0

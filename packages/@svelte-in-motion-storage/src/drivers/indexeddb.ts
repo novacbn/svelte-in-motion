@@ -1,8 +1,13 @@
 import type {UseStore} from "idb-keyval";
 import {createStore, del, keys, get, set} from "idb-keyval";
 
-import type {IEvent} from "@svelte-in-motion/core";
-import {append_pathname, dir_pathname, channel, normalize_pathname} from "@svelte-in-motion/core";
+import type {IEvent} from "@svelte-in-motion/utilities";
+import {
+    append_pathname,
+    dir_pathname,
+    channel,
+    normalize_pathname,
+} from "@svelte-in-motion/utilities";
 
 import {compress, decompress} from "../util/compression";
 import {decode_text, encode_text} from "../util/encoding";

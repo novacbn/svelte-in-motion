@@ -1,7 +1,7 @@
 import * as FFmpegLibrary from "@ffmpeg/ffmpeg";
 
-import type {IEvent} from "@svelte-in-motion/core";
-import {IS_BROWSER, event} from "@svelte-in-motion/core";
+import type {IEvent} from "@svelte-in-motion/utilities";
+import {IS_BROWSER, event} from "@svelte-in-motion/utilities";
 
 import {get_codec, get_codec_arguments, get_codec_extension, ICodecNames} from "./codec";
 import {get_default_codec} from "./codec";

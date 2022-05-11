@@ -1,4 +1,4 @@
-import {IS_BROWSER} from "@svelte-in-motion/core";
+import {IS_BROWSER} from "@svelte-in-motion/utilities";
 
 export enum SUPPORTED_CODECS {
     vp9 = "libvpx-vp9",

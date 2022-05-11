@@ -4,7 +4,7 @@ import {derived, writable} from "svelte/store";
 import type {URLPatternResult} from "urlpattern-polyfill/dist/url-pattern.interfaces";
 import {URLPattern} from "urlpattern-polyfill";
 
-import {normalize_relative} from "@svelte-in-motion/core";
+import {normalize_relative} from "@svelte-in-motion/utilities";
 
 export type IContext = Record<string, any>;
 

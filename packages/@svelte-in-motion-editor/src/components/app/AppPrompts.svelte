@@ -1,7 +1,7 @@
 <script lang="ts">
     import {Card, Overlay} from "@kahi-ui/framework";
 
-    import {idle} from "@svelte-in-motion/core";
+    import {idle} from "@svelte-in-motion/utilities";
 
     import type {IPromptRejectEvent, IPromptResolveEvent} from "../../lib/stores/prompts";
     import {EVENT_PROMPT, prompts} from "../../lib/stores/prompts";

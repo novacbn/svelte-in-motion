@@ -1,11 +1,8 @@
 import {get} from "svelte/store";
 
 import type {IFrameStore, IPlayingStore} from "@svelte-in-motion/core";
-import {
-    frame as frame_store,
-    make_scoped_context,
-    playing as playing_store,
-} from "@svelte-in-motion/core";
+import {frame as frame_store, playing as playing_store} from "@svelte-in-motion/core";
+import {make_scoped_context} from "@svelte-in-motion/utilities";
 
 import {prompts} from "./stores/prompts";
 import type {IErrorsStore} from "./stores/errors";

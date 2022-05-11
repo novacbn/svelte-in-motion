@@ -3,7 +3,7 @@
     import {Box, Menu, Spacer, Text} from "@kahi-ui/framework";
     import {Edit, Grid, Palmtree, Pause, Play, SkipBack, SkipForward} from "lucide-svelte";
 
-    import {clamp} from "@svelte-in-motion/core";
+    import {clamp} from "@svelte-in-motion/utilities";
 
     import {CONTEXT_EDITOR, has_focus} from "../../lib/editor";
     import {

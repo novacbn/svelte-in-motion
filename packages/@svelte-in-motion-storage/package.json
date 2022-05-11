@@ -25,7 +25,7 @@
         "typescript": "^4.3.5"
     },
     "dependencies": {
-        "@svelte-in-motion/core": "workspace:^",
+        "@svelte-in-motion/utilities": "workspace:^",
         "idb-keyval": "^6.1.0",
         "lzutf8": "^0.6.1",
         "svelte": "^3.48.0",

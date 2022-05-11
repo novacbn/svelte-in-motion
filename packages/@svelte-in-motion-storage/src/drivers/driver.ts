@@ -1,4 +1,4 @@
-import type {IEvent} from "@svelte-in-motion/core";
+import type {IEvent} from "@svelte-in-motion/utilities";
 
 export enum WATCH_EVENT_TYPES {
     create = "create",

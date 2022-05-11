@@ -1,7 +1,7 @@
 import type {Unsubscriber} from "svelte/store";
 import {get, writable} from "svelte/store";
 
-import {debounce as _debounce} from "@svelte-in-motion/core";
+import {debounce as _debounce} from "@svelte-in-motion/utilities";
 
 import type {IDriver, IWatchUnsubscriber} from "../drivers/driver";
 import {WATCH_EVENT_TYPES} from "../drivers/driver";

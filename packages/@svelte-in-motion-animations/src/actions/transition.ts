@@ -1,4 +1,5 @@
-import {CONTEXT_FRAME, CONTEXT_FRAMERATE, parse_style, state} from "@svelte-in-motion/core";
+import {CONTEXT_FRAME, CONTEXT_FRAMERATE, state} from "@svelte-in-motion/core";
+import {parse_style} from "@svelte-in-motion/utilities";
 
 import type {ITransition} from "../transitions/transitions";
 

@@ -1,8 +1,8 @@
 import {Check, Clock, Video} from "lucide-svelte";
 import type {Readable} from "svelte/store";
 
-import type {IEvent} from "@svelte-in-motion/core";
-import {event} from "@svelte-in-motion/core";
+import type {IEvent} from "@svelte-in-motion/utilities";
+import {event} from "@svelte-in-motion/utilities";
 
 import type {IRenderEndMessage, IRenderProgressMessage, IRenderStartMessage} from "../types/render";
 

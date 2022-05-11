@@ -2,9 +2,9 @@ import type {SvelteComponent} from "svelte";
 import type {Readable} from "svelte/store";
 import {writable} from "svelte/store";
 
-import type {IEvent} from "@svelte-in-motion/core";
-import {event} from "@svelte-in-motion/core";
 import type {ICodecNames, IPixelFormatNames} from "@svelte-in-motion/encoding";
+import type {IEvent} from "@svelte-in-motion/utilities";
+import {event} from "@svelte-in-motion/utilities";
 
 import AboutPrompt from "../../components/prompts/AboutPrompt.svelte";
 import CreateWorkspace from "../../components/prompts/CreateWorkspace.svelte";

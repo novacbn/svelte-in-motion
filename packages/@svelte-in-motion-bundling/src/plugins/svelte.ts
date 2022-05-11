@@ -2,7 +2,7 @@ import type {Plugin} from "esbuild-wasm";
 import {compile} from "svelte/compiler";
 
 import type {IDriver} from "@svelte-in-motion/storage";
-import {base_pathname} from "../../../@svelte-in-motion-storage/node_modules/@svelte-in-motion/core/src";
+import {base_pathname} from "@svelte-in-motion/utilities";
 
 export interface ISvelteOptions {
     storage: IDriver;

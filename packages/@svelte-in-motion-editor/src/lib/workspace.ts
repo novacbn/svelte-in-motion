@@ -6,9 +6,9 @@ import type {
     IWorkspacesConfiguration,
 } from "@svelte-in-motion/configuration";
 import {CONFIGURATION_WORKSPACE, CONFIGURATION_WORKSPACES} from "@svelte-in-motion/configuration";
-import type {IMapStore} from "@svelte-in-motion/core";
-import {collection, make_scoped_context, map} from "@svelte-in-motion/core";
 import type {IDriver} from "@svelte-in-motion/storage";
+import type {IMapStore} from "@svelte-in-motion/utilities";
+import {collection, make_scoped_context, map} from "@svelte-in-motion/utilities";
 
 import {
     FILE_CONFIGURATION_WORKSPACE,

@@ -1,7 +1,7 @@
 import type {Readable} from "svelte/store";
 import {get, writable} from "svelte/store";
 
-import {generate_id} from "@svelte-in-motion/core";
+import {generate_uuid} from "@svelte-in-motion/utilities";
 
 export interface ICollectionItem {
     identifier: string;
@@ -46,7 +46,7 @@ export function collection<T extends ICollectionItem>(items: T[] = []): ICollect
         },
 
         push(item) {
-            const identifier = generate_id();
+            const identifier = generate_uuid();
 
             update((items) => [...items, {...item, identifier} as T]);
             return identifier;

@@ -1,6 +1,6 @@
 import type {Plugin} from "esbuild-wasm";
 
-import {append_pathname} from "@svelte-in-motion/core";
+import {append_pathname} from "@svelte-in-motion/utilities";
 import type {IDriver} from "@svelte-in-motion/storage";
 
 export interface IStorageOptions {

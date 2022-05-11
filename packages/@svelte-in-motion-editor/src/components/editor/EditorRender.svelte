@@ -2,7 +2,8 @@
     import {Badge, Divider, Position} from "@kahi-ui/framework";
     import {onMount} from "svelte";
 
-    import {advance, debounce} from "@svelte-in-motion/core";
+    import {advance} from "@svelte-in-motion/core";
+    import {debounce} from "@svelte-in-motion/utilities";
 
     import {dispatch, subscribe} from "../../lib/messages";
     import {CONTEXT_EDITOR} from "../../lib/editor";

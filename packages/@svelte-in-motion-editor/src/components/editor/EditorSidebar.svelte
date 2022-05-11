@@ -3,7 +3,7 @@
     import {FileCode} from "lucide-svelte";
     import {onMount} from "svelte";
 
-    import {debounce} from "@svelte-in-motion/core";
+    import {debounce} from "@svelte-in-motion/utilities";
 
     import {CONTEXT_EDITOR} from "../../lib/editor";
     import {STORAGE_USER} from "../../lib/storage";

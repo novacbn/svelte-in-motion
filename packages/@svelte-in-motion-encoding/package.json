@@ -26,6 +26,6 @@
     },
     "dependencies": {
         "@ffmpeg/ffmpeg": "^0.10.1",
-        "@svelte-in-motion/core": "workspace:^"
+        "@svelte-in-motion/utilities": "workspace:^"
     }
 }

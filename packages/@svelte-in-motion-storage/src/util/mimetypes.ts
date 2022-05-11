@@ -1,4 +1,4 @@
-import {ext_pathname} from "@svelte-in-motion/core";
+import {ext_pathname} from "@svelte-in-motion/utilities";
 
 const MIMETYPE_UNKNOWN = "application/octet-stream";
 
