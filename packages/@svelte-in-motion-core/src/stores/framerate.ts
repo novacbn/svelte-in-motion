@@ -1,7 +1,7 @@
 import type {Writable} from "svelte/store";
 import {writable} from "svelte/store";
 
-import {make_scoped_context} from "../util/contexts";
+import {make_scoped_context} from "@svelte-in-motion/utilities";
 
 export type IFrameRateStore = Writable<number>;
 

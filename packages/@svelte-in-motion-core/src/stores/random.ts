@@ -3,9 +3,10 @@ import {derived} from "svelte/store";
 import MersenneTwister from "mersenne-twister";
 import stringHash from "string-hash";
 
+import type {ReadableOnly} from "@svelte-in-motion/utilities";
+
 import type {IFrameStore} from "./frame";
 import {CONTEXT_FRAME} from "./frame";
-import type {ReadableOnly} from "./util";
 
 const DEFAULT_SEED = "svelte-in-motion";
 

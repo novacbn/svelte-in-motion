@@ -1,13 +1,14 @@
 import type {Readable} from "svelte/store";
 import {derived} from "svelte/store";
 
+import type {ReadableOnly} from "@svelte-in-motion/utilities";
+
 import type {IFrameStore} from "./frame";
 import {CONTEXT_FRAME} from "./frame";
 import type {IFrameRateStore} from "./framerate";
 import {CONTEXT_FRAMERATE} from "./framerate";
 import type {IInterpolateOptions} from "./interpolate";
 import {interpolate} from "./interpolate";
-import type {ReadableOnly} from "./util";
 
 export type IStateStore = Readable<number>;
 

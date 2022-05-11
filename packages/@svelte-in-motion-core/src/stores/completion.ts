@@ -1,11 +1,12 @@
 import type {Readable} from "svelte/store";
 import {derived} from "svelte/store";
 
+import type {ReadableOnly} from "@svelte-in-motion/utilities";
+
 import type {IFrameStore} from "./frame";
 import {CONTEXT_FRAME} from "./frame";
 import type {IMaxFramesStore} from "./maxframes";
 import {CONTEXT_MAXFRAMES} from "./maxframes";
-import type {ReadableOnly} from "./util";
 
 export type ICompletionStore = Readable<number>;
 
