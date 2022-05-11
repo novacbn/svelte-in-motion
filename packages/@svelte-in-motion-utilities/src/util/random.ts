@@ -1,5 +1,6 @@
 import MersenneTwister from "mersenne-twister";
-import stringHash from "string-hash";
+
+import {hash_string} from "./string";
 
 export interface IRandomGenerator {
     float(min: number, max: number): number;
@@ -25,7 +26,7 @@ export function generate_uuid(): string {
 }
 
 export function random(seed?: number | string): IRandomGenerator {
-    if (typeof seed === "string") seed = stringHash(seed);
+    if (typeof seed === "string") seed = hash_string(seed);
 
     const generator = new MersenneTwister(seed);
 

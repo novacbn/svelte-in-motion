@@ -1,12 +1,19 @@
 import GithubSlugger from "github-slugger";
+import stringHash from "string-hash";
 
 export function format_camel_case(text: string): string {
     return text.replace(/-(\w)/, (match, character) => character.toUpperCase());
 }
 
 export function format_slug(text: string): string {
-    // NOTE: Aliasing here incase of future implementation change out
-    const slugger = new GithubSlugger();
+    // NOTE: Proxying incase implementation changes are wanted later
 
+    const slugger = new GithubSlugger();
     return slugger.slug(text);
+}
+
+export function hash_string(text: string): number {
+    // NOTE: Proxying incase implementation changes are wanted later
+
+    return stringHash(text);
 }
