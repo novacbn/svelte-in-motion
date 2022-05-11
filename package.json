@@ -11,9 +11,8 @@
         "lint:packages": "pnpm -r lint",
         "test:packages": "pnpm -r test"
     },
-    "dependencies": {},
     "devDependencies": {
-        "prettier": "^2.4.1",
-        "prettier-plugin-svelte": "^2.6.0"
+        "prettier": "^2.6.2",
+        "prettier-plugin-svelte": "^2.7.0"
     }
 }
