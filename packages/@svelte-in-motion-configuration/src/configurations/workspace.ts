@@ -1,8 +1,7 @@
-import type {Schema} from "@cfworker/json-schema";
-import {validate_configuration} from ".";
-import {collect_metadata, parse_ast} from "./parse";
+import type {IConfigurationRecord} from "./configuration";
+import {configuration_reader} from "./configuration";
 
-export interface IConfiguration {
+export interface IWorkspaceConfiguration extends IConfigurationRecord {
     framerate: number;
 
     height: number;
@@ -12,12 +11,14 @@ export interface IConfiguration {
     width: number;
 }
 
-const SCHEMA_CONFIGURATION: Schema = {
+export const CONFIGURATION_WORKSPACE = configuration_reader<IWorkspaceConfiguration>({
     type: "object",
 
     properties: {
         framerate: {
             type: "number",
+            default: 60,
+
             maximum: 120,
             minimum: 16,
         },
@@ -27,30 +28,25 @@ const SCHEMA_CONFIGURATION: Schema = {
 
         height: {
             type: "number",
+            default: 720,
+
             maximum: 4320,
             minimum: 0,
         },
 
         maxframes: {
             type: "number",
+            default: 60 * 60,
+
             minimum: 0,
         },
 
         width: {
             type: "number",
+            default: 1280,
+
             maximum: 7680,
             minimum: 0,
         },
     },
-};
-
-export function parse_configuration(source: string): IConfiguration {
-    const ast = parse_ast(source);
-    const metadata = collect_metadata(ast, "CONFIGURATION");
-
-    if (!validate_configuration<IConfiguration>(metadata, SCHEMA_CONFIGURATION)) {
-        throw new SyntaxError("bad argument #0 to 'parse_configuration' (invalid value)");
-    }
-
-    return metadata;
-}
+});

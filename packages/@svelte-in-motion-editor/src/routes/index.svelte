@@ -1,61 +1,120 @@
 <script context="module" lang="ts">
-    import type {ILoadCallback} from "../lib/router";
-    import {GUARD_STORAGE} from "../lib/router";
-    import {STORAGE_USER} from "../lib/storage";
-
-    export const pattern: string = "/:file";
-
-    export const load: ILoadCallback = GUARD_STORAGE(async ({results}) => {
-        const {file} = results.pathname.groups;
-
-        if (!(await STORAGE_USER.exists(file))) {
-            throw new ReferenceError(`bad navigation to '/:file' (file '${file}' not found)`);
-        }
-
-        return {
-            props: {
-                file,
-            },
-        };
-    });
+    export const pattern: string = "/";
 </script>
 
 <script lang="ts">
-    import "../lib/stores/jobs";
+    import {Button, Hero, Stack, Tile, Text} from "@kahi-ui/framework";
+    import {Temporal} from "@js-temporal/polyfill";
+    import {PackageX} from "lucide-svelte";
 
-    import {CONTEXT_EDITOR, editor} from "../lib/editor";
+    import AppLayout from "../components/app/AppLayout.svelte";
 
-    import AppHeader from "../components/app/AppHeader.svelte";
-    import AppNotifications from "../components/app/AppNotifications.svelte";
-    import AppPrompts from "../components/app/AppPrompts.svelte";
+    import type {ICreateWorkspacePromptEvent} from "../lib/stores/prompts";
+    import {prompts} from "../lib/stores/prompts";
 
-    import EditorLayout from "../components/editor/EditorLayout.svelte";
-    import EditorScript from "../components/editor/EditorScript.svelte";
-    import EditorControls from "../components/editor/EditorControls.svelte";
-    import EditorRender from "../components/editor/EditorRender.svelte";
-    import EditorSidebar from "../components/editor/EditorSidebar.svelte";
-    import EditorTimeline from "../components/editor/EditorTimeline.svelte";
+    import {CONTEXT_APP} from "../lib/app";
+    import {is_prompt_dismiss_error} from "../lib/errors";
 
-    export let file: string;
+    const {workspaces} = CONTEXT_APP.get()!;
 
-    const editor_context = editor(file);
-    CONTEXT_EDITOR.set(editor_context);
+    function format_last_accessed(timestamp: null | string): string {
+        if (timestamp === null) return "never accessed";
 
-    $: editor_context.path.set(file);
+        const current_datetime = Temporal.Now.zonedDateTimeISO();
+        const last_datetime = Temporal.ZonedDateTime.from(timestamp);
+
+        // HACK: Nothing supports `Intl.DurationFormat` yet, so have to manually handle output
+        const relative = new Intl.RelativeTimeFormat();
+        const duration = last_datetime.until(current_datetime, {largestUnit: "days"});
+
+        if (duration.days > 0) return relative.format(duration.days, "days");
+        else if (duration.minutes > 0) return relative.format(duration.minutes, "minutes");
+        return relative.format(duration.seconds, "seconds");
+    }
+
+    async function on_create_click(event: MouseEvent): Promise<void> {
+        let workspace_configuration: ICreateWorkspacePromptEvent;
+        try {
+            workspace_configuration = await prompts.prompt_create_workspace();
+        } catch (err) {
+            if (!is_prompt_dismiss_error(err)) return;
+            throw err;
+        }
+
+        workspaces.push({
+            name: workspace_configuration.name,
+            identifier: crypto.randomUUID(),
+            last_accessed: null,
+
+            storage: {
+                driver: "indexeddb",
+            },
+        });
+    }
+
+    $: recent_workspaces = $workspaces.slice().sort((workspace_a, workspace_b) => {
+        if (workspace_a.last_accessed === null) return 1;
+        if (workspace_b.last_accessed === null) return 0;
+
+        const timestamp_a = Temporal.ZonedDateTime.from(workspace_a.last_accessed);
+        const timestamp_b = Temporal.ZonedDateTime.from(workspace_b.last_accessed);
+
+        const {seconds} = timestamp_a.until(timestamp_b, {
+            largestUnit: "seconds",
+            smallestUnit: "seconds",
+        });
+
+        return seconds > 0 ? 1 : seconds < 0 ? -1 : 0;
+    });
+
+    $: console.log({recent_workspaces});
 </script>
 
-<EditorLayout>
-    <EditorRender />
+<AppLayout>
+    {#if recent_workspaces.length > 0}
+        <Stack.Container spacing="small" padding="small">
+            {#each recent_workspaces as workspace (workspace.identifier)}
+                <Tile.Container sizing="nano" height="content-max">
+                    <Tile.Section>
+                        <Tile.Header>{workspace.name}</Tile.Header>
+                        <Text is="small">
+                            Last Accessed: {format_last_accessed(workspace.last_accessed)}
+                        </Text>
+                    </Tile.Section>
 
-    <EditorScript />
-    <EditorControls />
-    <EditorTimeline />
+                    <Tile.Footer>
+                        <Button
+                            is="a"
+                            href="#/workspace/{workspace.identifier}"
+                            variation="clear"
+                            palette="accent"
+                            sizing="nano"
+                        >
+                            OPEN
+                        </Button>
+                    </Tile.Footer>
+                </Tile.Container>
+            {/each}
+        </Stack.Container>
 
-    <EditorSidebar />
+        <Button palette="affirmative" on:click={on_create_click}>Create Workspace</Button>
+    {:else}
+        <Hero.Container class="sim--app-dashboard">
+            <Hero.Header>
+                <PackageX size="1em" strokeWidth="1" />
+            </Hero.Header>
 
-    <AppNotifications />
+            <Hero.Section>No available workspaces.</Hero.Section>
 
-    <AppHeader />
+            <Hero.Footer>
+                <Button palette="affirmative" on:click={on_create_click}>Create Workspace</Button>
+            </Hero.Footer>
+        </Hero.Container>
+    {/if}
+</AppLayout>
 
-    <AppPrompts />
-</EditorLayout>
+<style>
+    :global(.sim--app-dashboard) {
+        grid-area: content;
+    }
+</style>

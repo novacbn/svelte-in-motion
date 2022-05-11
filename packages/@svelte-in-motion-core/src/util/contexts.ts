@@ -4,13 +4,13 @@ import {getContext, hasContext, setContext} from "svelte";
  * Represents the return value of [[make_scoped_context]]
  */
 export interface IContextScope<T> {
+    key: string;
+
     get(): T | undefined;
 
     has(): boolean;
 
     set(value: T | undefined): void;
-
-    symbol: Symbol;
 }
 
 /**
@@ -20,25 +20,25 @@ export interface IContextScope<T> {
  * const {get, has, set} = make_scoped_context("my-context");
  * ```
  *
- * @param symbol
+ * @param identifier
  * @returns
  */
 export function make_scoped_context<T>(identifier: string): IContextScope<T> {
-    const symbol = Symbol.for(`svelte-in-motion-${identifier}`);
+    const key = `svelte-in-motion-${identifier}`;
 
     return {
-        symbol,
+        key,
 
         get() {
-            return getContext(symbol);
+            return getContext(key);
         },
 
         has() {
-            return hasContext(symbol);
+            return hasContext(key);
         },
 
         set(value) {
-            setContext(symbol, value);
+            setContext(key, value);
         },
     };
 }

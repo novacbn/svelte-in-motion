@@ -10,7 +10,7 @@ declare module "lucide-svelte" {
     interface IconProps extends Partial<svelte.JSX.SVGProps<SVGSVGElement>> {
         color?: string;
         size?: number | string;
-        strokeWidth?: number;
+        strokeWidth?: number | string;
         class?: string;
     }
 
@@ -30,6 +30,7 @@ declare module "lucide-svelte" {
     export declare class Edit extends SvelteComponentTyped<IconProps, IconEvents, {}> {}
     export declare class Film extends SvelteComponentTyped<IconProps, IconEvents, {}> {}
     export declare class Grid extends SvelteComponentTyped<IconProps, IconEvents, {}> {}
+    export declare class PackageX extends SvelteComponentTyped<IconProps, IconEvents, {}> {}
     export declare class Palmtree extends SvelteComponentTyped<IconProps, IconEvents, {}> {}
     export declare class Pause extends SvelteComponentTyped<IconProps, IconEvents, {}> {}
     export declare class Play extends SvelteComponentTyped<IconProps, IconEvents, {}> {}

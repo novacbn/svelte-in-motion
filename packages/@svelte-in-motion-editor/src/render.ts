@@ -93,12 +93,12 @@ import type {
 
     const FRAMES: Record<number, string> = {};
 
-    const CONTEXT = new Map<Symbol, any>([
-        [CONTEXT_FRAME.symbol, _frame],
-        [CONTEXT_FRAMERATE.symbol, _framerate],
-        [CONTEXT_MAXFRAMES.symbol, _maxframes],
+    const CONTEXT = new Map<string, any>([
+        [CONTEXT_FRAME.key, _frame],
+        [CONTEXT_FRAMERATE.key, _framerate],
+        [CONTEXT_MAXFRAMES.key, _maxframes],
 
-        [CONTEXT_PLAYING.symbol, _playing],
+        [CONTEXT_PLAYING.key, _playing],
     ]);
 
     new Component({

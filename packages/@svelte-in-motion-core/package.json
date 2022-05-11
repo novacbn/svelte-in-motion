@@ -22,11 +22,15 @@
     },
     "devDependencies": {
         "@types/mersenne-twister": "^1.1.2",
+        "@types/node": "^17.0.31",
         "prettier": "^2.3.1",
         "typescript": "^4.3.5"
     },
     "dependencies": {
+        "@types/github-slugger": "^1.3.0",
         "@types/string-hash": "^1.1.1",
+        "dot-prop": "^7.2.0",
+        "github-slugger": "^1.4.0",
         "mersenne-twister": "^1.1.0",
         "string-hash": "^1.1.3",
         "svelte": "^3.46.4"

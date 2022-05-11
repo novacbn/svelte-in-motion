@@ -11,13 +11,14 @@
         "check": "svelte-check --tsconfig ./tsconfig.json"
     },
     "dependencies": {
+        "@js-temporal/polyfill": "^0.4.1",
         "@kahi-ui/framework": "0.6.4",
         "@novacbn/svelte-codejar": "^0.1.2",
         "@svelte-in-motion/animations": "workspace:^",
         "@svelte-in-motion/bundling": "workspace:^",
+        "@svelte-in-motion/configuration": "workspace:^",
         "@svelte-in-motion/core": "workspace:^",
         "@svelte-in-motion/encoding": "workspace:^",
-        "@svelte-in-motion/metadata": "workspace:^",
         "@svelte-in-motion/storage": "workspace:^",
         "@zip.js/zip.js": "^2.4.7",
         "buffer": "^6.0.3",

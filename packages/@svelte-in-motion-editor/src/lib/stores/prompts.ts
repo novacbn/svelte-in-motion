@@ -7,10 +7,15 @@ import {event} from "@svelte-in-motion/core";
 import type {ICodecNames, IPixelFormatNames} from "@svelte-in-motion/encoding";
 
 import AboutPrompt from "../../components/prompts/AboutPrompt.svelte";
+import CreateWorkspace from "../../components/prompts/CreateWorkspace.svelte";
 import ExportFramesPrompt from "../../components/prompts/ExportFramesPrompt.svelte";
 import ExportVideoPrompt from "../../components/prompts/ExportVideoPrompt.svelte";
 
 import type {IError} from "../errors";
+
+export interface ICreateWorkspacePromptEvent {
+    name: string;
+}
 
 export interface IExportFramesPromptProps {
     frame_min: number;
@@ -65,6 +70,8 @@ export interface IPromptStore extends Readable<IPrompt<any> | null> {
 
     prompt_about(): Promise<void>;
 
+    prompt_create_workspace(): Promise<ICreateWorkspacePromptEvent>;
+
     prompt_export_frames(props: IExportFramesPromptProps): Promise<IExportFramesPromptEvent>;
 
     prompt_export_video(props: IExportVideoPromptProps): Promise<IExportVideoPromptEvent>;
@@ -110,6 +117,12 @@ function _prompts(): IPromptStore {
         prompt_about() {
             return prompt<void, void>({
                 Component: AboutPrompt,
+            });
+        },
+
+        prompt_create_workspace() {
+            return prompt<void, ICreateWorkspacePromptEvent>({
+                Component: CreateWorkspace,
             });
         },
 

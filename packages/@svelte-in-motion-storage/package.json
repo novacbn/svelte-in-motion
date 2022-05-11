@@ -26,9 +26,9 @@
     },
     "dependencies": {
         "@svelte-in-motion/core": "workspace:^",
-        "base85": "^3.1.0",
         "idb-keyval": "^6.1.0",
         "lzutf8": "^0.6.1",
+        "svelte": "^3.48.0",
         "urlpattern-polyfill": "^1.0.0-rc5"
     }
 }

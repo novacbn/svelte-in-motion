@@ -1,5 +1,5 @@
 {
-    "name": "@svelte-in-motion/metadata",
+    "name": "@svelte-in-motion/configuration",
     "author": "novacbn",
     "version": "0.0.1",
     "type": "module",
@@ -10,7 +10,7 @@
     },
     "repository": {
         "type": "git",
-        "url": "https://github.com/novacbn/svelte-in-motion/tree/main/packages/%40svelte-in-motion-metadata"
+        "url": "https://github.com/novacbn/svelte-in-motion/tree/main/packages/%40svelte-in-motion-configuration"
     },
     "scripts": {
         "format": "npm run format:package",
@@ -25,8 +25,10 @@
         "typescript": "^4.3.5"
     },
     "dependencies": {
-        "@cfworker/json-schema": "^1.12.2",
-        "code-red": "^0.2.5",
-        "svelte": "^3.46.4"
+        "@exodus/schemasafe": "^1.0.0-rc.6",
+        "@svelte-in-motion/core": "workspace:^",
+        "@svelte-in-motion/storage": "workspace:^",
+        "jsonc-parser": "^3.0.0",
+        "svelte": "^3.48.0"
     }
 }

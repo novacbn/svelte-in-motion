@@ -2,6 +2,7 @@
 
 /packages/@svelte-in-motion-animations/node_modules/
 /packages/@svelte-in-motion-bundling/node_modules/
+/packages/@svelte-in-motion-configuration/node_modules/
 /packages/@svelte-in-motion-core/node_modules/
 /packages/@svelte-in-motion-editor/.vercel/
 /packages/@svelte-in-motion-editor/dist/

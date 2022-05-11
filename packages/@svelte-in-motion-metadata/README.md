@@ -1,3 +1,0 @@
-# @svelte-in-motion/metadata
-
-> ...

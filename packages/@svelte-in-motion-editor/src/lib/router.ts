@@ -6,6 +6,10 @@ import {URLPattern} from "urlpattern-polyfill";
 
 import {normalize_relative} from "@svelte-in-motion/core";
 
+export type IContext = Record<string, any>;
+
+export type IProps = Record<string, any>;
+
 export type ILoadCallback = (input: ILoadInput) => ILoadOutput | void | Promise<ILoadOutput | void>;
 
 export type INavigatingStore = Readable<boolean>;
@@ -19,6 +23,8 @@ export interface ILoadInput {
 }
 
 export interface ILoadOutput {
+    context?: Record<string | symbol, any>;
+
     props?: Record<string, any>;
 
     redirect?: string;
@@ -35,7 +41,9 @@ export interface IRouteDefinition {
 export interface IRouterOutput {
     Component: typeof SvelteComponent;
 
-    props?: Record<string, any>;
+    context?: IContext;
+
+    props?: IProps;
 }
 
 interface IRoute {
@@ -102,7 +110,9 @@ export function routes(...routes: IRouteDefinition[]): [INavigatingStore, IRoute
 
         if (!results || !route) return;
 
-        let props: Record<string, any> | undefined;
+        let context: IContext | undefined;
+        let props: IProps | undefined;
+
         if (route.load) {
             const url = new URL(href, location.href);
             const output = await route.load({results, url});
@@ -113,7 +123,7 @@ export function routes(...routes: IRouteDefinition[]): [INavigatingStore, IRoute
                     return;
                 }
 
-                props = output.props;
+                ({context, props} = output);
             }
         }
 
@@ -121,6 +131,8 @@ export function routes(...routes: IRouteDefinition[]): [INavigatingStore, IRoute
 
         set({
             Component: route.Component,
+
+            context,
             props,
         });
 

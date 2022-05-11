@@ -103,11 +103,11 @@ import type {
 
         _component = new Component({
             target: document.body,
-            context: new Map<Symbol, any>([
-                [CONTEXT_FRAME.symbol, _frame],
-                [CONTEXT_FRAMERATE.symbol, _framerate],
-                [CONTEXT_MAXFRAMES.symbol, _maxframes],
-                [CONTEXT_PLAYING.symbol, _playing],
+            context: new Map<string, any>([
+                [CONTEXT_FRAME.key, _frame],
+                [CONTEXT_FRAMERATE.key, _framerate],
+                [CONTEXT_MAXFRAMES.key, _maxframes],
+                [CONTEXT_PLAYING.key, _playing],
             ]),
         });
 
