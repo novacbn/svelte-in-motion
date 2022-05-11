@@ -184,16 +184,16 @@ importers:
       svelte: ^3.46.4
       typescript: ^4.3.5
     dependencies:
-      '@types/github-slugger': 1.3.0
-      '@types/string-hash': 1.1.1
       dot-prop: 7.2.0
       github-slugger: 1.4.0
       mersenne-twister: 1.1.0
       string-hash: 1.1.3
       svelte: 3.48.0
     devDependencies:
+      '@types/github-slugger': 1.3.0
       '@types/mersenne-twister': 1.1.2
       '@types/node': 17.0.31
+      '@types/string-hash': 1.1.1
       prettier: 2.5.1
       typescript: 4.6.2
 
@@ -390,7 +390,7 @@ packages:
 
   /@types/github-slugger/1.3.0:
     resolution: {integrity: sha512-J/rMZa7RqiH/rT29TEVZO4nBoDP9XJOjnbbIofg7GQKs4JIduEO3WLpte+6WeUz/TcrXKlY+bM7FYrp8yFB+3g==}
-    dev: false
+    dev: true
 
   /@types/mersenne-twister/1.1.2:
     resolution: {integrity: sha512-7KMIfSkMpaVExbzJRLUXHMO4hkFWbbspHPREk8I6pBxiNN+3+l6eAEClMCIPIo2KjCkR0rjYfXppr6+wKdTwpA==}
@@ -420,7 +420,7 @@ packages:
 
   /@types/string-hash/1.1.1:
     resolution: {integrity: sha512-ijt3zdHi2DmZxQpQTmozXszzDo78V4R3EdvX0jFMfnMH2ZzQSmCbaWOMPGXFUYSzSIdStv78HDjg32m5dxc+tA==}
-    dev: false
+    dev: true
 
   /@zip.js/zip.js/2.4.7:
     resolution: {integrity: sha512-IbRUgSsPcnVth4fBljrQDfI6nZO5VqW1/49j9rMAShZ7sB8noRYgQR4nY9jeRw5ZrUM6lZrsuUr8OMF4M3mrsw==}
