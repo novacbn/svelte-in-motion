@@ -38,7 +38,13 @@ export function file_configuration<T extends IConfigurationArray | IConfiguratio
             store.set(text);
         },
 
-        subscribe: parsed.subscribe,
+        subscribe(callback) {
+            // NOTE: We want to allow callback code to mutate the parsed
+            // configuration w/o mutating the source of truth
+            return parsed.subscribe((configuration) => {
+                callback(structuredClone(configuration));
+            });
+        },
 
         update(updater) {
             const configuration = updater(structuredClone(get(parsed)));
