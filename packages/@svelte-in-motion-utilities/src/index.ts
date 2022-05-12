@@ -1,5 +1,6 @@
 export * from "./events/channel";
 export * from "./events/event";
+export * from "./events/message";
 
 export * from "./stores/collection";
 export * from "./stores/immutable";
