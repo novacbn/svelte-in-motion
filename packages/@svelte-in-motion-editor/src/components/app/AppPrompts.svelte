@@ -3,8 +3,12 @@
 
     import {idle} from "@svelte-in-motion/utilities";
 
+    import {CONTEXT_APP} from "../../lib/app";
+
     import type {IPromptRejectEvent, IPromptResolveEvent} from "../../lib/stores/prompts";
-    import {EVENT_PROMPT, prompts} from "../../lib/stores/prompts";
+
+    const {prompts} = CONTEXT_APP.get()!;
+    const {EVENT_PROMPT} = prompts;
 
     let logic_state: boolean = false;
 

@@ -2,8 +2,11 @@
     import {Button, Overlay, Tile, Text} from "@kahi-ui/framework";
     import {X} from "lucide-svelte";
 
+    import {CONTEXT_APP} from "../../lib/app";
+
     import type {INotification} from "../../lib/stores/notifications";
-    import {notifications} from "../../lib/stores/notifications";
+
+    const {notifications} = CONTEXT_APP.get()!;
 
     function on_dismiss_click(event: MouseEvent, notification: INotification): void {
         notifications.remove("identifier", notification.identifier);
