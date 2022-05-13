@@ -12,6 +12,11 @@ import * as Index from "../routes/index.svelte";
 import * as WorkspaceIndex from "../routes/workspace/index.svelte";
 import * as WorkspaceFile from "../routes/workspace/file.svelte";
 
+import type {INotificationStore} from "./stores/notifications";
+import {notifications as make_notification_store} from "./stores/notifications";
+import type {IPromptStore} from "./stores/prompts";
+import {prompts as make_prompt_store} from "./stores/prompts";
+
 import type {INavigatingStore, IRouterStore} from "./router";
 import {routes} from "./router";
 import {
@@ -25,9 +30,13 @@ export const CONTEXT_APP = make_scoped_context<IAppContext>("app");
 export interface IAppContext {
     navigating: INavigatingStore;
 
-    router: IRouterStore;
+    notifications: INotificationStore;
 
     preferences: IMapStore<IPreferencesConfiguration>;
+
+    prompts: IPromptStore;
+
+    router: IRouterStore;
 
     workspaces: ICollectionStore<IWorkspacesConfiguration>;
 }
@@ -60,10 +69,15 @@ export async function app(): Promise<IAppContext> {
 
     const [navigating, router] = routes(Index, WorkspaceFile, WorkspaceIndex);
 
+    const notifications = make_notification_store();
+    const prompts = make_prompt_store();
+
     return {
         navigating,
-        router,
+        notifications,
         preferences: map(preferences),
+        prompts,
+        router,
         workspaces: collection(workspaces),
     };
 }

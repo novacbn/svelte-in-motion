@@ -24,7 +24,7 @@ export interface INotificationStore extends ICollectionStore<INotification> {
     push(item: Omit<INotification, "identifier">): INotification;
 }
 
-function _notifications(): INotificationStore {
+export function notifications(): INotificationStore {
     const {find, has, push, subscribe, remove, update, watch} = collection<INotification>();
 
     return {
@@ -47,5 +47,3 @@ function _notifications(): INotificationStore {
         watch,
     };
 }
-
-export const notifications: INotificationStore = _notifications();

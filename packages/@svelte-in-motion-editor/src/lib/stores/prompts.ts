@@ -77,7 +77,7 @@ export interface IPromptStore extends Readable<IPrompt<any> | null> {
     prompt_export_video(props: IExportVideoPromptProps): Promise<IExportVideoPromptEvent>;
 }
 
-function _prompts(): IPromptStore {
+export function prompts(): IPromptStore {
     const {set, subscribe} = writable<IPrompt<any> | null>(null);
 
     const EVENT_PROMPT = event<IPromptEvent>();
@@ -143,7 +143,3 @@ function _prompts(): IPromptStore {
         subscribe,
     };
 }
-
-export const prompts = _prompts();
-
-export const {EVENT_PROMPT} = prompts;
