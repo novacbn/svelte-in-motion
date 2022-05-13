@@ -6,7 +6,6 @@ import {CONFIGURATION_PREFERENCES, CONFIGURATION_WORKSPACES} from "@svelte-in-mo
 import type {ICollectionStore, IMapStore} from "@svelte-in-motion/utilities";
 import {collection, make_scoped_context, map} from "@svelte-in-motion/utilities";
 
-//import * as Index from "../routes/index.old.svelte";
 import * as Index from "../routes/index.svelte";
 
 import * as WorkspaceIndex from "../routes/workspace/index.svelte";
@@ -18,7 +17,7 @@ import type {IPromptStore} from "./stores/prompts";
 import {prompts as make_prompt_store} from "./stores/prompts";
 
 import type {INavigatingStore, IRouterStore} from "./router";
-import {routes} from "./router";
+import {app_router} from "./router";
 import {
     FILE_CONFIGURATION_PREFERENCES,
     FILE_CONFIGURATION_WORKSPACES,
@@ -67,7 +66,7 @@ export async function app(): Promise<IAppContext> {
         CONFIGURATION_WORKSPACES.watch_preload(STORAGE_USER, FILE_CONFIGURATION_WORKSPACES),
     ]);
 
-    const [navigating, router] = routes(Index, WorkspaceFile, WorkspaceIndex);
+    const [navigating, router] = app_router(Index, WorkspaceFile, WorkspaceIndex);
 
     const notifications = make_notification_store();
     const prompts = make_prompt_store();

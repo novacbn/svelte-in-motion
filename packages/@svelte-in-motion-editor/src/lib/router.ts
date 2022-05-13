@@ -2,9 +2,12 @@ import type {SvelteComponent} from "svelte";
 import type {Readable, Writable} from "svelte/store";
 import {derived, writable} from "svelte/store";
 import type {URLPatternResult} from "urlpattern-polyfill/dist/url-pattern.interfaces";
-import {URLPattern} from "urlpattern-polyfill";
 
-import {normalize_relative} from "@svelte-in-motion/utilities";
+import {
+    normalize_pathname,
+    normalize_relative,
+    router as make_router,
+} from "@svelte-in-motion/utilities";
 
 export type IContext = Record<string, any>;
 
@@ -17,9 +20,7 @@ export type INavigatingStore = Readable<boolean>;
 export type IRouterStore = Readable<IRouterOutput | null>;
 
 export interface ILoadInput {
-    results: URLPatternResult;
-
-    url: URL;
+    url: URLPatternResult;
 }
 
 export interface ILoadOutput {
@@ -44,14 +45,6 @@ export interface IRouterOutput {
     context?: IContext;
 
     props?: IProps;
-}
-
-interface IRoute {
-    Component: typeof SvelteComponent;
-
-    load?: ILoadCallback;
-
-    pattern: URLPattern;
 }
 
 function hash(): Writable<string> {
@@ -79,70 +72,61 @@ function hash(): Writable<string> {
     };
 }
 
-export function routes(...routes: IRouteDefinition[]): [INavigatingStore, IRouterStore] {
+export function app_router(...routes: IRouteDefinition[]): [INavigatingStore, IRouterStore] {
     let nonce = null;
-    const loading = writable<boolean>(false);
 
-    const parsed_routes = routes.map((definition) => {
-        const {default: Component, load, pattern} = definition;
+    const navigating = writable<boolean>(false);
+    const router = make_router<IRouteDefinition>(
+        Object.fromEntries(
+            routes.map((route) => {
+                const {pattern} = route;
 
-        return {
-            Component,
-            load,
-            pattern: new URLPattern({pathname: pattern}),
-        };
-    });
+                return [normalize_pathname(pattern), route];
+            })
+        )
+    );
 
-    async function update(href: string, set: (value: IRouterOutput) => void): Promise<void> {
-        loading.set(true);
+    async function get_route(href: string): Promise<IRouterOutput | null> {
+        navigating.set(true);
         const current = (nonce = {});
 
-        let results: URLPatternResult | undefined | null;
-        let route: IRoute | null = null;
-
-        for (const _route of parsed_routes) {
-            results = _route.pattern.exec(href, location.href);
-            if (results) {
-                route = _route;
-                break;
-            }
-        }
-
-        if (!results || !route) return;
+        const match = router.exec(href);
+        if (!match) return null;
 
         let context: IContext | undefined;
         let props: IProps | undefined;
 
-        if (route.load) {
-            const url = new URL(href, location.href);
-            const output = await route.load({results, url});
+        if (match.result.load) {
+            const output = await match.result.load({url: match.url});
 
             if (output) {
                 if (output.redirect) {
                     location.hash = output.redirect;
-                    return;
+                    return null;
                 }
 
                 ({context, props} = output);
             }
         }
 
-        if (nonce !== current) return;
+        if (nonce !== current) return null;
+        navigating.set(false);
 
-        set({
-            Component: route.Component,
+        return {
+            Component: match.result.default,
 
             context,
             props,
-        });
-
-        loading.set(false);
+        };
     }
 
-    return [
-        {subscribe: loading.subscribe},
-        derived(hash(), ($hash, set) => {
-            update($hash, set);
-        }),
-    ];
+    const store = derived<Writable<string>, IRouterOutput | null>(hash(), ($hash, set) => {
+        $hash = normalize_relative($hash);
+
+        get_route($hash).then((output) => {
+            set(output);
+        });
+    });
+
+    return [{subscribe: navigating.subscribe}, store];
 }
