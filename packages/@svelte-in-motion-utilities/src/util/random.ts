@@ -14,7 +14,7 @@ export function generate_uint32(): number {
     // NOTE: Proxying incase polyfills or implementation changes are wanted later
 
     const view = new Uint32Array(1);
-    window.crypto.getRandomValues(view);
+    crypto.getRandomValues(view);
 
     return view[0];
 }
@@ -25,7 +25,7 @@ export function generate_uuid(): string {
     return crypto.randomUUID();
 }
 
-export function random(seed?: number | string): IRandomGenerator {
+export function random(seed: number | string = generate_uint32()): IRandomGenerator {
     if (typeof seed === "string") seed = hash_string(seed);
 
     const generator = new MersenneTwister(seed);

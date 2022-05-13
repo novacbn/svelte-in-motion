@@ -13,6 +13,6 @@ export * from "./util/environment";
 export * from "./util/math";
 export * from "./util/random";
 export * from "./util/string";
-export * from "./util/style";
 export * from "./util/timing";
 export * from "./util/url";
+export * from "./util/web";
