@@ -1,4 +1,4 @@
-const DEFAULT_ORIGIN: string = "https://localhost";
+const DEFAULT_ORIGIN: string = "https://svelte-in-motion.example";
 
 function split_pathname(pathname: string): string[] {
     return pathname.split("/").filter((segment) => segment.length > 0);
