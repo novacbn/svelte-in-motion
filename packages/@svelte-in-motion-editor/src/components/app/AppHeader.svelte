@@ -14,9 +14,7 @@
     >
         <Text is="strong" sizing="tiny">Svelte-In-Motion</Text>
 
-        <!--
-            <AppToolbar />
-        -->
+        <AppToolbar />
     </Stack.Container>
 
     <Divider palette="inverse" margin="none" margin_top="tiny" />
