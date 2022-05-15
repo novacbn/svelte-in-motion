@@ -95,7 +95,6 @@ importers:
       '@sveltejs/vite-plugin-svelte': 1.0.0-next.43
       '@tsconfig/svelte': ^2.0.1
       '@types/prismjs': ^1.26.0
-      '@zip.js/zip.js': ^2.4.7
       buffer: ^6.0.3
       html-to-image: ^1.9.0
       lucide-svelte: ^0.17.9
@@ -118,7 +117,6 @@ importers:
       '@svelte-in-motion/encoding': link:../@svelte-in-motion-encoding
       '@svelte-in-motion/storage': link:../@svelte-in-motion-storage
       '@svelte-in-motion/utilities': link:../@svelte-in-motion-utilities
-      '@zip.js/zip.js': 2.4.7
       buffer: 6.0.3
       html-to-image: 1.9.0
       lucide-svelte: 0.17.9_svelte@3.46.4
@@ -182,6 +180,7 @@ importers:
       '@types/mersenne-twister': ^1.1.2
       '@types/node': ^17.0.31
       '@types/string-hash': ^1.1.1
+      '@zip.js/zip.js': ^2.4.7
       dot-prop: ^7.2.0
       github-slugger: ^1.4.0
       mersenne-twister: ^1.1.0
@@ -191,6 +190,7 @@ importers:
       typescript: ^4.3.5
       urlpattern-polyfill: 1.0.0-rc5
     dependencies:
+      '@zip.js/zip.js': 2.4.7
       dot-prop: 7.2.0
       github-slugger: 1.4.0
       mersenne-twister: 1.1.0
