@@ -38,6 +38,8 @@ export interface IWorkspaceContext {
 
     errors: IErrorsStore;
 
+    identifier: string;
+
     jobs: IJobsStore;
 
     metadata: Readable<IWorkspacesConfiguration>;
@@ -102,6 +104,7 @@ export async function workspace(
         configuration,
         encodes,
         errors,
+        identifier,
         jobs,
         // HACK: We already validated the workspace above, just TypeScript can't automagically infer
         metadata: metadata as Readable<IWorkspacesConfiguration>,
