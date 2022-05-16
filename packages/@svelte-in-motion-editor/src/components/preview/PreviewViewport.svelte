@@ -1,12 +1,18 @@
 <script lang="ts">
+    import type {IKeybindEvent} from "@kahi-ui/framework";
     import {Badge, Divider, Position} from "@kahi-ui/framework";
     import {onMount} from "svelte";
+    import type {Readable} from "svelte/store";
 
     import {advance} from "@svelte-in-motion/core";
     import {debounce} from "@svelte-in-motion/utilities";
 
+    import {CONTEXT_APP} from "../../lib/app";
+    import {has_focus} from "../../lib/editor";
+    import {action_toggle_checkerboard, action_toggle_viewport} from "../../lib/keybinds";
     import {dispatch, subscribe} from "../../lib/messages";
-    import {CONTEXT_EDITOR} from "../../lib/editor";
+    import {CONTEXT_PREVIEW} from "../../lib/preview";
+    import {CONTEXT_WORKSPACE} from "../../lib/workspace";
 
     import type {
         IPreviewDestroyMessage,
@@ -17,20 +23,24 @@
         IPreviewReadyMessage,
     } from "../../lib/types/preview";
 
-    import Errors from "../Errors.svelte";
     import Loader from "../Loader.svelte";
 
-    const {errors, frame, framerate, height, maxframes, path, playing, show_checkerboard, width} =
-        CONTEXT_EDITOR.get()!;
+    const {preferences} = CONTEXT_APP.get()!;
+    const {file_path, frame, playing} = CONTEXT_PREVIEW.get()!;
+    const {configuration, errors} = CONTEXT_WORKSPACE.get()!;
+
+    // HACK: The JSON Schema validation makes sure these properties are /ALWAYS/ a number
+    const framerate = configuration.watch<number>("framerate") as Readable<number>;
+    const maxframes = configuration.watch<number>("maxframes") as Readable<number>;
 
     const _advance = advance({frame, framerate, maxframes, playing});
 
     let container_element: HTMLDivElement | undefined;
-    let render_element: HTMLDivElement | undefined;
     let iframe_element: HTMLIFrameElement | undefined;
+    let viewport_element: HTMLDivElement | undefined;
 
-    let _render_height: number;
-    let _render_width: number;
+    let _viewport_height: number;
+    let _viewport_width: number;
 
     let _preview_height: number;
     let _preview_width: number;
@@ -42,6 +52,18 @@
 
     const hide_resolution = debounce(() => (_show_resolution = false), 2500);
 
+    function on_checkerboard_toggle(event: IKeybindEvent): void {
+        if (!has_focus()) return;
+
+        event.preventDefault();
+        if (!event.detail.active) return;
+
+        preferences.set(
+            "ui.preview.checkerboard.enabled",
+            !preferences.get("ui.preview.checkerboard.enabled")
+        );
+    }
+
     function on_resolution_enter(event: PointerEvent): void {
         _show_resolution = true;
     }
@@ -50,9 +72,21 @@
         _show_resolution = false;
     }
 
+    function on_viewport_toggle(event: IKeybindEvent): void {
+        if (!has_focus()) return;
+
+        event.preventDefault();
+        if (!event.detail.active) return;
+
+        preferences.set(
+            "ui.preview.viewport.enabled",
+            !preferences.get("ui.preview.viewport.enabled")
+        );
+    }
+
     onMount(() => {
         if (!iframe_element) {
-            throw ReferenceError("bad mount to 'EditorRender' (could not query iframe)");
+            throw ReferenceError("bad mount to 'PreviewViewport' (could not query iframe)");
         }
 
         const destroy_destroy = subscribe<IPreviewDestroyMessage>(
@@ -63,16 +97,19 @@
 
         const destroy_error = subscribe<IPreviewErrorMessage>(
             "PREVIEW_ERROR",
-            ({message, name}) => ($errors = {name, message}),
+            ({message, name}) => {
+                errors.push({
+                    name,
+                    message,
+                    source: file_path,
+                });
+            },
             iframe_element
         );
 
         const destroy_mounted = subscribe<IPreviewMountMessage>(
             "PREVIEW_MOUNT",
-            () => {
-                $errors = null;
-                _mounted = true;
-            },
+            () => (_mounted = true),
             iframe_element
         );
 
@@ -103,19 +140,21 @@
     let _container_height: number;
 
     $: {
-        if (render_element) {
-            const computed = getComputedStyle(render_element);
+        if (viewport_element) {
+            const computed = getComputedStyle(viewport_element);
 
             const padding_top = parseInt(computed.paddingTop.slice(0, -2));
             const padding_bottom = parseInt(computed.paddingBottom.slice(0, -2));
             const padding_left = parseInt(computed.paddingLeft.slice(0, -2));
             const padding_right = parseInt(computed.paddingRight.slice(0, -2));
 
-            const available_width = _render_width - (padding_left + padding_right);
-            const available_height = _render_height - (padding_top + padding_bottom);
+            const available_width = _viewport_width - (padding_left + padding_right);
+            const available_height = _viewport_height - (padding_top + padding_bottom);
 
-            const preferred_height = available_width * ($height / $width);
-            const preferred_width = available_height * ($width / $height);
+            const preferred_height =
+                available_width * ($configuration.height / $configuration.width);
+            const preferred_width =
+                available_height * ($configuration.width / $configuration.height);
 
             if (preferred_height > available_height) {
                 _container_width = preferred_width;
@@ -141,66 +180,70 @@
     }
 </script>
 
+<svelte:window
+    use:action_toggle_checkerboard={{on_bind: on_checkerboard_toggle}}
+    use:action_toggle_viewport={{on_bind: on_viewport_toggle}}
+/>
+
 <div
-    bind:this={render_element}
-    class="box sim--editor-render"
+    bind:this={viewport_element}
+    class="box sim--preview-viewport"
     data-padding="large"
-    bind:clientWidth={_render_width}
-    bind:clientHeight={_render_height}
+    style="display:{$preferences.ui.preview.viewport.enabled ? 'block' : 'none'}"
+    bind:clientWidth={_viewport_width}
+    bind:clientHeight={_viewport_height}
 >
     <div
         bind:this={container_element}
-        class="sim--editor-render--container"
-        style="--configuration-width:{$width};--configuration-height:{$height};width:{_container_width}px;height:{_container_height}px"
+        class="sim--preview-viewport--container"
+        style="--configuration-width:{$configuration.width};--configuration-height:{$configuration.height};width:{_container_width}px;height:{_container_height}px"
     >
         <iframe
-            class="sim--editor-render--preview"
+            class="sim--preview-viewport--preview"
             bind:this={iframe_element}
-            src="/preview.html?file={$path}"
-            data-checkerboard={$show_checkerboard}
+            src="/preview.html?file={file_path}"
+            data-checkerboard={$preferences.ui.preview.checkerboard.enabled}
         />
 
         <Position spacing="tiny" variation={["container", "action"]}>
             <Badge
-                class="sim--editor-render--resolution"
+                class="sim--preview-viewport--resolution"
                 style="opacity:{_show_resolution ? 1 : 0.25};"
                 on:pointerenter={on_resolution_enter}
                 on:pointerleave={on_resolution_exit}
             >
                 {_preview_width}x{_preview_height}
-                ({$width}x{$height})
+                ({$configuration.width}x{$configuration.height})
             </Badge>
         </Position>
 
-        <Loader hidden={!$errors && _mounted} />
+        <Loader hidden={$errors.length < 1 && _mounted} />
     </div>
 
-    <Errors />
-
-    <Divider class="sim--editor-render--divider" palette="inverse" margin="none" />
+    <Divider class="sim--preview-viewport--divider" palette="inverse" margin="none" />
 </div>
 
 <style>
-    :global(.sim--editor-render) {
+    :global(.sim--preview-viewport) {
         display: flex;
         position: relative;
 
         align-items: center;
         justify-content: center;
 
-        grid-area: render;
+        grid-area: viewport;
 
         overflow: hidden;
     }
 
-    :global(.sim--editor-render--container) {
+    :global(.sim--preview-viewport--container) {
         display: flex;
         position: relative;
 
         border: 2px solid hsla(var(--palette-foreground-bold), 0.2);
     }
 
-    :global(.sim--editor-render--preview) {
+    :global(.sim--preview-viewport--preview) {
         --color-background: transparent;
         --color-foreground: transparent;
 
@@ -236,16 +279,16 @@
         user-select: none;
     }
 
-    :global(.sim--editor-render--preview[data-checkerboard="true"]) {
+    :global(.sim--preview-viewport--preview[data-checkerboard="true"]) {
         --color-background: hsl(var(--palette-background-lighter));
         --color-foreground: hsla(var(--palette-foreground-normal), 0.2);
     }
 
-    :global(.sim--editor-render--resolution) {
+    :global(.sim--preview-viewport--resolution) {
         transition: opacity var(--animations-visual-duration) var(--animations-visual-function);
     }
 
-    :global(.sim--editor-render--divider) {
+    :global(.sim--preview-viewport--divider) {
         position: absolute;
 
         bottom: 0;

@@ -13,7 +13,7 @@
         display: grid;
 
         grid-template-areas:
-            "sidebar script render"
+            "sidebar script viewport"
             "sidebar script controls"
             "timeline timeline timeline";
 
