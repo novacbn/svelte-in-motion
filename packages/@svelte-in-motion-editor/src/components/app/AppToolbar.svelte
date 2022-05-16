@@ -182,10 +182,6 @@
 
             <Menu.Heading />
 
-            <Menu.Button>Toggle Zen Mode</Menu.Button>
-
-            <Menu.Heading />
-
             <Menu.Button disabled={!in_workspace}>Toggle File Tree</Menu.Button>
             <Menu.Button disabled={!in_workspace}>Toggle Script Editor</Menu.Button>
 

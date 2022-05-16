@@ -25,7 +25,3 @@ export const action_toggle_play = make_keybind_shortcut({
 export const action_toggle_script = make_keybind_shortcut({
     binds: ["s"],
 });
-
-export const action_toggle_zen = make_keybind_shortcut({
-    binds: ["f", "z"],
-});

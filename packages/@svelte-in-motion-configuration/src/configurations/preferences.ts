@@ -30,10 +30,6 @@ export interface IPreferencesConfiguration extends IConfigurationRecord {
                 enabled: boolean;
             };
         };
-
-        zen_mode: {
-            enabled: boolean;
-        };
     };
 }
 
@@ -115,17 +111,6 @@ export const CONFIGURATION_PREFERENCES = configuration_reader<IPreferencesConfig
                             default: true,
                         },
                     },
-                },
-            },
-        },
-
-        zen_mode: {
-            type: "object",
-
-            properties: {
-                enabled: {
-                    type: "boolean",
-                    default: false,
                 },
             },
         },
