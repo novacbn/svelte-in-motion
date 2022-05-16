@@ -4,13 +4,13 @@
     import {onMount} from "svelte";
     import type {Readable} from "svelte/store";
 
-    import {advance} from "@svelte-in-motion/core";
-    import {debounce} from "@svelte-in-motion/utilities";
+    import {advance as make_advance_store} from "@svelte-in-motion/core";
+    import type {IMessageEvent} from "@svelte-in-motion/utilities";
+    import {debounce, message} from "@svelte-in-motion/utilities";
 
     import {CONTEXT_APP} from "../../lib/app";
     import {has_focus} from "../../lib/editor";
     import {action_toggle_checkerboard, action_toggle_viewport} from "../../lib/keybinds";
-    import {dispatch, subscribe} from "../../lib/messages";
     import {CONTEXT_PREVIEW} from "../../lib/preview";
     import {CONTEXT_WORKSPACE} from "../../lib/workspace";
 
@@ -34,11 +34,22 @@
     const framerate = configuration.watch<number>("framerate") as Readable<number>;
     const maxframes = configuration.watch<number>("maxframes") as Readable<number>;
 
-    const _advance = advance({frame, framerate, maxframes, playing});
+    const advance = make_advance_store({frame, framerate, maxframes, playing});
 
     let container_element: HTMLDivElement | undefined;
     let iframe_element: HTMLIFrameElement | undefined;
     let viewport_element: HTMLDivElement | undefined;
+
+    let messages:
+        | IMessageEvent<
+              | IPreviewDestroyMessage
+              | IPreviewErrorMessage
+              | IPreviewFrameMessage
+              | IPreviewMountMessage
+              | IPreviewPlayingMessage
+              | IPreviewReadyMessage
+          >
+        | undefined;
 
     let _viewport_height: number;
     let _viewport_width: number;
@@ -85,61 +96,45 @@
         );
     }
 
-    onMount(() => {
-        if (!iframe_element) {
-            throw ReferenceError("bad mount to 'PreviewViewport' (could not query iframe)");
-        }
-
-        const destroy_destroy = subscribe<IPreviewDestroyMessage>(
-            MESSAGES_PREVIEW.destroy,
-            () => (_mounted = false),
-            iframe_element
-        );
-
-        const destroy_error = subscribe<IPreviewErrorMessage>(
-            MESSAGES_PREVIEW.error,
-            ({message, name}) => {
-                errors.push({
-                    name,
-                    message,
-                    source: file_path,
-                });
-            },
-            iframe_element
-        );
-
-        const destroy_mounted = subscribe<IPreviewMountMessage>(
-            MESSAGES_PREVIEW.mount,
-            () => (_mounted = true),
-            iframe_element
-        );
-
-        const destroy_ready = subscribe<IPreviewReadyMessage>(
-            MESSAGES_PREVIEW.ready,
-            () => (_ready = true),
-            iframe_element
-        );
-
-        return () => {
-            destroy_destroy();
-            destroy_error();
-            destroy_mounted();
-            destroy_ready();
-        };
-    });
-
     // HACK: Need to subscribe to it, so it'll run
-    $: $_advance;
+    $: $advance;
 
-    $: if (iframe_element && _ready)
-        dispatch<IPreviewFrameMessage>(MESSAGES_PREVIEW.frame, {frame: $frame}, iframe_element);
+    $: if (iframe_element) messages = message(iframe_element.contentWindow!);
 
-    $: if (iframe_element && _ready)
-        dispatch<IPreviewPlayingMessage>(
-            MESSAGES_PREVIEW.playing,
-            {playing: $playing},
-            iframe_element
-        );
+    $: {
+        if (messages && $messages) {
+            const message = $messages;
+
+            switch (message.name) {
+                case MESSAGES_PREVIEW.destroy:
+                    _mounted = false;
+                    break;
+
+                case MESSAGES_PREVIEW.error:
+                    errors.push({
+                        name: message.detail.name,
+                        message: message.detail.message,
+                        source: file_path,
+                    });
+
+                    break;
+
+                case MESSAGES_PREVIEW.mount:
+                    _mounted = true;
+                    break;
+
+                case MESSAGES_PREVIEW.ready:
+                    _ready = true;
+                    break;
+            }
+        }
+    }
+
+    $: if (messages && _ready)
+        messages.dispatch({name: MESSAGES_PREVIEW.frame, detail: {frame: $frame}});
+
+    $: if (messages && _ready)
+        messages.dispatch({name: MESSAGES_PREVIEW.playing, detail: {playing: $playing}});
 
     let _container_width: number;
     let _container_height: number;

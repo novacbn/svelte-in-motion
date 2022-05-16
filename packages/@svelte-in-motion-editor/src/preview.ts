@@ -16,9 +16,8 @@ import {
     frame as make_frame_store,
     playing as make_playing_store,
 } from "@svelte-in-motion/core";
-import {evaluate_code, map, normalize_pathname} from "@svelte-in-motion/utilities";
+import {evaluate_code, map, message, normalize_pathname} from "@svelte-in-motion/utilities";
 
-import {dispatch, subscribe} from "./lib/messages";
 import {REPL_CONTEXT, REPL_IMPORTS} from "./lib/repl";
 import {
     FILE_CONFIGURATION_WORKSPACE,
@@ -86,6 +85,15 @@ import {MESSAGES_PREVIEW} from "./lib/types/preview";
 
     const playing = make_playing_store();
 
+    const messages = message<
+        | IPreviewDestroyMessage
+        | IPreviewErrorMessage
+        | IPreviewFrameMessage
+        | IPreviewMountMessage
+        | IPreviewPlayingMessage
+        | IPreviewReadyMessage
+    >(window);
+
     let _dependencies: Set<string> = new Set();
 
     let _component: SvelteComponent | null = null;
@@ -104,9 +112,13 @@ import {MESSAGES_PREVIEW} from "./lib/types/preview";
         if ("errors" in result) {
             const [first_error] = result.errors;
 
-            dispatch<IPreviewErrorMessage>(MESSAGES_PREVIEW.error, {
-                message: first_error.message,
-                name: first_error.name,
+            messages.dispatch({
+                name: MESSAGES_PREVIEW.error,
+
+                detail: {
+                    message: first_error.message,
+                    name: first_error.name,
+                },
             });
 
             return;
@@ -133,7 +145,9 @@ import {MESSAGES_PREVIEW} from "./lib/types/preview";
             _component.$destroy();
             _component = null;
 
-            dispatch<IPreviewDestroyMessage>(MESSAGES_PREVIEW.destroy);
+            messages.dispatch({
+                name: MESSAGES_PREVIEW.destroy,
+            });
         }
 
         _component = new Component({
@@ -147,22 +161,35 @@ import {MESSAGES_PREVIEW} from "./lib/types/preview";
             ]),
         });
 
-        dispatch<IPreviewMountMessage>(MESSAGES_PREVIEW.mount);
+        messages.dispatch({
+            name: MESSAGES_PREVIEW.mount,
+        });
     }
 
     window.addEventListener("error", (event) => {
         const error = event.error as Error;
 
-        dispatch<IPreviewErrorMessage>(MESSAGES_PREVIEW.error, {
-            message: error.message,
-            name: error.name,
+        messages.dispatch({
+            name: MESSAGES_PREVIEW.error,
+
+            detail: {
+                message: error.message,
+                name: error.name,
+            },
         });
     });
 
-    subscribe<IPreviewFrameMessage>(MESSAGES_PREVIEW.frame, (detail) => frame.set(detail.frame));
-    subscribe<IPreviewPlayingMessage>(MESSAGES_PREVIEW.playing, (detail) =>
-        playing.set(detail.playing)
-    );
+    messages.subscribe((message) => {
+        switch (message.name) {
+            case MESSAGES_PREVIEW.frame:
+                frame.set(message.detail.frame);
+                break;
+
+            case MESSAGES_PREVIEW.playing:
+                playing.set(message.detail.playing);
+                break;
+        }
+    });
 
     storage.watch_directory("/", {
         exclude_directories: true,
@@ -174,5 +201,7 @@ import {MESSAGES_PREVIEW} from "./lib/types/preview";
 
     update();
 
-    dispatch<IPreviewReadyMessage>(MESSAGES_PREVIEW.ready);
+    messages.dispatch({
+        name: MESSAGES_PREVIEW.ready,
+    });
 })();

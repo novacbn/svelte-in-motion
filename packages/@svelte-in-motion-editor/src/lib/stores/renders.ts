@@ -2,12 +2,10 @@ import {Check, Clock, Video} from "lucide-svelte";
 import type {Readable} from "svelte/store";
 
 import type {ICollectionItem, IEvent} from "@svelte-in-motion/utilities";
-import {collection, event, generate_uuid} from "@svelte-in-motion/utilities";
+import {collection, event, generate_uuid, message} from "@svelte-in-motion/utilities";
 
 import type {IRenderEndMessage, IRenderProgressMessage, IRenderStartMessage} from "../types/render";
 import {MESSAGES_RENDER} from "../types/render";
-
-import {subscribe} from "../messages";
 
 import type {INotification, INotificationsStore} from "./notifications";
 
@@ -116,49 +114,47 @@ export function renders(notifications: INotificationsStore): IRendersStore {
             iframe_element.src = `/render.html?identifier=${identifier}&workspace=${workspace}&file=${file}&start=${start}&end=${end}`;
 
             iframe_element.addEventListener("load", () => {
-                const destroy_frame = subscribe<IRenderProgressMessage>(
-                    MESSAGES_RENDER.progress,
-                    (detail) => update("identifier", identifier, {completion: detail.progress}),
-                    iframe_element
-                );
+                const messages = message<
+                    IRenderEndMessage | IRenderProgressMessage | IRenderStartMessage
+                >(iframe_element.contentWindow!);
 
-                const destroy_start = subscribe<IRenderStartMessage>(
-                    MESSAGES_RENDER.start,
-                    () => {
-                        const render = update("identifier", identifier, {
-                            state: RENDER_STATES.started,
-                        });
-                        EVENT_START.dispatch({render});
-                    },
+                const destroy = messages.subscribe(async (message) => {
+                    switch (message.name) {
+                        case MESSAGES_RENDER.end: {
+                            const frames = await Promise.all(
+                                message.detail.frames.map(async (uri, index) => {
+                                    const response = await fetch(uri);
+                                    const buffer = await response.arrayBuffer();
 
-                    iframe_element
-                );
+                                    return new Uint8Array(buffer);
+                                })
+                            );
 
-                const destroy_end = subscribe<IRenderEndMessage>(
-                    MESSAGES_RENDER.end,
-                    async (detail) => {
-                        const frames = await Promise.all(
-                            detail.frames.map(async (uri, index) => {
-                                const response = await fetch(uri);
-                                const buffer = await response.arrayBuffer();
+                            destroy();
+                            iframe_element.remove();
 
-                                return new Uint8Array(buffer);
-                            })
-                        );
+                            const render = update("identifier", identifier, {
+                                state: RENDER_STATES.ended,
+                            });
 
-                        destroy_end();
-                        destroy_frame();
-                        destroy_start();
+                            EVENT_END.dispatch({render, frames});
+                            break;
+                        }
 
-                        iframe_element.remove();
+                        case MESSAGES_RENDER.progress:
+                            update("identifier", identifier, {completion: message.detail.progress});
+                            break;
 
-                        const render = update("identifier", identifier, {
-                            state: RENDER_STATES.ended,
-                        });
-                        EVENT_END.dispatch({render, frames});
-                    },
-                    iframe_element
-                );
+                        case MESSAGES_RENDER.start: {
+                            const render = update("identifier", identifier, {
+                                state: RENDER_STATES.started,
+                            });
+
+                            EVENT_START.dispatch({render});
+                            break;
+                        }
+                    }
+                });
             });
 
             document.body.appendChild(iframe_element);

@@ -14,9 +14,8 @@ import {
     maxframes as make_maxframes_store,
     playing as make_playing_store,
 } from "@svelte-in-motion/core";
-import {clamp, evaluate_code} from "@svelte-in-motion/utilities";
+import {clamp, evaluate_code, message} from "@svelte-in-motion/utilities";
 
-import {dispatch} from "./lib/messages";
 import {REPL_CONTEXT, REPL_IMPORTS} from "./lib/repl";
 import {
     FILE_CONFIGURATION_WORKSPACE,
@@ -95,12 +94,19 @@ import {MESSAGES_RENDER} from "./lib/types/render";
 
     const playing = make_playing_store();
 
+    const messages = message<
+        IRenderEndMessage | IRenderErrorMessage | IRenderProgressMessage | IRenderStartMessage
+    >(window);
+
     window.addEventListener("error", (event) => {
         const error = event.error as Error;
 
-        dispatch<IRenderErrorMessage>(MESSAGES_RENDER.error, {
-            message: error.message,
-            name: error.name,
+        messages.dispatch({
+            name: MESSAGES_RENDER.error,
+            detail: {
+                message: error.message,
+                name: error.name,
+            },
         });
     });
 
@@ -112,9 +118,12 @@ import {MESSAGES_RENDER} from "./lib/types/render";
     if ("errors" in result) {
         const [first_error] = result.errors;
 
-        dispatch<IRenderErrorMessage>(MESSAGES_RENDER.error, {
-            message: first_error.message,
-            name: first_error.name,
+        messages.dispatch({
+            name: MESSAGES_RENDER.error,
+            detail: {
+                message: first_error.message,
+                name: first_error.name,
+            },
         });
 
         return;
@@ -134,7 +143,9 @@ import {MESSAGES_RENDER} from "./lib/types/render";
         ]),
     });
 
-    dispatch<IRenderStartMessage>(MESSAGES_RENDER.start);
+    messages.dispatch({
+        name: MESSAGES_RENDER.start,
+    });
 
     for (let current_frame = parsed_start; current_frame <= parsed_end; current_frame++) {
         frame.set(current_frame);
@@ -142,12 +153,18 @@ import {MESSAGES_RENDER} from "./lib/types/render";
 
         FRAMES[current_frame] = await toPng(document.documentElement);
 
-        dispatch<IRenderProgressMessage>(MESSAGES_RENDER.progress, {
-            progress: (current_frame - parsed_start) / total_frames,
+        messages.dispatch({
+            name: MESSAGES_RENDER.progress,
+            detail: {
+                progress: (current_frame - parsed_start) / total_frames,
+            },
         });
     }
 
-    dispatch<IRenderEndMessage>(MESSAGES_RENDER.end, {
-        frames: Object.values(FRAMES),
+    messages.dispatch({
+        name: MESSAGES_RENDER.end,
+        detail: {
+            frames: Object.values(FRAMES),
+        },
     });
 })();

@@ -53,10 +53,10 @@ export function message<T>(
     });
 
     return {
-        dispatch(detail, transfer, origin = location.origin) {
+        dispatch(message, transfer, origin = location.origin) {
             if (typeof window === "object" && target === window) {
-                window.postMessage(detail, origin, transfer);
-            } else (target as IPortEventTarget).postMessage(detail, transfer);
+                window.postMessage(message, origin, transfer);
+            } else (target as IPortEventTarget).postMessage(message, transfer);
         },
 
         subscribe,
