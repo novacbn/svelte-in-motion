@@ -14,9 +14,7 @@
     import {zip_frames} from "../../lib/io";
     import {CONTEXT_WORKSPACE} from "../../lib/workspace";
 
-    import {jobs} from "../../lib/stores/jobs";
     import type {IExportFramesPromptEvent, IExportVideoPromptEvent} from "../../lib/stores/prompts";
-    import {renders} from "../../lib/stores/renders";
 
     const {notifications, prompts} = CONTEXT_APP.get()!;
     const editor = CONTEXT_EDITOR.get();
@@ -32,7 +30,7 @@
 
     async function on_export_frames_click(event: MouseEvent): Promise<void> {
         const {file_path} = editor!;
-        const {configuration} = workspace!;
+        const {configuration, renders} = workspace!;
 
         (document.activeElement as HTMLElement).blur();
 
@@ -82,7 +80,7 @@
 
     async function on_export_video_click(event: MouseEvent): Promise<void> {
         const {file_path} = editor!;
-        const {configuration} = workspace!;
+        const {configuration, jobs} = workspace!;
 
         (document.activeElement as HTMLElement).blur();
 
