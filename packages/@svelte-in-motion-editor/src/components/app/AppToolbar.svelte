@@ -6,10 +6,12 @@
     import {Dropdown, Menu} from "@kahi-ui/framework";
     import {Archive, Download} from "lucide-svelte";
 
+    import {download_blob, download_buffer} from "@svelte-in-motion/utilities";
+
     import {CONTEXT_APP} from "../../lib/app";
     import {CONTEXT_EDITOR} from "../../lib/editor";
     import {is_prompt_dismiss_error} from "../../lib/errors";
-    import {download_blob, download_buffer, zip_frames} from "../../lib/io";
+    import {zip_frames} from "../../lib/io";
     import {CONTEXT_WORKSPACE} from "../../lib/workspace";
 
     import {jobs} from "../../lib/stores/jobs";
@@ -173,6 +175,7 @@
         </svelte:fragment>
 
         <Menu.Container sizing="nano">
+            <Menu.Button disabled={!in_workspace}>Errors</Menu.Button>
             <Menu.Button disabled={!in_workspace}>Jobs</Menu.Button>
 
             <Menu.Button>Toggle Zen Mode</Menu.Button>
