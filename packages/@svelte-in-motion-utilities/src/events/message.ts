@@ -54,8 +54,8 @@ export function message<T>(
 
     return {
         dispatch(detail, transfer, origin = location.origin) {
-            if (target === window) {
-                (target as IWindowEventTarget).postMessage(detail, origin, transfer);
+            if (typeof window === "object" && target === window) {
+                window.postMessage(detail, origin, transfer);
             } else (target as IPortEventTarget).postMessage(detail, transfer);
         },
 
