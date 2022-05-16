@@ -174,7 +174,7 @@ export function renders(notifications: INotificationsStore): IRendersStore {
         },
 
         track(identifier, on_remove = undefined) {
-            if (!has(identifier)) {
+            if (!has("identifier", identifier)) {
                 throw new ReferenceError(
                     `bad argument #0 to 'renders.track' (render '${identifier}' is not valid)`
                 );

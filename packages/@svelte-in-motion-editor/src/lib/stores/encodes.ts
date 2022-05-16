@@ -152,7 +152,7 @@ export function encodes(notifications: INotificationsStore): IEncodesStore {
         },
 
         track(identifier, on_remove = undefined) {
-            if (!has(identifier)) {
+            if (!has("identifier", identifier)) {
                 throw new ReferenceError(
                     `bad argument #0 to 'encodes.track' (encode '${identifier}' is not valid)`
                 );
