@@ -6,7 +6,7 @@ export interface IPreferencesConfiguration extends IConfigurationRecord {
         editor: {
             file_tree: {
                 enabled: boolean;
-            }
+            };
 
             script: {
                 enabled: boolean;
@@ -18,9 +18,13 @@ export interface IPreferencesConfiguration extends IConfigurationRecord {
                 enabled: boolean;
             };
 
+            controls: {
+                enabled: boolean;
+            };
+
             timeline: {
                 enabled: boolean;
-            }
+            };
 
             viewport: {
                 enabled: boolean;
@@ -52,7 +56,6 @@ export const CONFIGURATION_PREFERENCES = configuration_reader<IPreferencesConfig
                     },
                 },
 
-
                 script: {
                     type: "object",
 
@@ -71,6 +74,17 @@ export const CONFIGURATION_PREFERENCES = configuration_reader<IPreferencesConfig
 
             properties: {
                 checkerboard: {
+                    type: "object",
+
+                    properties: {
+                        enabled: {
+                            type: "boolean",
+                            default: true,
+                        },
+                    },
+                },
+
+                controls: {
                     type: "object",
 
                     properties: {

@@ -1,36 +1,20 @@
 <script lang="ts">
     import type {IKeybindEvent} from "@kahi-ui/framework";
-    import {Box, Menu, Spacer, Text} from "@kahi-ui/framework";
-    import {Edit, Grid, Palmtree, Pause, Play, SkipBack, SkipForward} from "lucide-svelte";
+    import {Box, Menu, Text} from "@kahi-ui/framework";
+    import {Pause, Play, SkipBack, SkipForward} from "lucide-svelte";
 
     import {clamp} from "@svelte-in-motion/utilities";
 
+    import {CONTEXT_APP} from "../../lib/app";
     import {CONTEXT_EDITOR, has_focus} from "../../lib/editor";
-    import {
-        action_next_frame,
-        action_previous_frame,
-        action_toggle_checkerboard,
-        action_toggle_play,
-        action_toggle_script,
-        action_toggle_zen,
-    } from "../../lib/keybinds";
+    import {action_next_frame, action_previous_frame, action_toggle_play} from "../../lib/keybinds";
+    import {CONTEXT_WORKSPACE} from "../../lib/workspace";
 
     import Tooltip from "../Tooltip.svelte";
 
-    const {frame, maxframes, playing, show_checkerboard, show_script, zen_mode} =
-        CONTEXT_EDITOR.get()!;
-
-    function on_checkerboard_toggle(event: IKeybindEvent | MouseEvent): void {
-        if (!has_focus()) return;
-
-        if (typeof event.detail === "object") {
-            event.preventDefault();
-
-            if (!event.detail.active) return;
-        }
-
-        $show_checkerboard = !$show_checkerboard;
-    }
+    const {preferences} = CONTEXT_APP.get()!;
+    const {frame, playing} = CONTEXT_EDITOR.get()!;
+    const {configuration} = CONTEXT_WORKSPACE.get()!;
 
     function on_frame_increment(event: IKeybindEvent | MouseEvent, delta: number): void {
         if ($playing || !has_focus()) return;
@@ -41,7 +25,7 @@
             if (!event.detail.active) return;
         }
 
-        $frame = clamp($frame + delta, 0, $maxframes);
+        $frame = clamp($frame + delta, 0, $configuration.maxframes);
     }
 
     function on_playing_toggle(event: IKeybindEvent | MouseEvent): void {
@@ -55,42 +39,15 @@
 
         $playing = !$playing;
     }
-
-    function on_script_toggle(event: IKeybindEvent | MouseEvent): void {
-        if (!has_focus()) return;
-
-        if (typeof event.detail === "object") {
-            event.preventDefault();
-
-            if (!event.detail.active) return;
-        }
-
-        $show_script = !$show_script;
-    }
-
-    function on_zen_mode(event: IKeybindEvent | MouseEvent): void {
-        if (!has_focus()) return;
-
-        if (typeof event.detail === "object") {
-            event.preventDefault();
-
-            if (!event.detail.active) return;
-        }
-
-        $zen_mode = !$zen_mode;
-    }
 </script>
 
 <svelte:window
     use:action_next_frame={{on_bind: (event) => on_frame_increment(event, 1)}}
     use:action_previous_frame={{on_bind: (event) => on_frame_increment(event, -1)}}
-    use:action_toggle_checkerboard={{on_bind: on_checkerboard_toggle}}
     use:action_toggle_play={{on_bind: on_playing_toggle}}
-    use:action_toggle_script={{on_bind: on_script_toggle}}
-    use:action_toggle_zen={{on_bind: on_zen_mode}}
 />
 
-<Box class="sim--editor-controls" palette="auto">
+<Box class="sim--editor-controls" palette="auto" hidden={$preferences.ui.preview.controls.enabled}>
     <Menu.Container orientation="horizontal" sizing="tiny" margin_x="auto" padding="small">
         <Tooltip placement="top" alignment_x="right">
             <svelte:fragment slot="activator">
@@ -138,42 +95,6 @@
             </svelte:fragment>
 
             Skip one frame forward <Text is="strong">RIGHTARROW</Text>
-        </Tooltip>
-
-        <Spacer spacing="medium" />
-
-        <Tooltip placement="top" alignment_x="right">
-            <svelte:fragment slot="activator">
-                <Menu.Button active={$show_script} palette="inverse" on:click={on_script_toggle}>
-                    <Edit size="1em" />
-                </Menu.Button>
-            </svelte:fragment>
-
-            Toggle script editor <Text is="strong">S</Text>
-        </Tooltip>
-
-        <Tooltip placement="top" alignment_x="right">
-            <svelte:fragment slot="activator">
-                <Menu.Button
-                    active={$show_checkerboard}
-                    palette="inverse"
-                    on:click={on_checkerboard_toggle}
-                >
-                    <Grid size="1em" />
-                </Menu.Button>
-            </svelte:fragment>
-
-            Toggle transparency checkerboard pattern <Text is="strong">C</Text>
-        </Tooltip>
-
-        <Tooltip placement="top" alignment_x="right">
-            <svelte:fragment slot="activator">
-                <Menu.Button active={$zen_mode} palette="inverse" on:click={on_zen_mode}>
-                    <Palmtree size="1em" />
-                </Menu.Button>
-            </svelte:fragment>
-
-            Toggle zen mode <Text is="strong">Z</Text>
         </Tooltip>
     </Menu.Container>
 </Box>

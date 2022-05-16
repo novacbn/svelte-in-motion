@@ -192,6 +192,7 @@
             <Menu.Heading />
 
             <Menu.Button disabled={!in_editor}>Toggle Checkerboard</Menu.Button>
+            <Menu.Button disabled={!in_editor}>Toggle Controls</Menu.Button>
             <Menu.Button disabled={!in_editor}>Toggle Timeline</Menu.Button>
             <Menu.Button disabled={!in_editor}>Toggle Viewport</Menu.Button>
         </Menu.Container>
