@@ -10,12 +10,11 @@
     import AppLayout from "../components/app/AppLayout.svelte";
 
     import type {ICreateWorkspacePromptEvent} from "../lib/stores/prompts";
-    import {prompts} from "../lib/stores/prompts";
 
     import {CONTEXT_APP} from "../lib/app";
     import {is_prompt_dismiss_error} from "../lib/errors";
 
-    const {workspaces} = CONTEXT_APP.get()!;
+    const {prompts, workspaces} = CONTEXT_APP.get()!;
 
     function format_last_accessed(timestamp: null | string): string {
         if (timestamp === null) return "never accessed";
