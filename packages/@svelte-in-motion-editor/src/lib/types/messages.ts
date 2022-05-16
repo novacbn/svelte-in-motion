@@ -1,8 +1,10 @@
-export interface IMessage<
+export type IMessage<
     Name extends String,
     Detail extends Record<string, any> | undefined = undefined
-> {
-    name: Name;
+> = Detail extends undefined
+    ? {name: Name}
+    : {
+          name: Name;
 
-    detail: Detail;
-}
+          detail: Detail;
+      };
