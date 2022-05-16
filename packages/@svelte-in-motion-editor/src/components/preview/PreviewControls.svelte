@@ -6,19 +6,20 @@
     import {clamp} from "@svelte-in-motion/utilities";
 
     import {CONTEXT_APP} from "../../lib/app";
-    import {CONTEXT_EDITOR, has_focus} from "../../lib/editor";
+    import {has_focus} from "../../lib/editor";
     import {
         action_next_frame,
         action_previous_frame,
         action_toggle_controls,
         action_toggle_play,
     } from "../../lib/keybinds";
+    import {CONTEXT_PREVIEW} from "../../lib/preview";
     import {CONTEXT_WORKSPACE} from "../../lib/workspace";
 
     import Tooltip from "../Tooltip.svelte";
 
     const {preferences} = CONTEXT_APP.get()!;
-    const {frame, playing} = CONTEXT_EDITOR.get()!;
+    const {frame, playing} = CONTEXT_PREVIEW.get()!;
     const {configuration} = CONTEXT_WORKSPACE.get()!;
 
     function on_controls_toggle(event: IKeybindEvent): void {
