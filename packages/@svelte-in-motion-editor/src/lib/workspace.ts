@@ -19,10 +19,12 @@ import {
 
 import SAMPLE from "./storage/SAMPLE.svelte?raw";
 
-import type {IErrorsStore} from "./stores/errors";
 import type {IEncodesStore} from "./stores/encodes";
 import {encodes as make_encodes_store} from "./stores/encodes";
+import type {IErrorsStore} from "./stores/errors";
 import {errors as make_errors_store} from "./stores/errors";
+import type {IJobsStore} from "./stores/jobs";
+import {jobs as make_jobs_store} from "./stores/jobs";
 import type {INotificationsStore} from "./stores/notifications";
 import type {IRendersStore} from "./stores/renders";
 import {renders as make_renders_store} from "./stores/renders";
@@ -35,6 +37,8 @@ export interface IWorkspaceContext {
     encodes: IEncodesStore;
 
     errors: IErrorsStore;
+
+    jobs: IJobsStore;
 
     metadata: Readable<IWorkspacesConfiguration>;
 
@@ -87,14 +91,18 @@ export async function workspace(
         await CONFIGURATION_WORKSPACE.watch_preload(storage, FILE_CONFIGURATION_WORKSPACE)
     );
 
-    const encodes = make_encodes_store(notifications);
     const errors = make_errors_store(notifications);
+
+    const encodes = make_encodes_store(notifications);
     const renders = make_renders_store(notifications);
+
+    const jobs = make_jobs_store(notifications, encodes, renders);
 
     return {
         configuration,
         encodes,
         errors,
+        jobs,
         // HACK: We already validated the workspace above, just TypeScript can't automagically infer
         metadata: metadata as Readable<IWorkspacesConfiguration>,
         renders,

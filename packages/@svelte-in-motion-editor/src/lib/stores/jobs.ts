@@ -1,18 +1,12 @@
 import {Check, Clock, Film, Video} from "lucide-svelte";
 import type {Readable} from "svelte/store";
 
-import type {IEvent} from "@svelte-in-motion/utilities";
-import {event} from "@svelte-in-motion/utilities";
+import type {ICollectionItem, IEvent} from "@svelte-in-motion/utilities";
+import {collection, event, generate_uuid} from "@svelte-in-motion/utilities";
 
-import type {IEncodeQueueOptions} from "./encodes";
-import {encodes} from "./encodes";
-import type {IRenderQueueOptions} from "./renders";
-import {renders} from "./renders";
-
-import type {ICollectionItem} from "./collection";
-import {collection} from "./collection";
-import type {INotification} from "./notifications";
-import {notifications} from "./notifications";
+import type {IEncodeQueueOptions, IEncodesStore} from "./encodes";
+import type {IRenderQueueOptions, IRendersStore} from "./renders";
+import type {INotification, INotificationsStore} from "./notifications";
 
 export enum JOB_STATES {
     ended = "ended",
@@ -45,6 +39,8 @@ export interface IJobRenderingEvent extends IJobEvent {
 }
 
 export interface IJobBase extends ICollectionItem {
+    identifier: string;
+
     state: `${JOB_STATES}`;
 
     encode?: string;
@@ -74,7 +70,7 @@ export type IJobQueueOptions = {
     render: Omit<IRenderQueueOptions, "file">;
 };
 
-export interface IJobQueueStore extends Readable<IJob[]> {
+export interface IJobsStore extends Readable<IJob[]> {
     EVENT_ENCODING: IEvent<IJobEncodingEvent>;
 
     EVENT_END: IEvent<IJobEndEvent>;
@@ -94,8 +90,12 @@ export interface IJobQueueStore extends Readable<IJob[]> {
     yield(identifier: string): Promise<Uint8Array>;
 }
 
-export function jobqueue(): IJobQueueStore {
-    const {get, has, push, subscribe, remove, update} = collection<IJob>();
+export function jobs(
+    notifications: INotificationsStore,
+    encodes: IEncodesStore,
+    renders: IRendersStore
+): IJobsStore {
+    const {find, has, push, subscribe, remove, update} = collection<IJob>();
 
     const EVENT_END = event<IJobEndEvent>();
     const EVENT_START = event<IJobEvent>();
@@ -111,7 +111,7 @@ export function jobqueue(): IJobQueueStore {
             file,
         });
 
-        let job = update(identifier, {
+        let job = update("identifier", identifier, {
             state: JOB_STATES.rendering,
             render: render_job,
         });
@@ -126,7 +126,7 @@ export function jobqueue(): IJobQueueStore {
 
         const encode_job = encodes.queue({...encode, frames});
 
-        job = update(identifier, {
+        job = update("identifier", identifier, {
             state: JOB_STATES.encoding,
             encode: encode_job,
             render: undefined,
@@ -140,7 +140,7 @@ export function jobqueue(): IJobQueueStore {
         const video = await encodes.yield(encode_job);
         encodes.remove(encode_job);
 
-        job = update(identifier, {
+        job = update("identifier", identifier, {
             state: JOB_STATES.ended,
             encode: undefined,
         });
@@ -163,7 +163,8 @@ export function jobqueue(): IJobQueueStore {
         has,
 
         queue(options) {
-            const identifier = push({
+            const {identifier} = push({
+                identifier: generate_uuid(),
                 state: JOB_STATES.uninitialized,
             });
 
@@ -172,37 +173,45 @@ export function jobqueue(): IJobQueueStore {
         },
 
         remove(identifier) {
-            const job = get(identifier);
+            const item = find(identifier);
 
-            if (job.state !== JOB_STATES.ended) {
+            if (!item) {
                 throw new ReferenceError(
-                    `bad argument #0 'jobqueue.remove' (job '${identifier}' has not ended)`
+                    `bad argument #0 to 'jobs.remove' (job '${identifier}' is not valid)`
+                );
+            }
+
+            if (item.state !== JOB_STATES.ended) {
+                throw new TypeError(
+                    `bad argument #0 'jobs.remove' (job '${identifier}' has not ended)`
                 );
             }
 
             remove(identifier);
-            return job;
+            return item;
         },
 
         track(identifier, on_remove = undefined) {
-            if (!has(identifier)) {
-                throw new Error(
-                    `bad argument #0 to 'jobqueue.track' (job '${identifier}' is not valid)`
+            if (!has("identifier", identifier)) {
+                throw new ReferenceError(
+                    `bad argument #0 to 'jobs.track' (job '${identifier}' is not valid)`
                 );
             }
 
-            const notification_identifier = notifications.push({
+            const {identifier: notification_identifier} = notifications.push({
                 header: "Tracking job...",
                 text: identifier,
                 on_remove,
             });
 
             function update(): void {
-                const job = get(identifier);
+                // HACK: We're relying `has` at the top of the function remaining
+                // valid through entire lifecycle
+                const item = find("identifier", identifier)!;
 
-                switch (job.state) {
+                switch (item.state) {
                     case JOB_STATES.ended:
-                        notifications.update(notification_identifier, {
+                        notifications.update("identifier", notification_identifier, {
                             icon: Check,
                             header: "Job Finished",
                             dismissible: true,
@@ -211,7 +220,7 @@ export function jobqueue(): IJobQueueStore {
                         break;
 
                     case JOB_STATES.encoding:
-                        notifications.update(notification_identifier, {
+                        notifications.update("identifier", notification_identifier, {
                             icon: Film,
                             header: "Encoding Video",
                         });
@@ -219,7 +228,7 @@ export function jobqueue(): IJobQueueStore {
                         break;
 
                     case JOB_STATES.rendering:
-                        notifications.update(notification_identifier, {
+                        notifications.update("identifier", notification_identifier, {
                             icon: Video,
                             header: "Rendering Frames",
                         });
@@ -227,7 +236,7 @@ export function jobqueue(): IJobQueueStore {
                         break;
 
                     case JOB_STATES.uninitialized:
-                        notifications.update(notification_identifier, {
+                        notifications.update("identifier", notification_identifier, {
                             icon: Clock,
                             header: "Starting Job",
                         });
@@ -262,11 +271,17 @@ export function jobqueue(): IJobQueueStore {
         },
 
         yield(identifier) {
-            const job = get(identifier);
+            const item = find("identifier", identifier);
 
-            if (job.state === JOB_STATES.ended) {
+            if (!item) {
                 throw new ReferenceError(
-                    `bad argument #0 'jobqueue.yield' (job '${identifier}' already ended)`
+                    `bad argument #0 to 'jobs.yield' (job '${identifier}' is not valid)`
+                );
+            }
+
+            if (item.state === JOB_STATES.ended) {
+                throw new TypeError(
+                    `bad argument #0 'jobs.yield' (job '${identifier}' already ended)`
                 );
             }
 
@@ -281,7 +296,3 @@ export function jobqueue(): IJobQueueStore {
         },
     };
 }
-
-export const jobs = jobqueue();
-
-export const {EVENT_ENCODING, EVENT_END, EVENT_RENDERING, EVENT_START} = jobs;
