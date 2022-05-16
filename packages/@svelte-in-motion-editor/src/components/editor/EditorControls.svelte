@@ -7,7 +7,12 @@
 
     import {CONTEXT_APP} from "../../lib/app";
     import {CONTEXT_EDITOR, has_focus} from "../../lib/editor";
-    import {action_next_frame, action_previous_frame, action_toggle_play} from "../../lib/keybinds";
+    import {
+        action_next_frame,
+        action_previous_frame,
+        action_toggle_controls,
+        action_toggle_play,
+    } from "../../lib/keybinds";
     import {CONTEXT_WORKSPACE} from "../../lib/workspace";
 
     import Tooltip from "../Tooltip.svelte";
@@ -15,6 +20,18 @@
     const {preferences} = CONTEXT_APP.get()!;
     const {frame, playing} = CONTEXT_EDITOR.get()!;
     const {configuration} = CONTEXT_WORKSPACE.get()!;
+
+    function on_controls_toggle(event: IKeybindEvent): void {
+        if (!has_focus()) return;
+
+        event.preventDefault();
+        if (!event.detail.active) return;
+
+        preferences.set(
+            "ui.preview.controls.enabled",
+            !preferences.get("ui.preview.controls.enabled")
+        );
+    }
 
     function on_frame_increment(event: IKeybindEvent | MouseEvent, delta: number): void {
         if ($playing || !has_focus()) return;
@@ -45,6 +62,7 @@
     use:action_next_frame={{on_bind: (event) => on_frame_increment(event, 1)}}
     use:action_previous_frame={{on_bind: (event) => on_frame_increment(event, -1)}}
     use:action_toggle_play={{on_bind: on_playing_toggle}}
+    use:action_toggle_controls={{on_bind: on_controls_toggle}}
 />
 
 <Box class="sim--editor-controls" palette="auto" hidden={$preferences.ui.preview.controls.enabled}>
