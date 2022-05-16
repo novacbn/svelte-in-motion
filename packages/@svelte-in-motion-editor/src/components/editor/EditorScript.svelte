@@ -7,22 +7,43 @@
 </script>
 
 <script lang="ts">
+    import type {IKeybindEvent} from "@kahi-ui/framework";
     import {CodeJar} from "@novacbn/svelte-codejar";
 
-    import {CONTEXT_EDITOR} from "../../lib/editor";
+    import {CONTEXT_APP} from "../../lib/app";
+    import {CONTEXT_EDITOR, has_focus} from "../../lib/editor";
+    import {action_toggle_script} from "../../lib/keybinds";
 
     import Loader from "../Loader.svelte";
 
-    const {content, show_script} = CONTEXT_EDITOR.get()!;
+    const {preferences} = CONTEXT_APP.get()!;
+    const {text} = CONTEXT_EDITOR.get()!;
+
+    function on_script_toggle(event: IKeybindEvent): void {
+        if (!has_focus()) return;
+
+        event.preventDefault();
+        if (!event.detail.active) return;
+
+        preferences.set(
+            "ui.preview.timeline.enabled",
+            !preferences.get("ui.preview.timeline.enabled")
+        );
+    }
 </script>
 
-<div class="sim--editor-script" style="display:{$show_script ? 'block' : 'none'}">
-    {#if $content !== null}
+<svelte:window use:action_toggle_script={{on_bind: on_script_toggle}} />
+
+<div
+    class="sim--editor-script"
+    style="display:{$preferences.ui.editor.script.enabled ? 'block' : 'none'}"
+>
+    {#if $text !== null}
         <CodeJar
             class="sim--editor-script--editor"
             syntax="svelte"
             {highlight}
-            bind:value={$content}
+            bind:value={$text}
         />
     {/if}
 
@@ -33,7 +54,7 @@
         margin="none"
     />
 
-    <Loader hidden={$content !== null} />
+    <Loader hidden={$text !== null} />
 </div>
 
 <style>
