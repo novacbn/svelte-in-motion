@@ -5,6 +5,7 @@ import type {ICollectionItem, IEvent} from "@svelte-in-motion/utilities";
 import {collection, event, generate_uuid} from "@svelte-in-motion/utilities";
 
 import type {IRenderEndMessage, IRenderProgressMessage, IRenderStartMessage} from "../types/render";
+import {MESSAGES_RENDER} from "../types/render";
 
 import {subscribe} from "../messages";
 
@@ -116,13 +117,13 @@ export function renders(notifications: INotificationsStore): IRendersStore {
 
             iframe_element.addEventListener("load", () => {
                 const destroy_frame = subscribe<IRenderProgressMessage>(
-                    "RENDER_PROGRESS",
+                    MESSAGES_RENDER.progress,
                     (detail) => update("identifier", identifier, {completion: detail.progress}),
                     iframe_element
                 );
 
                 const destroy_start = subscribe<IRenderStartMessage>(
-                    "RENDER_START",
+                    MESSAGES_RENDER.start,
                     () => {
                         const render = update("identifier", identifier, {
                             state: RENDER_STATES.started,
@@ -134,7 +135,7 @@ export function renders(notifications: INotificationsStore): IRendersStore {
                 );
 
                 const destroy_end = subscribe<IRenderEndMessage>(
-                    "RENDER_END",
+                    MESSAGES_RENDER.end,
                     async (detail) => {
                         const frames = await Promise.all(
                             detail.frames.map(async (uri, index) => {

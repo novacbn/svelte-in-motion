@@ -1,45 +1,40 @@
-import type {IMessage} from "../messages";
+import type {IMessage} from "./messages";
 
-export interface IPreviewDestroyMessage extends IMessage {
-    name: "PREVIEW_DESTROY";
+export enum MESSAGES_PREVIEW {
+    destroy = "PREVIEW_DESTROY",
+    error = "PREVIEW_ERROR",
+    mount = "PREVIEW_MOUNT",
+    ready = "PREVIEW_READY",
 
-    detail: {};
+    frame = "PREVIEW_FRAME",
+    playing = "PREVIEW_PLAYING",
 }
 
-export interface IPreviewErrorMessage extends IMessage {
-    name: "PREVIEW_ERROR";
+export type IPreviewDestroyMessage = IMessage<MESSAGES_PREVIEW.destroy>;
 
-    detail: {
+export type IPreviewErrorMessage = IMessage<
+    MESSAGES_PREVIEW.error,
+    {
         message: string;
 
         name: string;
-    };
-}
+    }
+>;
 
-export interface IPreviewFrameMessage extends IMessage {
-    name: "PREVIEW_FRAME";
-
-    detail: {
+export type IPreviewFrameMessage = IMessage<
+    MESSAGES_PREVIEW.frame,
+    {
         frame: number;
-    };
-}
+    }
+>;
 
-export interface IPreviewMountMessage extends IMessage {
-    name: "PREVIEW_MOUNT";
+export type IPreviewMountMessage = IMessage<MESSAGES_PREVIEW.mount>;
 
-    detail: {};
-}
-
-export interface IPreviewPlayingMessage extends IMessage {
-    name: "PREVIEW_PLAYING";
-
-    detail: {
+export type IPreviewPlayingMessage = IMessage<
+    MESSAGES_PREVIEW.playing,
+    {
         playing: boolean;
-    };
-}
+    }
+>;
 
-export interface IPreviewReadyMessage extends IMessage {
-    name: "PREVIEW_READY";
-
-    detail: {};
-}
+export type IPreviewReadyMessage = IMessage<MESSAGES_PREVIEW.ready>;

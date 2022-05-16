@@ -31,6 +31,7 @@ import type {
     IRenderProgressMessage,
     IRenderStartMessage,
 } from "./lib/types/render";
+import {MESSAGES_RENDER} from "./lib/types/render";
 
 (async () => {
     const url = new URL(location.href);
@@ -97,7 +98,7 @@ import type {
     window.addEventListener("error", (event) => {
         const error = event.error as Error;
 
-        dispatch<IRenderErrorMessage>("RENDER_ERROR", {
+        dispatch<IRenderErrorMessage>(MESSAGES_RENDER.error, {
             message: error.message,
             name: error.name,
         });
@@ -111,7 +112,7 @@ import type {
     if ("errors" in result) {
         const [first_error] = result.errors;
 
-        dispatch<IRenderErrorMessage>("RENDER_ERROR", {
+        dispatch<IRenderErrorMessage>(MESSAGES_RENDER.error, {
             message: first_error.message,
             name: first_error.name,
         });
@@ -133,7 +134,7 @@ import type {
         ]),
     });
 
-    dispatch<IRenderStartMessage>("RENDER_START", {});
+    dispatch<IRenderStartMessage>(MESSAGES_RENDER.start);
 
     for (let current_frame = parsed_start; current_frame <= parsed_end; current_frame++) {
         frame.set(current_frame);
@@ -141,12 +142,12 @@ import type {
 
         FRAMES[current_frame] = await toPng(document.documentElement);
 
-        dispatch<IRenderProgressMessage>("RENDER_PROGRESS", {
+        dispatch<IRenderProgressMessage>(MESSAGES_RENDER.progress, {
             progress: (current_frame - parsed_start) / total_frames,
         });
     }
 
-    dispatch<IRenderEndMessage>("RENDER_END", {
+    dispatch<IRenderEndMessage>(MESSAGES_RENDER.end, {
         frames: Object.values(FRAMES),
     });
 })();

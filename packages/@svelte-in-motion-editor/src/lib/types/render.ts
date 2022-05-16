@@ -1,33 +1,39 @@
-import type {IMessage} from "../messages";
+import type {IMessage} from "./messages";
 
-export interface IRenderEndMessage extends IMessage {
-    name: "RENDER_END";
+export enum MESSAGES_RENDER {
+    end = "RENDER_END",
+    error = "RENDER_ERROR",
+    start = "RENDER_START",
 
-    detail: {
-        frames: string[];
-    };
+    progress = "RENDER_PROGRESS",
 }
 
-export interface IRenderErrorMessage extends IMessage {
-    name: "RENDER_ERROR";
+export type IRenderEndMessage = IMessage<
+    MESSAGES_RENDER.end,
+    {
+        frames: string[];
+    }
+>;
 
-    detail: {
+export type IRenderErrorMessage = IMessage<
+    MESSAGES_RENDER.error,
+    {
         message: string;
 
         name: string;
-    };
-}
+    }
+>;
 
-export interface IRenderProgressMessage extends IMessage {
-    name: "RENDER_PROGRESS";
-
-    detail: {
+export type IRenderProgressMessage = IMessage<
+    MESSAGES_RENDER.progress,
+    {
         progress: number;
-    };
-}
+    }
+>;
 
-export interface IRenderStartMessage extends IMessage {
-    name: "RENDER_START";
-
-    detail: {};
-}
+export type IRenderStartMessage = IMessage<
+    MESSAGES_RENDER.start,
+    {
+        name: "RENDER_START";
+    }
+>;

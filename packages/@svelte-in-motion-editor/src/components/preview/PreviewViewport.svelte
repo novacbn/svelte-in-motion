@@ -14,13 +14,14 @@
     import {CONTEXT_PREVIEW} from "../../lib/preview";
     import {CONTEXT_WORKSPACE} from "../../lib/workspace";
 
-    import type {
+    import {
         IPreviewDestroyMessage,
         IPreviewErrorMessage,
         IPreviewFrameMessage,
         IPreviewMountMessage,
         IPreviewPlayingMessage,
         IPreviewReadyMessage,
+        MESSAGES_PREVIEW,
     } from "../../lib/types/preview";
 
     import Loader from "../Loader.svelte";
@@ -90,13 +91,13 @@
         }
 
         const destroy_destroy = subscribe<IPreviewDestroyMessage>(
-            "PREVIEW_DESTROY",
+            MESSAGES_PREVIEW.destroy,
             () => (_mounted = false),
             iframe_element
         );
 
         const destroy_error = subscribe<IPreviewErrorMessage>(
-            "PREVIEW_ERROR",
+            MESSAGES_PREVIEW.error,
             ({message, name}) => {
                 errors.push({
                     name,
@@ -108,13 +109,13 @@
         );
 
         const destroy_mounted = subscribe<IPreviewMountMessage>(
-            "PREVIEW_MOUNT",
+            MESSAGES_PREVIEW.mount,
             () => (_mounted = true),
             iframe_element
         );
 
         const destroy_ready = subscribe<IPreviewReadyMessage>(
-            "PREVIEW_READY",
+            MESSAGES_PREVIEW.ready,
             () => (_ready = true),
             iframe_element
         );
@@ -131,10 +132,14 @@
     $: $_advance;
 
     $: if (iframe_element && _ready)
-        dispatch<IPreviewFrameMessage>("PREVIEW_FRAME", {frame: $frame}, iframe_element);
+        dispatch<IPreviewFrameMessage>(MESSAGES_PREVIEW.frame, {frame: $frame}, iframe_element);
 
     $: if (iframe_element && _ready)
-        dispatch<IPreviewPlayingMessage>("PREVIEW_PLAYING", {playing: $playing}, iframe_element);
+        dispatch<IPreviewPlayingMessage>(
+            MESSAGES_PREVIEW.playing,
+            {playing: $playing},
+            iframe_element
+        );
 
     let _container_width: number;
     let _container_height: number;

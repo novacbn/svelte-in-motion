@@ -35,6 +35,7 @@ import type {
     IPreviewMountMessage,
     IPreviewReadyMessage,
 } from "./lib/types/preview";
+import {MESSAGES_PREVIEW} from "./lib/types/preview";
 
 (async () => {
     const url = new URL(location.href);
@@ -103,7 +104,7 @@ import type {
         if ("errors" in result) {
             const [first_error] = result.errors;
 
-            dispatch<IPreviewErrorMessage>("PREVIEW_ERROR", {
+            dispatch<IPreviewErrorMessage>(MESSAGES_PREVIEW.error, {
                 message: first_error.message,
                 name: first_error.name,
             });
@@ -132,7 +133,7 @@ import type {
             _component.$destroy();
             _component = null;
 
-            dispatch<IPreviewDestroyMessage>("PREVIEW_DESTROY", {});
+            dispatch<IPreviewDestroyMessage>(MESSAGES_PREVIEW.destroy);
         }
 
         _component = new Component({
@@ -146,20 +147,22 @@ import type {
             ]),
         });
 
-        dispatch<IPreviewMountMessage>("PREVIEW_MOUNT", {});
+        dispatch<IPreviewMountMessage>(MESSAGES_PREVIEW.mount);
     }
 
     window.addEventListener("error", (event) => {
         const error = event.error as Error;
 
-        dispatch<IPreviewErrorMessage>("PREVIEW_ERROR", {
+        dispatch<IPreviewErrorMessage>(MESSAGES_PREVIEW.error, {
             message: error.message,
             name: error.name,
         });
     });
 
-    subscribe<IPreviewFrameMessage>("PREVIEW_FRAME", (detail) => frame.set(detail.frame));
-    subscribe<IPreviewPlayingMessage>("PREVIEW_PLAYING", (detail) => playing.set(detail.playing));
+    subscribe<IPreviewFrameMessage>(MESSAGES_PREVIEW.frame, (detail) => frame.set(detail.frame));
+    subscribe<IPreviewPlayingMessage>(MESSAGES_PREVIEW.playing, (detail) =>
+        playing.set(detail.playing)
+    );
 
     storage.watch_directory("/", {
         exclude_directories: true,
@@ -171,5 +174,5 @@ import type {
 
     update();
 
-    dispatch<IPreviewReadyMessage>("PREVIEW_READY", {});
+    dispatch<IPreviewReadyMessage>(MESSAGES_PREVIEW.ready);
 })();
