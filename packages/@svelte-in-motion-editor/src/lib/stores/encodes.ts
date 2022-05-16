@@ -158,13 +158,11 @@ export function encodes(notifications: INotificationsStore): IEncodesStore {
                 );
             }
 
-            const notification = notifications.push({
+            const {identifier: notification_identifier} = notifications.push({
                 header: "Tracking encode...",
                 text: identifier,
                 on_remove,
             });
-
-            const {identifier: notification_identifier} = notification;
 
             function update(): void {
                 // HACK: We're relying `has` at the top of the function remaining

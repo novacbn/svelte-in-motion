@@ -24,6 +24,8 @@ import type {IEncodesStore} from "./stores/encodes";
 import {encodes as make_encodes_store} from "./stores/encodes";
 import {errors as make_errors_store} from "./stores/errors";
 import type {INotificationsStore} from "./stores/notifications";
+import type {IRendersStore} from "./stores/renders";
+import {renders as make_renders_store} from "./stores/renders";
 
 export const CONTEXT_WORKSPACE = make_scoped_context<IWorkspaceContext>("workspace");
 
@@ -35,6 +37,8 @@ export interface IWorkspaceContext {
     errors: IErrorsStore;
 
     metadata: Readable<IWorkspacesConfiguration>;
+
+    renders: IRendersStore;
 
     storage: IDriver;
 }
@@ -85,6 +89,7 @@ export async function workspace(
 
     const encodes = make_encodes_store(notifications);
     const errors = make_errors_store(notifications);
+    const renders = make_renders_store(notifications);
 
     return {
         configuration,
@@ -92,6 +97,7 @@ export async function workspace(
         errors,
         // HACK: We already validated the workspace above, just TypeScript can't automagically infer
         metadata: metadata as Readable<IWorkspacesConfiguration>,
+        renders,
         storage,
     };
 }

@@ -1,16 +1,14 @@
 import {Check, Clock, Video} from "lucide-svelte";
 import type {Readable} from "svelte/store";
 
-import type {IEvent} from "@svelte-in-motion/utilities";
-import {event} from "@svelte-in-motion/utilities";
+import type {ICollectionItem, IEvent} from "@svelte-in-motion/utilities";
+import {collection, event, generate_uuid} from "@svelte-in-motion/utilities";
 
 import type {IRenderEndMessage, IRenderProgressMessage, IRenderStartMessage} from "../types/render";
 
-import type {ICollectionItem} from "./collection";
-import {collection} from "./collection";
 import {subscribe} from "../messages";
-import type {INotification} from "./notifications";
-import {notifications} from "./notifications";
+
+import type {INotification, INotificationsStore} from "./notifications";
 
 export enum RENDER_STATES {
     ended = "ended",
@@ -41,6 +39,8 @@ export interface IRenderRange {
 }
 
 export interface IRender extends ICollectionItem {
+    identifier: string;
+
     state: `${RENDER_STATES}`;
 
     completion: number;
@@ -51,7 +51,7 @@ export type IRenderQueueOptions = {
 } & IRenderDimensions &
     IRenderRange;
 
-export interface IRenderQueueStore extends Readable<IRender[]> {
+export interface IRendersStore extends Readable<IRender[]> {
     EVENT_END: IEvent<IRenderEndEvent>;
 
     EVENT_START: IEvent<IRenderEvent>;
@@ -67,8 +67,8 @@ export interface IRenderQueueStore extends Readable<IRender[]> {
     yield(identifier: string): Promise<Uint8Array[]>;
 }
 
-function renderqueue(): IRenderQueueStore {
-    const {get, has, push, subscribe: subscribe_store, remove, update} = collection<IRender>();
+export function renders(notifications: INotificationsStore): IRendersStore {
+    const {find, has, push, subscribe: subscribe_store, remove, update} = collection<IRender>();
 
     const EVENT_END = event<IRenderEndEvent>();
     const EVENT_START = event<IRenderEvent>();
@@ -84,10 +84,13 @@ function renderqueue(): IRenderQueueStore {
         queue(options) {
             const {file, end, height, start, width} = options;
 
-            const identifier = push({
+            const item = push({
+                identifier: generate_uuid(),
                 state: RENDER_STATES.uninitialized,
                 completion: 0,
             });
+
+            const {identifier} = item;
 
             const iframe_element = document.createElement("IFRAME") as HTMLIFrameElement;
 
@@ -104,14 +107,16 @@ function renderqueue(): IRenderQueueStore {
             iframe_element.addEventListener("load", () => {
                 const destroy_frame = subscribe<IRenderProgressMessage>(
                     "RENDER_PROGRESS",
-                    (detail) => update(identifier, {completion: detail.progress}),
+                    (detail) => update("identifier", identifier, {completion: detail.progress}),
                     iframe_element
                 );
 
                 const destroy_start = subscribe<IRenderStartMessage>(
                     "RENDER_START",
                     () => {
-                        const render = update(identifier, {state: RENDER_STATES.started});
+                        const render = update("identifier", identifier, {
+                            state: RENDER_STATES.started,
+                        });
                         EVENT_START.dispatch({render});
                     },
 
@@ -136,7 +141,9 @@ function renderqueue(): IRenderQueueStore {
 
                         iframe_element.remove();
 
-                        const render = update(identifier, {state: RENDER_STATES.ended});
+                        const render = update("identifier", identifier, {
+                            state: RENDER_STATES.ended,
+                        });
                         EVENT_END.dispatch({render, frames});
                     },
                     iframe_element
@@ -148,37 +155,45 @@ function renderqueue(): IRenderQueueStore {
         },
 
         remove(identifier) {
-            const render = get(identifier);
+            const item = find("identifier", identifier);
 
-            if (render.state !== RENDER_STATES.ended) {
+            if (!item) {
                 throw new ReferenceError(
-                    `bad argument #0 'renderqueue.remove' (render '${identifier}' has not ended)`
+                    `bad argument #0 to 'renders.remove' (render '${identifier}' is not valid)`
+                );
+            }
+
+            if (item.state !== RENDER_STATES.ended) {
+                throw new TypeError(
+                    `bad argument #0 'renders.remove' (render '${identifier}' has not ended)`
                 );
             }
 
             remove(identifier);
-            return render;
+            return item;
         },
 
         track(identifier, on_remove = undefined) {
             if (!has(identifier)) {
-                throw new Error(
-                    `bad argument #0 to 'renderqueue.track' (render '${identifier}' is not valid)`
+                throw new ReferenceError(
+                    `bad argument #0 to 'renders.track' (render '${identifier}' is not valid)`
                 );
             }
 
-            const notification_identifier = notifications.push({
+            const {identifier: notification_identifier} = notifications.push({
                 header: "Tracking render...",
                 text: identifier,
                 on_remove,
             });
 
             function update(): void {
-                const render = get(identifier);
+                // HACK: We're relying `has` at the top of the function remaining
+                // valid through entire lifecycle
+                const item = find("identifier", identifier)!;
 
-                switch (render.state) {
+                switch (item.state) {
                     case RENDER_STATES.ended:
-                        notifications.update(notification_identifier, {
+                        notifications.update("identifier", notification_identifier, {
                             icon: Check,
                             header: "Render Finished",
                             dismissible: true,
@@ -187,7 +202,7 @@ function renderqueue(): IRenderQueueStore {
                         break;
 
                     case RENDER_STATES.started:
-                        notifications.update(notification_identifier, {
+                        notifications.update("identifier", notification_identifier, {
                             icon: Video,
                             header: "Rendering Frames",
                         });
@@ -195,7 +210,7 @@ function renderqueue(): IRenderQueueStore {
                         break;
 
                     case RENDER_STATES.uninitialized:
-                        notifications.update(notification_identifier, {
+                        notifications.update("identifier", notification_identifier, {
                             icon: Clock,
                             header: "Starting Render",
                         });
@@ -204,14 +219,14 @@ function renderqueue(): IRenderQueueStore {
                 }
             }
 
-            const destroy_start = EVENT_START.subscribe(({render}) => {
-                if (render.identifier !== identifier) return;
+            const destroy_start = EVENT_START.subscribe(({render: item}) => {
+                if (item.identifier !== identifier) return;
 
                 update();
             });
 
-            const destroy_end = EVENT_END.subscribe(({render}) => {
-                if (render.identifier !== identifier) return;
+            const destroy_end = EVENT_END.subscribe(({render: item}) => {
+                if (item.identifier !== identifier) return;
 
                 destroy_end();
                 destroy_start();
@@ -224,11 +239,17 @@ function renderqueue(): IRenderQueueStore {
         },
 
         yield(identifier) {
-            const render = get(identifier);
+            const item = find("identifier", identifier);
 
-            if (render.state === RENDER_STATES.ended) {
+            if (!item) {
                 throw new ReferenceError(
-                    `bad argument #0 'renderqueue.yield' (render '${identifier}' already ended)`
+                    `bad argument #0 to 'renders.yield' (render '${identifier}' is not valid)`
+                );
+            }
+
+            if (item.state === RENDER_STATES.ended) {
+                throw new ReferenceError(
+                    `bad argument #0 'renders.yield' (render '${identifier}' already ended)`
                 );
             }
 
@@ -243,7 +264,3 @@ function renderqueue(): IRenderQueueStore {
         },
     };
 }
-
-export const renders = renderqueue();
-
-export const {EVENT_END, EVENT_START} = renders;
