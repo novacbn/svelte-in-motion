@@ -20,6 +20,8 @@ import {
 import SAMPLE from "./storage/SAMPLE.svelte?raw";
 
 import type {IErrorsStore} from "./stores/errors";
+import type {IEncodesStore} from "./stores/encodes";
+import {encodes as make_encodes_store} from "./stores/encodes";
 import {errors as make_errors_store} from "./stores/errors";
 import type {INotificationsStore} from "./stores/notifications";
 
@@ -27,6 +29,8 @@ export const CONTEXT_WORKSPACE = make_scoped_context<IWorkspaceContext>("workspa
 
 export interface IWorkspaceContext {
     configuration: IMapStore<IWorkspaceConfiguration>;
+
+    encodes: IEncodesStore;
 
     errors: IErrorsStore;
 
@@ -79,10 +83,12 @@ export async function workspace(
         await CONFIGURATION_WORKSPACE.watch_preload(storage, FILE_CONFIGURATION_WORKSPACE)
     );
 
+    const encodes = make_encodes_store(notifications);
     const errors = make_errors_store(notifications);
 
     return {
         configuration,
+        encodes,
         errors,
         // HACK: We already validated the workspace above, just TypeScript can't automagically infer
         metadata: metadata as Readable<IWorkspacesConfiguration>,

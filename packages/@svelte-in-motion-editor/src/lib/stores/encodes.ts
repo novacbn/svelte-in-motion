@@ -3,13 +3,10 @@ import type {Readable} from "svelte/store";
 
 import type {ICodecNames, IPixelFormatNames} from "@svelte-in-motion/encoding";
 import {encode} from "@svelte-in-motion/encoding";
-import type {IEvent} from "@svelte-in-motion/utilities";
-import {event} from "@svelte-in-motion/utilities";
+import type {ICollectionItem, IEvent} from "@svelte-in-motion/utilities";
+import {collection, event, generate_uuid} from "@svelte-in-motion/utilities";
 
-import type {ICollectionItem} from "./collection";
-import {collection} from "./collection";
-import type {INotification} from "./notifications";
-import {notifications} from "./notifications";
+import type {INotification, INotificationsStore} from "./notifications";
 
 export enum ENCODE_STATES {
     ended = "ended",
@@ -57,7 +54,7 @@ export type IEncodeQueueOptions = {
 } & IEncodeDimensions &
     IEncodeVideoSettings;
 
-export interface IEncodeQueueStore extends Readable<IEncode[]> {
+export interface IEncodesStore extends Readable<IEncode[]> {
     EVENT_END: IEvent<IEncodeEndEvent>;
 
     EVENT_START: IEvent<IEncodeEvent>;
@@ -73,8 +70,8 @@ export interface IEncodeQueueStore extends Readable<IEncode[]> {
     yield(identifier: string): Promise<Uint8Array>;
 }
 
-export function encodequeue(): IEncodeQueueStore {
-    const {get, has, push, subscribe, remove, update} = collection<IEncode>();
+export function encodes(notifications: INotificationsStore): IEncodesStore {
+    const {find, has, push, subscribe, remove, update} = collection<IEncode>();
 
     const EVENT_END = event<IEncodeEndEvent>();
     const EVENT_START = event<IEncodeEvent>();
@@ -100,13 +97,16 @@ export function encodequeue(): IEncodeQueueStore {
                 width,
             });
 
-            const identifier = push({
+            const item = push({
+                identifier: generate_uuid(),
                 state: ENCODE_STATES.uninitialized,
                 completion: 0,
             });
 
+            const {identifier} = item;
+
             const destroy_start = handle.EVENT_START.subscribe(() => {
-                const encode = update(identifier, {state: ENCODE_STATES.started});
+                const encode = update("identifier", identifier, {state: ENCODE_STATES.started});
 
                 EVENT_START.dispatch({
                     encode,
@@ -114,14 +114,14 @@ export function encodequeue(): IEncodeQueueStore {
             });
 
             const destroy_progress = handle.EVENT_PROGRESS.subscribe((completion) => {
-                update(identifier, {completion});
+                update("identifier", identifier, {completion});
             });
 
             handle.result.then((buffer) => {
                 destroy_progress();
                 destroy_start();
 
-                const encode = update(identifier, {state: ENCODE_STATES.ended});
+                const encode = update("identifier", identifier, {state: ENCODE_STATES.ended});
 
                 EVENT_END.dispatch({
                     encode,
@@ -133,37 +133,47 @@ export function encodequeue(): IEncodeQueueStore {
         },
 
         remove(identifier) {
-            const encode = get(identifier);
+            const item = find("identifier", identifier);
 
-            if (encode.state !== ENCODE_STATES.ended) {
+            if (!item) {
                 throw new ReferenceError(
-                    `bad argument #0 'encodequeue.remove' (encode '${identifier}' has not ended)`
+                    `bad argument #0 to 'encodes.remove' (encode '${identifier}' is not valid)`
+                );
+            }
+
+            if (item.state !== ENCODE_STATES.ended) {
+                throw new TypeError(
+                    `bad argument #0 'encodes.remove' (encode '${identifier}' has not ended)`
                 );
             }
 
             remove(identifier);
-            return encode;
+            return item;
         },
 
         track(identifier, on_remove = undefined) {
             if (!has(identifier)) {
-                throw new Error(
-                    `bad argument #0 to 'encodequeue.track' (encode '${identifier}' is not valid)`
+                throw new ReferenceError(
+                    `bad argument #0 to 'encodes.track' (encode '${identifier}' is not valid)`
                 );
             }
 
-            const notification_identifier = notifications.push({
+            const notification = notifications.push({
                 header: "Tracking encode...",
                 text: identifier,
                 on_remove,
             });
 
+            const {identifier: notification_identifier} = notification;
+
             function update(): void {
-                const encode = get(identifier);
+                // HACK: We're relying `has` at the top of the function remaining
+                // valid through entire lifecycle
+                const encode = find("identifier", identifier)!;
 
                 switch (encode.state) {
                     case ENCODE_STATES.ended:
-                        notifications.update(notification_identifier, {
+                        notifications.update("identifier", notification_identifier, {
                             icon: Check,
                             header: "Encode Finished",
                             dismissible: true,
@@ -172,7 +182,7 @@ export function encodequeue(): IEncodeQueueStore {
                         break;
 
                     case ENCODE_STATES.started:
-                        notifications.update(notification_identifier, {
+                        notifications.update("identifier", notification_identifier, {
                             icon: Film,
                             header: "Encoding Video",
                         });
@@ -180,7 +190,7 @@ export function encodequeue(): IEncodeQueueStore {
                         break;
 
                     case ENCODE_STATES.uninitialized:
-                        notifications.update(notification_identifier, {
+                        notifications.update("identifier", notification_identifier, {
                             icon: Clock,
                             header: "Starting Encode",
                         });
@@ -189,14 +199,14 @@ export function encodequeue(): IEncodeQueueStore {
                 }
             }
 
-            const destroy_start = EVENT_START.subscribe(({encode}) => {
-                if (encode.identifier !== identifier) return;
+            const destroy_start = EVENT_START.subscribe(({encode: item}) => {
+                if (item.identifier !== identifier) return;
 
                 update();
             });
 
-            const destroy_end = EVENT_END.subscribe(({encode}) => {
-                if (encode.identifier !== identifier) return;
+            const destroy_end = EVENT_END.subscribe(({encode: item}) => {
+                if (item.identifier !== identifier) return;
 
                 destroy_end();
                 destroy_start();
@@ -209,17 +219,23 @@ export function encodequeue(): IEncodeQueueStore {
         },
 
         yield(identifier) {
-            const encode = get(identifier);
+            const item = find("identifier", identifier);
 
-            if (encode.state === ENCODE_STATES.ended) {
+            if (!item) {
                 throw new ReferenceError(
-                    `bad argument #0 'encodequeue.yield' (encode '${identifier}' already ended)`
+                    `bad argument #0 to 'encodes.yield' (encode '${identifier}' is not valid)`
+                );
+            }
+
+            if (item.state === ENCODE_STATES.ended) {
+                throw new TypeError(
+                    `bad argument #0 'encodes.yield' (encode '${identifier}' already ended)`
                 );
             }
 
             return new Promise<Uint8Array>((resolve) => {
-                const destroy = EVENT_END.subscribe(({encode, video}) => {
-                    if (identifier === encode.identifier) {
+                const destroy = EVENT_END.subscribe(({encode: item, video}) => {
+                    if (identifier === item.identifier) {
                         resolve(video);
                         destroy();
                     }
@@ -228,5 +244,3 @@ export function encodequeue(): IEncodeQueueStore {
         },
     };
 }
-
-export const encodes = encodequeue();
