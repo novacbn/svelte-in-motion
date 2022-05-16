@@ -3,22 +3,27 @@ import type {SvelteComponent} from "svelte";
 import {tick} from "svelte";
 
 import {bundle} from "@svelte-in-motion/bundling";
+import {CONFIGURATION_WORKSPACE, CONFIGURATION_WORKSPACES} from "@svelte-in-motion/configuration";
 import {
     CONTEXT_FRAME,
     CONTEXT_FRAMERATE,
     CONTEXT_MAXFRAMES,
     CONTEXT_PLAYING,
-    frame as frame_store,
-    framerate as framerate_store,
-    maxframes as maxframes_store,
-    playing as playing_store,
+    frame as make_frame_store,
+    framerate as make_framerate_store,
+    maxframes as make_maxframes_store,
+    playing as make_playing_store,
 } from "@svelte-in-motion/core";
-import type {IConfiguration} from "@svelte-in-motion/metadata";
 import {clamp, evaluate_code} from "@svelte-in-motion/utilities";
 
 import {dispatch} from "./lib/messages";
 import {REPL_CONTEXT, REPL_IMPORTS} from "./lib/repl";
-import {STORAGE_USER} from "./lib/storage";
+import {
+    FILE_CONFIGURATION_WORKSPACE,
+    FILE_CONFIGURATION_WORKSPACES,
+    STORAGE_USER,
+    make_driver,
+} from "./lib/storage";
 
 import type {
     IRenderEndMessage,
@@ -29,15 +34,65 @@ import type {
 
 (async () => {
     const url = new URL(location.href);
-    const {file, end = "0", start = "0"} = Object.fromEntries(url.searchParams.entries());
+    const {
+        file,
+        end = "0",
+        start = "0",
+        workspace: workspace_identifier,
+    } = Object.fromEntries(url.searchParams.entries());
+
+    if (!workspace_identifier) {
+        throw new ReferenceError(
+            "bad query parameter '?workspace' to '/render.html' (no workspace specified)"
+        );
+    }
+
+    const workspaces = await CONFIGURATION_WORKSPACES.read(
+        STORAGE_USER,
+        FILE_CONFIGURATION_WORKSPACES
+    );
+
+    const workspace = workspaces.find((workspace) => workspace.identifier === workspace_identifier);
+
+    if (!workspace) {
+        throw new ReferenceError(
+            `bad query parameter '?workspace' to '/render.html' (workspace '${workspace_identifier}' is not valid)`
+        );
+    }
+
+    const storage = make_driver(workspace);
 
     if (!file) {
-        throw new ReferenceError("bad navigation to '/render.html' (no file specified)");
+        throw new ReferenceError(
+            "bad query parameter '?file' to '/render.html' (no file specified)"
+        );
     }
 
-    if (!(await STORAGE_USER.exists(file))) {
-        throw new ReferenceError(`bad navigation to '/render.html' (file '${file}' is invalid)`);
+    if (!(await storage.exists(file))) {
+        throw new ReferenceError(
+            `bad query parameter '?file' to '/render.html' (file '${file}' is not valid)`
+        );
     }
+
+    const configuration = await CONFIGURATION_WORKSPACE.read(storage, FILE_CONFIGURATION_WORKSPACE);
+
+    const parsed_end = clamp(parseInt(end) || 0, 0, configuration.maxframes);
+    const parsed_start = Math.max(parseInt(start) || 0, 0);
+
+    if (parsed_end < parsed_start) {
+        throw new RangeError(
+            `bad query parameter '?end' to '/render.html' (parameter 'end' (${parsed_end}) is less than parameter 'start' (${parsed_start})'`
+        );
+    }
+
+    const total_frames = parsed_end - parsed_start;
+    const FRAMES: Record<number, string> = {};
+
+    const frame = make_frame_store(parsed_start);
+    const framerate = make_framerate_store(configuration.framerate);
+    const maxframes = make_maxframes_store(configuration.maxframes);
+
+    const playing = make_playing_store();
 
     window.addEventListener("error", (event) => {
         const error = event.error as Error;
@@ -50,7 +105,7 @@ import type {
 
     const result = await bundle({
         file,
-        storage: STORAGE_USER,
+        storage,
     });
 
     if ("errors" in result) {
@@ -64,57 +119,30 @@ import type {
         return;
     }
 
-    const module = evaluate_code<typeof SvelteComponent, {CONFIGURATION: IConfiguration}>(
-        result.script,
-        REPL_CONTEXT,
-        REPL_IMPORTS
-    );
-
+    const module = evaluate_code<typeof SvelteComponent>(result.script, REPL_CONTEXT, REPL_IMPORTS);
     const {default: Component} = module;
-    const {CONFIGURATION} = module.exports;
-
-    const parsed_end = clamp(parseInt(end) || 0, 0, CONFIGURATION.maxframes);
-    const parsed_start = Math.max(parseInt(start) || 0, 0);
-
-    const total_frames = parsed_end - parsed_start;
-
-    if (parsed_end < parsed_start) {
-        throw new RangeError(
-            `bad navigation to '/render.html' (parameter 'end' (${parsed_end}) is less than parameter 'start' (${parsed_start})'`
-        );
-    }
-
-    const _frame = frame_store(parsed_start);
-    const _framerate = framerate_store(CONFIGURATION.framerate);
-    const _maxframes = maxframes_store(CONFIGURATION.maxframes);
-
-    const _playing = playing_store();
-
-    const FRAMES: Record<number, string> = {};
-
-    const CONTEXT = new Map<string, any>([
-        [CONTEXT_FRAME.key, _frame],
-        [CONTEXT_FRAMERATE.key, _framerate],
-        [CONTEXT_MAXFRAMES.key, _maxframes],
-
-        [CONTEXT_PLAYING.key, _playing],
-    ]);
 
     new Component({
         target: document.body,
-        context: CONTEXT,
+        context: new Map<string, any>([
+            [CONTEXT_FRAMERATE.key, framerate],
+            [CONTEXT_MAXFRAMES.key, maxframes],
+
+            [CONTEXT_FRAME.key, frame],
+            [CONTEXT_PLAYING.key, playing],
+        ]),
     });
 
     dispatch<IRenderStartMessage>("RENDER_START", {});
 
-    for (let frame = parsed_start; frame <= parsed_end; frame++) {
-        _frame.set(frame);
+    for (let current_frame = parsed_start; current_frame <= parsed_end; current_frame++) {
+        frame.set(current_frame);
         await tick();
 
-        FRAMES[frame] = await toPng(document.documentElement);
+        FRAMES[current_frame] = await toPng(document.documentElement);
 
         dispatch<IRenderProgressMessage>("RENDER_PROGRESS", {
-            progress: (frame - parsed_start) / total_frames,
+            progress: (current_frame - parsed_start) / total_frames,
         });
     }
 

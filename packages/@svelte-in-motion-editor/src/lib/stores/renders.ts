@@ -41,12 +41,18 @@ export interface IRenderRange {
 export interface IRender extends ICollectionItem {
     identifier: string;
 
+    workspace: string;
+
+    file: string;
+
     state: `${RENDER_STATES}`;
 
     completion: number;
 }
 
 export type IRenderQueueOptions = {
+    workspace: string;
+
     file: string;
 } & IRenderDimensions &
     IRenderRange;
@@ -82,10 +88,14 @@ export function renders(notifications: INotificationsStore): IRendersStore {
         has,
 
         queue(options) {
-            const {file, end, height, start, width} = options;
+            const {file, end, height, start, width, workspace} = options;
 
             const item = push({
                 identifier: generate_uuid(),
+
+                workspace,
+                file,
+
                 state: RENDER_STATES.uninitialized,
                 completion: 0,
             });
@@ -102,7 +112,7 @@ export function renders(notifications: INotificationsStore): IRendersStore {
             iframe_element.style.height = `${height}px`;
             iframe_element.style.width = `${width}px`;
 
-            iframe_element.src = `/render.html?identifier=${identifier}&file=${file}&start=${start}&end=${end}`;
+            iframe_element.src = `/render.html?identifier=${identifier}&workspace=${workspace}&file=${file}&start=${start}&end=${end}`;
 
             iframe_element.addEventListener("load", () => {
                 const destroy_frame = subscribe<IRenderProgressMessage>(

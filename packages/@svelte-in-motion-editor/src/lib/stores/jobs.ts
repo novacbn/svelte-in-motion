@@ -63,11 +63,13 @@ export interface IJobRendering extends IJobBase {
 export type IJob = IJobBase | IJobEncoding | IJobRendering;
 
 export type IJobQueueOptions = {
+    workspace: string;
+
     file: string;
 
     encode: Omit<IEncodeQueueOptions, "frames">;
 
-    render: Omit<IRenderQueueOptions, "file">;
+    render: Omit<IRenderQueueOptions, "file" | "workspace">;
 };
 
 export interface IJobsStore extends Readable<IJob[]> {
@@ -104,11 +106,12 @@ export function jobs(
     const EVENT_RENDERING = event<IJobRenderingEvent>();
 
     async function start_job(identifier: string, options: IJobQueueOptions): Promise<void> {
-        const {file, encode, render} = options;
+        const {file, encode, render, workspace} = options;
 
         const render_job = renders.queue({
             ...render,
             file,
+            workspace,
         });
 
         let job = update("identifier", identifier, {

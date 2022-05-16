@@ -46,11 +46,14 @@
         }
 
         const render_identifier = renders.queue({
-            end: export_configuration.end,
+            workspace: workspace!.identifier,
             file: file_path,
+
             height: configuration.get("height")!,
-            start: export_configuration.start,
             width: configuration.get("width")!,
+
+            end: export_configuration.end,
+            start: export_configuration.start,
         });
 
         const notification_identifier = renders.track(render_identifier, () =>
@@ -97,6 +100,7 @@
 
         const job_identifier = jobs.queue({
             file: file_path,
+            workspace: workspace!.identifier,
 
             encode: {
                 codec: export_configuration.codec,

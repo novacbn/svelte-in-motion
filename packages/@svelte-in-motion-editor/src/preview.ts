@@ -1,23 +1,31 @@
 import type {SvelteComponent} from "svelte";
+import type {Readable} from "svelte/store";
 import {get} from "svelte/store";
 
 import {bundle} from "@svelte-in-motion/bundling";
+import {
+    CONFIGURATION_WORKSPACE,
+    CONFIGURATION_WORKSPACES,
+    preload_configuration,
+} from "@svelte-in-motion/configuration";
 import {
     CONTEXT_FRAME,
     CONTEXT_FRAMERATE,
     CONTEXT_MAXFRAMES,
     CONTEXT_PLAYING,
-    frame as frame_store,
-    framerate as framerate_store,
-    maxframes as maxframes_store,
-    playing as playing_store,
+    frame as make_frame_store,
+    playing as make_playing_store,
 } from "@svelte-in-motion/core";
-import type {IConfiguration} from "@svelte-in-motion/metadata";
-import {evaluate_code, normalize_pathname} from "@svelte-in-motion/utilities";
+import {evaluate_code, map, normalize_pathname} from "@svelte-in-motion/utilities";
 
 import {dispatch, subscribe} from "./lib/messages";
 import {REPL_CONTEXT, REPL_IMPORTS} from "./lib/repl";
-import {STORAGE_USER} from "./lib/storage";
+import {
+    FILE_CONFIGURATION_WORKSPACE,
+    FILE_CONFIGURATION_WORKSPACES,
+    STORAGE_USER,
+    make_driver,
+} from "./lib/storage";
 
 import type {
     IPreviewDestroyMessage,
@@ -30,21 +38,52 @@ import type {
 
 (async () => {
     const url = new URL(location.href);
-    const {file} = Object.fromEntries(url.searchParams.entries());
+    const {file, workspace: workspace_identifier} = Object.fromEntries(url.searchParams.entries());
+
+    if (!workspace_identifier) {
+        throw new ReferenceError(
+            "bad query parameter '?workspace' to '/preview.html' (no workspace specified)"
+        );
+    }
+
+    const workspaces = await CONFIGURATION_WORKSPACES.read(
+        STORAGE_USER,
+        FILE_CONFIGURATION_WORKSPACES
+    );
+
+    const workspace = workspaces.find((workspace) => workspace.identifier === workspace_identifier);
+
+    if (!workspace) {
+        throw new ReferenceError(
+            `bad query parameter '?workspace' to '/preview.html' (workspace '${workspace_identifier}' is not valid)`
+        );
+    }
+
+    const storage = make_driver(workspace);
 
     if (!file) {
-        throw new ReferenceError("bad navigation to '/preview.html' (no file specified)");
+        throw new ReferenceError(
+            "bad query parameter '?file' to '/preview.html' (no file specified)"
+        );
     }
 
-    if (!(await STORAGE_USER.exists(file))) {
-        throw new ReferenceError(`bad navigation to '/preview.html' (file '${file}' is invalid)`);
+    if (!(await storage.exists(file))) {
+        throw new ReferenceError(
+            `bad query parameter '?file' to '/preview.html' (file '${file}' is not valid)`
+        );
     }
 
-    const _frame = frame_store();
-    const _framerate = framerate_store();
-    const _maxframes = maxframes_store();
+    const configuration = map(
+        await preload_configuration(storage, CONFIGURATION_WORKSPACE, FILE_CONFIGURATION_WORKSPACE)
+    );
 
-    const _playing = playing_store();
+    const frame = make_frame_store();
+
+    // HACK: The JSON Schema validation makes sure these properties are /ALWAYS/ a number
+    const framerate = configuration.watch<number>("framerate") as Readable<number>;
+    const maxframes = configuration.watch<number>("maxframes") as Readable<number>;
+
+    const playing = make_playing_store();
 
     let _dependencies: Set<string> = new Set();
 
@@ -52,14 +91,14 @@ import type {
     let _nonce: object;
 
     async function update(): Promise<void> {
-        const nonce = (_nonce = {});
+        const current_nonce = (_nonce = {});
 
         const result = await bundle({
             file,
-            storage: STORAGE_USER,
+            storage,
         });
 
-        if (_nonce !== nonce) return;
+        if (_nonce !== current_nonce) return;
 
         if ("errors" in result) {
             const [first_error] = result.errors;
@@ -76,21 +115,18 @@ import type {
             result.dependencies.map((file_path) => normalize_pathname(file_path))
         );
 
-        const module = evaluate_code<typeof SvelteComponent, {CONFIGURATION: IConfiguration}>(
+        const module = evaluate_code<typeof SvelteComponent>(
             result.script,
             REPL_CONTEXT,
             REPL_IMPORTS
         );
 
         const {default: Component} = module;
-        const {CONFIGURATION} = module.exports;
 
-        _framerate.set(CONFIGURATION.framerate);
-        _maxframes.set(CONFIGURATION.maxframes);
+        const $frame = get(frame);
+        const $maxframes = get(maxframes);
 
-        const frame = get(_frame);
-
-        _frame.set(Math.min(frame, CONFIGURATION.maxframes));
+        frame.set(Math.min($frame, $maxframes));
 
         if (_component) {
             _component.$destroy();
@@ -102,10 +138,11 @@ import type {
         _component = new Component({
             target: document.body,
             context: new Map<string, any>([
-                [CONTEXT_FRAME.key, _frame],
-                [CONTEXT_FRAMERATE.key, _framerate],
-                [CONTEXT_MAXFRAMES.key, _maxframes],
-                [CONTEXT_PLAYING.key, _playing],
+                [CONTEXT_FRAMERATE.key, framerate],
+                [CONTEXT_MAXFRAMES.key, maxframes],
+
+                [CONTEXT_FRAME.key, frame],
+                [CONTEXT_PLAYING.key, playing],
             ]),
         });
 
@@ -121,10 +158,10 @@ import type {
         });
     });
 
-    subscribe<IPreviewFrameMessage>("PREVIEW_FRAME", ({frame}) => _frame.set(frame));
-    subscribe<IPreviewPlayingMessage>("PREVIEW_PLAYING", ({playing}) => _playing.set(playing));
+    subscribe<IPreviewFrameMessage>("PREVIEW_FRAME", (detail) => frame.set(detail.frame));
+    subscribe<IPreviewPlayingMessage>("PREVIEW_PLAYING", (detail) => playing.set(detail.playing));
 
-    STORAGE_USER.watch_directory("/", {
+    storage.watch_directory("/", {
         exclude_directories: true,
 
         on_watch(event) {
