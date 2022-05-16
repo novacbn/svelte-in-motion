@@ -144,12 +144,16 @@
 <Menu.Container orientation="horizontal" sizing="nano">
     <Dropdown variation="control">
         <svelte:fragment slot="activator">
-            <Menu.Button>New</Menu.Button>
+            <Menu.Button>File</Menu.Button>
         </svelte:fragment>
 
         <Menu.Container sizing="nano">
             <Menu.Button disabled={!in_workspace}>New File</Menu.Button>
             <Menu.Button disabled={!in_workspace}>New from Sample</Menu.Button>
+
+            <Menu.Heading />
+
+            <Menu.Button disabled={!in_workspace}>Open Workspace</Menu.Button>
         </Menu.Container>
     </Dropdown>
 
@@ -178,10 +182,16 @@
             <Menu.Button disabled={!in_workspace}>Errors</Menu.Button>
             <Menu.Button disabled={!in_workspace}>Jobs</Menu.Button>
 
+            <Menu.Heading />
+
             <Menu.Button>Toggle Zen Mode</Menu.Button>
+
+            <Menu.Heading />
 
             <Menu.Button disabled={!in_workspace}>Toggle File Tree</Menu.Button>
             <Menu.Button disabled={!in_workspace}>Toggle Script Editor</Menu.Button>
+
+            <Menu.Heading />
 
             <Menu.Button disabled={!in_editor}>Toggle Checkerboard</Menu.Button>
             <Menu.Button disabled={!in_editor}>Toggle Timeline</Menu.Button>
@@ -201,6 +211,7 @@
             </Menu.Anchor>
 
             <Menu.Heading />
+
             <Menu.Button on:click={on_about_click}>About</Menu.Button>
         </Menu.Container>
     </Dropdown>
