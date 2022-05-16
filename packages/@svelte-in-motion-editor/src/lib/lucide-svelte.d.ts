@@ -36,6 +36,7 @@ declare module "lucide-svelte" {
     export declare class Play extends SvelteComponentTyped<IconProps, IconEvents, {}> {}
     export declare class SkipBack extends SvelteComponentTyped<IconProps, IconEvents, {}> {}
     export declare class SkipForward extends SvelteComponentTyped<IconProps, IconEvents, {}> {}
+    export declare class Slash extends SvelteComponentTyped<IconProps, IconEvents, {}> {}
     export declare class Video extends SvelteComponentTyped<IconProps, IconEvents, {}> {}
     export declare class X extends SvelteComponentTyped<IconProps, IconEvents, {}> {}
 }

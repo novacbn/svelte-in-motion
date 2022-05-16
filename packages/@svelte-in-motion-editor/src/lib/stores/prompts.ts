@@ -59,7 +59,7 @@ export interface IPrompt<T extends Record<string, any>> {
     props?: T;
 }
 
-export interface IPromptStore extends Readable<IPrompt<any> | null> {
+export interface IPromptsStore extends Readable<IPrompt<any> | null> {
     EVENT_PROMPT: IEvent<IPromptEvent>;
 
     EVENT_REJECT: IEvent<IPromptRejectEvent>;
@@ -77,7 +77,7 @@ export interface IPromptStore extends Readable<IPrompt<any> | null> {
     prompt_export_video(props: IExportVideoPromptProps): Promise<IExportVideoPromptEvent>;
 }
 
-export function prompts(): IPromptStore {
+export function prompts(): IPromptsStore {
     const {set, subscribe} = writable<IPrompt<any> | null>(null);
 
     const EVENT_PROMPT = event<IPromptEvent>();

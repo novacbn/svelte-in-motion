@@ -20,16 +20,17 @@ export interface INotification extends ICollectionItem {
     on_remove?: (notification: INotification) => void;
 }
 
-export interface INotificationStore extends ICollectionStore<INotification> {
+export interface INotificationsStore extends ICollectionStore<INotification> {
     push(item: Omit<INotification, "identifier">): INotification;
 }
 
-export function notifications(): INotificationStore {
+export function notifications(): INotificationsStore {
     const {find, has, push, subscribe, remove, update, watch} = collection<INotification>();
 
     return {
         find,
         has,
+
         push(item) {
             return push({...item, identifier: generate_uuid()} as INotification);
         },

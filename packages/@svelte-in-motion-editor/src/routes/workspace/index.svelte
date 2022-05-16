@@ -4,10 +4,11 @@
 
     export const pattern: string = "/workspace/:identifier";
 
-    export const load: ILoadCallback = async ({results}) => {
-        const {identifier} = results.pathname.groups;
+    export const load: ILoadCallback = async ({context,  url}) => {
+        const {identifier} = url.pathname.groups;
+        const {notifications} = context.app;
 
-        const workspace_context = await workspace(identifier);
+        const workspace_context = await workspace(identifier, notifications);
 
         return {
             context: {

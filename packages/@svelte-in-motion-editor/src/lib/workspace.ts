@@ -19,10 +19,16 @@ import {
 
 import SAMPLE from "./storage/SAMPLE.svelte?raw";
 
+import type {IErrorsStore} from "./stores/errors";
+import {errors as make_errors_store} from "./stores/errors";
+import type {INotificationsStore} from "./stores/notifications";
+
 export const CONTEXT_WORKSPACE = make_scoped_context<IWorkspaceContext>("workspace");
 
 export interface IWorkspaceContext {
     configuration: IMapStore<IWorkspaceConfiguration>;
+
+    errors: IErrorsStore;
 
     metadata: Readable<IWorkspacesConfiguration>;
 
@@ -49,7 +55,10 @@ async function prepare_workspace(driver: IDriver): Promise<void> {
     ]);
 }
 
-export async function workspace(identifier: string): Promise<IWorkspaceContext> {
+export async function workspace(
+    identifier: string,
+    notifications: INotificationsStore
+): Promise<IWorkspaceContext> {
     const workspaces = collection(
         await CONFIGURATION_WORKSPACES.watch_preload(STORAGE_USER, FILE_CONFIGURATION_WORKSPACES)
     );
@@ -70,8 +79,11 @@ export async function workspace(identifier: string): Promise<IWorkspaceContext> 
         await CONFIGURATION_WORKSPACE.watch_preload(storage, FILE_CONFIGURATION_WORKSPACE)
     );
 
+    const errors = make_errors_store(notifications);
+
     return {
         configuration,
+        errors,
         // HACK: We already validated the workspace above, just TypeScript can't automagically infer
         metadata: metadata as Readable<IWorkspacesConfiguration>,
         storage,

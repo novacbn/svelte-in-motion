@@ -5,10 +5,11 @@
 
     export const pattern: string = "/workspace/:identifier/:file";
 
-    export const load: ILoadCallback = async ({results}) => {
-        const {identifier, file} = results.pathname.groups;
+    export const load: ILoadCallback = async ({context, url}) => {
+        const {identifier, file} = url.pathname.groups;
+        const {notifications} = context.app;
 
-        const workspace_context = await workspace(identifier);
+        const workspace_context = await workspace(identifier, notifications);
         const editor_context = await editor(workspace_context.storage, file);
 
         return {
