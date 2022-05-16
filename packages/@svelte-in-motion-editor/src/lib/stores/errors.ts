@@ -31,6 +31,8 @@ export function errors(notifications: INotificationsStore): IErrorsStore {
                 icon: Slash,
                 palette: "negative",
 
+                dismissible: true,
+
                 header: `Error: ${item.source}`,
                 text: `${item.name}: ${item.message}`,
             });
