@@ -31,9 +31,4 @@ export type IRenderProgressMessage = IMessage<
     }
 >;
 
-export type IRenderStartMessage = IMessage<
-    MESSAGES_RENDER.start,
-    {
-        name: "RENDER_START";
-    }
->;
+export type IRenderStartMessage = IMessage<MESSAGES_RENDER.start>;
