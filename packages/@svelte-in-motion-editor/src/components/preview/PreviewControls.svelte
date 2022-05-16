@@ -65,7 +65,7 @@
     use:action_toggle_controls={{on_bind: on_controls_toggle}}
 />
 
-<Box class="sim--editor-controls" palette="auto" hidden={$preferences.ui.preview.controls.enabled}>
+<Box class="sim--preview-controls" palette="auto" hidden={$preferences.ui.preview.controls.enabled}>
     <Menu.Container orientation="horizontal" sizing="tiny" margin_x="auto" padding="small">
         <Tooltip placement="top" alignment_x="right">
             <svelte:fragment slot="activator">
@@ -118,7 +118,7 @@
 </Box>
 
 <style>
-    :global(.sim--editor-controls) {
+    :global(.sim--preview-controls) {
         display: flex;
         flex-direction: column;
 
