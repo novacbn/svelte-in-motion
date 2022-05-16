@@ -20,6 +20,8 @@ export type INavigatingStore = Readable<boolean>;
 export type IRouterStore = Readable<IRouterOutput | null>;
 
 export interface ILoadInput {
+    context: IContext;
+
     url: URLPatternResult;
 }
 
@@ -47,6 +49,12 @@ export interface IRouterOutput {
     props?: IProps;
 }
 
+export interface IRouterOptions {
+    context?: IContext;
+
+    routes: IRouteDefinition[];
+}
+
 function hash(): Writable<string> {
     const {set, subscribe} = writable(location.hash.slice(1), (set) => {
         function on_popstate(event: PopStateEvent): void {
@@ -72,7 +80,8 @@ function hash(): Writable<string> {
     };
 }
 
-export function app_router(...routes: IRouteDefinition[]): [INavigatingStore, IRouterStore] {
+export function app_router(options: IRouterOptions): [INavigatingStore, IRouterStore] {
+    const {context = {}, routes} = options;
     let nonce = null;
 
     const navigating = writable<boolean>(false);
@@ -88,35 +97,30 @@ export function app_router(...routes: IRouteDefinition[]): [INavigatingStore, IR
 
     async function get_route(href: string): Promise<IRouterOutput | null> {
         navigating.set(true);
-        const current = (nonce = {});
+        const current_nonce = (nonce = {});
 
         const match = router.exec(href);
         if (!match) return null;
 
-        let context: IContext | undefined;
-        let props: IProps | undefined;
+        let output: ILoadOutput | void;
 
         if (match.result.load) {
-            const output = await match.result.load({url: match.url});
+            output = await match.result.load({context, url: match.url});
+            if (nonce !== current_nonce) return null;
 
-            if (output) {
-                if (output.redirect) {
-                    location.hash = output.redirect;
-                    return null;
-                }
-
-                ({context, props} = output);
+            if (output && output.redirect) {
+                location.hash = output.redirect;
+                return null;
             }
         }
 
-        if (nonce !== current) return null;
         navigating.set(false);
 
         return {
             Component: match.result.default,
 
-            context,
-            props,
+            context: output?.context,
+            props: output?.props,
         };
     }
 
@@ -124,7 +128,7 @@ export function app_router(...routes: IRouteDefinition[]): [INavigatingStore, IR
         $hash = normalize_relative($hash);
 
         get_route($hash).then((output) => {
-            set(output);
+            if (output) set(output);
         });
     });
 
