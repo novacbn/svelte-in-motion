@@ -7,7 +7,7 @@ import type {ICollectionStore, IMapStore} from "@svelte-in-motion/utilities";
 import {collection, make_scoped_context, map} from "@svelte-in-motion/utilities";
 
 import type {INotificationsStore} from "./stores/notifications";
-import {notifications as make_notification_store} from "./stores/notifications";
+import {notifications as make_notifications_store} from "./stores/notifications";
 import type {IPromptsStore} from "./stores/prompts";
 import {prompts as make_prompt_store} from "./stores/prompts";
 
@@ -55,7 +55,7 @@ export async function app(): Promise<IAppContext> {
         CONFIGURATION_WORKSPACES.watch_preload(STORAGE_USER, FILE_CONFIGURATION_WORKSPACES),
     ]);
 
-    const notifications = make_notification_store();
+    const notifications = make_notifications_store();
     const prompts = make_prompt_store();
 
     return {
