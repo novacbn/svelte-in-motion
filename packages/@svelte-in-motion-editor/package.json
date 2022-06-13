@@ -22,7 +22,6 @@
         "vite": "2.9.8"
     },
     "dependencies": {
-        "@js-temporal/polyfill": "^0.4.1",
         "@kahi-ui/framework": "0.6.4",
         "@novacbn/svelte-codejar": "^0.1.2",
         "@svelte-in-motion/animations": "workspace:^",
@@ -31,6 +30,7 @@
         "@svelte-in-motion/core": "workspace:^",
         "@svelte-in-motion/encoding": "workspace:^",
         "@svelte-in-motion/storage": "workspace:^",
+        "@svelte-in-motion/temporal": "workspace:^",
         "@svelte-in-motion/utilities": "workspace:^",
         "buffer": "^6.0.3",
         "html-to-image": "^1.9.0",

@@ -82,7 +82,6 @@ importers:
 
   packages/@svelte-in-motion-editor:
     specifiers:
-      '@js-temporal/polyfill': ^0.4.1
       '@kahi-ui/framework': 0.6.4
       '@novacbn/svelte-codejar': ^0.1.2
       '@svelte-in-motion/animations': workspace:^
@@ -91,6 +90,7 @@ importers:
       '@svelte-in-motion/core': workspace:^
       '@svelte-in-motion/encoding': workspace:^
       '@svelte-in-motion/storage': workspace:^
+      '@svelte-in-motion/temporal': workspace:^
       '@svelte-in-motion/utilities': workspace:^
       '@sveltejs/vite-plugin-svelte': 1.0.0-next.43
       '@tsconfig/svelte': ^2.0.1
@@ -107,7 +107,6 @@ importers:
       urlpattern-polyfill: ^1.0.0-rc5
       vite: 2.9.8
     dependencies:
-      '@js-temporal/polyfill': 0.4.1
       '@kahi-ui/framework': 0.6.4
       '@novacbn/svelte-codejar': 0.1.2
       '@svelte-in-motion/animations': link:../@svelte-in-motion-animations
@@ -116,6 +115,7 @@ importers:
       '@svelte-in-motion/core': link:../@svelte-in-motion-core
       '@svelte-in-motion/encoding': link:../@svelte-in-motion-encoding
       '@svelte-in-motion/storage': link:../@svelte-in-motion-storage
+      '@svelte-in-motion/temporal': link:../@svelte-in-motion-temporal
       '@svelte-in-motion/utilities': link:../@svelte-in-motion-utilities
       buffer: 6.0.3
       html-to-image: 1.9.0
