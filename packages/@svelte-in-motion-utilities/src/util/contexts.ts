@@ -20,12 +20,10 @@ export interface IContextScope<T> {
  * const {get, has, set} = make_scoped_context("my-context");
  * ```
  *
- * @param identifier
+ * @param key
  * @returns
  */
-export function make_scoped_context<T>(identifier: string): IContextScope<T> {
-    const key = `svelte-in-motion-${identifier}`;
-
+export function make_scoped_context<T>(key: string): IContextScope<T> {
     return {
         key,
 
