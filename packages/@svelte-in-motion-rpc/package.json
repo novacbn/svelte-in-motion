@@ -3,9 +3,9 @@
     "author": "novacbn",
     "version": "0.0.1",
     "type": "module",
-    "main": "./src/index.ts",
+    "main": "./dist/index.js",
     "exports": {
-        ".": "./src/index.ts",
+        ".": "./dist/index.js",
         "./package.json": "./package.json"
     },
     "repository": {
@@ -13,6 +13,8 @@
         "url": "https://github.com/novacbn/svelte-in-motion/tree/main/packages/%40svelte-in-motion-rpc"
     },
     "scripts": {
+        "build": "tsc",
+        "dev": "tsc --watch",
         "format": "npm run format:package",
         "format:package": "prettier --config ../../.prettierrc --write ./src",
         "lint": "npm run lint:format",
