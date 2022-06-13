@@ -1,52 +1,16 @@
-import type {IConfigurationRecord} from "./configuration";
-import {configuration_reader} from "./configuration";
+import {Maximum, Minimum} from "@svelte-in-motion/type";
 
-export interface IWorkspaceConfiguration extends IConfigurationRecord {
-    framerate: number;
+import {Configuration} from "./configuration";
 
-    height: number;
+export class WorkspaceConfiguration extends Configuration {
+    readonly framerate: number & Minimum<16> & Maximum<120> = 60;
 
-    maxframes: number;
+    readonly height: number & Minimum<0> & Maximum<4320> = 720;
 
-    width: number;
+    // NOTE: Not sure who would wait forever for an 8K render... Also
+    // resolution is platform / codec dependant as well. But seems like a good default?
+
+    readonly maxframes: number & Minimum<0> = 60 * 60; // 60 seconds
+
+    readonly width: number & Minimum<0> & Maximum<7680> = 1280;
 }
-
-export const CONFIGURATION_WORKSPACE = configuration_reader<IWorkspaceConfiguration>({
-    type: "object",
-
-    properties: {
-        framerate: {
-            type: "number",
-            default: 60,
-
-            maximum: 120,
-            minimum: 16,
-        },
-
-        // NOTE: Not sure who would wait forever for an 8K render... Also
-        // resolution is platform / codec dependant as well. But seems like a good default?
-
-        height: {
-            type: "number",
-            default: 720,
-
-            maximum: 4320,
-            minimum: 0,
-        },
-
-        maxframes: {
-            type: "number",
-            default: 60 * 60,
-
-            minimum: 0,
-        },
-
-        width: {
-            type: "number",
-            default: 1280,
-
-            maximum: 7680,
-            minimum: 0,
-        },
-    },
-});

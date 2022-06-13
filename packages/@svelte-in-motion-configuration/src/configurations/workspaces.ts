@@ -1,61 +1,24 @@
-import type {IConfigurationRecord} from "./configuration";
-import {configuration_reader} from "./configuration";
+import {Alphanumeric, DataClass, UUID, uuid} from "@svelte-in-motion/type";
 
-export interface IWorkspacesConfiguration extends IConfigurationRecord {
-    name: string;
+import {Configuration} from "./configuration";
 
-    identifier: string;
+export class WorkspacesItemConfiguration extends DataClass {
+    readonly name!: string & Alphanumeric;
 
-    last_accessed: null | string;
+    readonly identifier: UUID = uuid();
 
-    storage: {
-        driver: "indexeddb";
+    readonly last_accessed: Date = new Date();
 
-        configuration?: Record<string, boolean | number | null | string>;
+    readonly storage: {
+        // TODO: This needs to be dynamic some how... Otherwise extensions wouldn't be able to add more drivers
+        readonly driver: "indexeddb";
+
+        readonly configuration?: Record<string, boolean | number | null | string>;
+    } = {
+        driver: "indexeddb",
     };
 }
 
-export const CONFIGURATION_WORKSPACES = configuration_reader<IWorkspacesConfiguration[]>({
-    type: "array",
-
-    items: {
-        type: "object",
-        required: ["identifier", "name"],
-
-        properties: {
-            name: {
-                type: "string",
-            },
-
-            identifier: {
-                type: "string",
-            },
-
-            last_accessed: {
-                type: ["null", "string"],
-                default: null,
-            },
-
-            storage: {
-                type: "object",
-                required: ["driver"],
-
-                properties: {
-                    driver: {
-                        type: "string",
-
-                        enum: ["indexeddb"],
-                    },
-
-                    configuration: {
-                        type: "object",
-
-                        additionalProperties: {
-                            type: ["boolean", "null", "number", "string"],
-                        },
-                    },
-                },
-            },
-        },
-    },
-});
+export class WorkspacesConfiguration extends Configuration {
+    readonly workspaces: WorkspacesItemConfiguration[] = [];
+}
