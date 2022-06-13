@@ -33,6 +33,18 @@ export class WorkspacesItemConfiguration extends DataClass {
 
     storage: WorkspacesItemStorageConfiguration = new WorkspacesItemStorageConfiguration();
 
+    format_last_accessed(): string {
+        const current_instant = Now.instant();
+
+        // HACK: Nothing supports `Intl.DurationFormat` yet, so have to manually handle output
+        const relative = new Intl.RelativeTimeFormat();
+        const duration = current_instant.until(this.accessed_at, {largestUnit: "hour"});
+
+        if (duration.hours > 0) return relative.format(duration.hours, "hour");
+        else if (duration.minutes > 0) return relative.format(duration.minutes, "minutes");
+        return relative.format(duration.seconds, "seconds");
+    }
+
     make_driver(): Promise<IDriver> {
         // TODO: this needs to become extendable via extensions
         const {driver: driver_name} = this.storage;

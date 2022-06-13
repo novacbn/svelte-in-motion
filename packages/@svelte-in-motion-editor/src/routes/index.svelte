@@ -4,7 +4,6 @@
 
 <script lang="ts">
     import {Button, Hero, Stack, Tile, Text} from "@kahi-ui/framework";
-    import {Temporal} from "@js-temporal/polyfill";
     import {PackageX} from "lucide-svelte";
 
     import AppLayout from "../components/app/AppLayout.svelte";
@@ -15,21 +14,6 @@
     import {is_prompt_dismiss_error} from "../lib/errors";
 
     const {prompts, workspaces} = CONTEXT_APP.get()!;
-
-    function format_last_accessed(timestamp: null | string): string {
-        if (timestamp === null) return "never accessed";
-
-        const current_datetime = Temporal.Now.zonedDateTimeISO();
-        const last_datetime = Temporal.ZonedDateTime.from(timestamp);
-
-        // HACK: Nothing supports `Intl.DurationFormat` yet, so have to manually handle output
-        const relative = new Intl.RelativeTimeFormat();
-        const duration = current_datetime.until(last_datetime, {largestUnit: "days"});
-
-        if (duration.days > 0) return relative.format(duration.days, "days");
-        else if (duration.minutes > 0) return relative.format(duration.minutes, "minutes");
-        return relative.format(duration.seconds, "seconds");
-    }
 
     async function on_create_click(event: MouseEvent): Promise<void> {
         let workspace_configuration: ICreateWorkspacePromptEvent;
@@ -77,7 +61,7 @@
                     <Tile.Section>
                         <Tile.Header>{workspace.name}</Tile.Header>
                         <Text is="small">
-                            Last Accessed: {format_last_accessed(workspace.last_accessed)}
+                            Last Accessed: {workspace.format_last_accessed()}
                         </Text>
                     </Tile.Section>
 
