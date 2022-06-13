@@ -31,6 +31,7 @@
     "dependencies": {
         "@svelte-in-motion/core": "workspace:^",
         "@svelte-in-motion/storage": "workspace:^",
+        "@svelte-in-motion/temporal": "workspace:^",
         "@svelte-in-motion/type": "workspace:^",
         "svelte": "^3.48.0"
     }

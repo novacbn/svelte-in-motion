@@ -51,6 +51,7 @@ importers:
       '@deepkit/type-compiler': ^1.0.1-alpha.71
       '@svelte-in-motion/core': workspace:^
       '@svelte-in-motion/storage': workspace:^
+      '@svelte-in-motion/temporal': workspace:^
       '@svelte-in-motion/type': workspace:^
       '@types/node': ^17.0.31
       prettier: ^2.3.1
@@ -59,6 +60,7 @@ importers:
     dependencies:
       '@svelte-in-motion/core': link:../@svelte-in-motion-core
       '@svelte-in-motion/storage': link:../@svelte-in-motion-storage
+      '@svelte-in-motion/temporal': link:../@svelte-in-motion-temporal
       '@svelte-in-motion/type': link:../@svelte-in-motion-type
       svelte: 3.48.0
     devDependencies:

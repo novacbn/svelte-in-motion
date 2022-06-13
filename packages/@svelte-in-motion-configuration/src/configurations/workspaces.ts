@@ -1,5 +1,6 @@
 import type {IDriver} from "@svelte-in-motion/storage";
 import {indexeddb} from "@svelte-in-motion/storage";
+import {Instant, Now} from "@svelte-in-motion/temporal";
 import {Alphanumeric, UUID, DataClass, uuid} from "@svelte-in-motion/type";
 
 import {Configuration} from "./configuration";
@@ -22,9 +23,9 @@ export class WorkspacesItemStorageConfiguration extends DataClass {
 }
 
 export class WorkspacesItemConfiguration extends DataClass {
-    accessed_at: Date = new Date();
+    accessed_at: Instant = Now.instant();
 
-    created_at: Date = new Date();
+    created_at: Instant = Now.instant();
 
     name!: string & Alphanumeric;
 
