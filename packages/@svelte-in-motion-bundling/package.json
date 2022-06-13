@@ -22,7 +22,7 @@
     },
     "devDependencies": {
         "prettier": "^2.3.1",
-        "typescript": "^4.3.5"
+        "typescript": "^4.7.3"
     },
     "dependencies": {
         "@svelte-in-motion/storage": "workspace:^",
