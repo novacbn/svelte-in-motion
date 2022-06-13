@@ -13,8 +13,8 @@
         "url": "https://github.com/novacbn/svelte-in-motion/tree/main/packages/%40svelte-in-motion-temporal"
     },
     "scripts": {
-        "build": "tsc",
-        "dev": "tsc --watch",
+        "build:package": "tsc",
+        "dev:package": "tsc --watch",
         "format": "npm run format:package",
         "format:package": "prettier --config ../../.prettierrc --write ./src",
         "lint": "npm run lint:format",

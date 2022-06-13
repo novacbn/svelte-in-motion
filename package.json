@@ -3,7 +3,9 @@
     "type": "module",
     "scripts": {
         "build:application": "pnpm run --filter \"*web\" build:application",
+        "build:packages": "pnpm -r build:package",
         "dev:application": "pnpm run --filter \"*web\" dev:application",
+        "dev:packages": "pnpm -r dev:package",
         "preview:application": "pnpm run --filter \"*web\" preview:application",
         "format:content": "prettier --config ./content/.prettierrc --plugin-search-dir=. --write ./content",
         "format:packages": "pnpm -r format",
