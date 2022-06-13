@@ -1,6 +1,8 @@
 import {cast, is, resolveReceiveType, serialize} from "@deepkit/type";
 import {parse} from "jsonc-parser";
 
+import {JSON_SERIALIZER} from "../serializers/jsonserializer";
+
 export interface IDataClassParseOptions {}
 
 export interface IDataClassStringifyOptions {
@@ -12,13 +14,19 @@ export class DataClass {
         this: B,
         properties: any
     ): I | never {
-        const data = cast<I>(properties, undefined, undefined, undefined, resolveReceiveType(this));
+        const data = cast<I>(
+            properties,
+            undefined,
+            JSON_SERIALIZER,
+            undefined,
+            resolveReceiveType(this)
+        );
 
         return data;
     }
 
     static is<B extends typeof DataClass, I = InstanceType<B>>(this: B, value: any): value is I {
-        return is<I>(value, undefined, undefined, resolveReceiveType(this));
+        return is<I>(value, JSON_SERIALIZER, undefined, resolveReceiveType(this));
     }
 
     static parse<B extends typeof DataClass, I = InstanceType<B>>(
@@ -41,7 +49,7 @@ export class DataClass {
         const serialized = serialize<I>(
             properties,
             undefined,
-            undefined,
+            JSON_SERIALIZER,
             undefined,
             resolveReceiveType(this)
         );
