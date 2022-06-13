@@ -17,6 +17,7 @@
         "svelte": "^3.44.0",
         "svelte-check": "^2.2.7",
         "svelte-preprocess": "^4.9.8",
+        "svelte2tsx": "^0.5.10",
         "tslib": "^2.3.1",
         "typescript": "^4.7.3",
         "vite": "2.9.8"
@@ -34,7 +35,7 @@
         "@svelte-in-motion/utilities": "workspace:^",
         "buffer": "^6.0.3",
         "html-to-image": "^1.9.0",
-        "lucide-svelte": "^0.17.9",
+        "lucide-svelte": "^0.61.0",
         "prismjs": "^1.27.0",
         "urlpattern-polyfill": "^1.0.0-rc5"
     }
