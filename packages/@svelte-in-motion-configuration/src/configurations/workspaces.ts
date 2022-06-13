@@ -10,11 +10,13 @@ export class WorkspacesItemStorageConfiguration extends DataClass {
 }
 
 export class WorkspacesItemConfiguration extends DataClass {
+    readonly accessed_at: Date = new Date();
+
+    readonly created_at: Date = new Date();
+
     readonly name!: string & Alphanumeric;
 
     readonly identifier: UUID = uuid();
-
-    readonly last_accessed: Date = new Date();
 
     readonly storage: WorkspacesItemStorageConfiguration = new WorkspacesItemStorageConfiguration();
 }
