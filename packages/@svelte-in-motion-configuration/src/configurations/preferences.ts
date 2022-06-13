@@ -1,118 +1,59 @@
-import type {IConfigurationRecord} from "./configuration";
-import {configuration_reader} from "./configuration";
+import {DataClass} from "@svelte-in-motion/type";
 
-export interface IPreferencesConfiguration extends IConfigurationRecord {
-    ui: {
-        editor: {
-            file_tree: {
-                enabled: boolean;
-            };
+import {Configuration} from "./configuration";
 
-            script: {
-                enabled: boolean;
-            };
-        };
-
-        preview: {
-            checkerboard: {
-                enabled: boolean;
-            };
-
-            controls: {
-                enabled: boolean;
-            };
-
-            timeline: {
-                enabled: boolean;
-            };
-
-            viewport: {
-                enabled: boolean;
-            };
-        };
-    };
+export class PreferencesUIEditorFileTreeConfiguration extends DataClass {
+    readonly enabled: boolean = true;
 }
 
-export const CONFIGURATION_PREFERENCES = configuration_reader<IPreferencesConfiguration>({
-    type: "object",
+export class PreferencesUIEditorScriptConfiguration extends DataClass {
+    readonly enabled: boolean = true;
+}
 
-    properties: {
-        editor: {
-            type: "object",
+export class PreferencesUIEditorConfiguration extends DataClass {
+    readonly file_tree: PreferencesUIEditorFileTreeConfiguration =
+        new PreferencesUIEditorFileTreeConfiguration();
 
-            properties: {
-                file_tree: {
-                    type: "object",
+    readonly script: PreferencesUIEditorScriptConfiguration =
+        new PreferencesUIEditorScriptConfiguration();
+}
 
-                    properties: {
-                        enabled: {
-                            type: "boolean",
-                            default: true,
-                        },
-                    },
-                },
+export class PreferencesUIPreviewCheckerboardConfiguration extends DataClass {
+    readonly enabled: boolean = true;
+}
 
-                script: {
-                    type: "object",
+export class PreferencesUIPreviewControlsConfiguration extends DataClass {
+    readonly enabled: boolean = true;
+}
 
-                    properties: {
-                        enabled: {
-                            type: "boolean",
-                            default: true,
-                        },
-                    },
-                },
-            },
-        },
+export class PreferencesUIPreviewTimelineConfiguration extends DataClass {
+    readonly enabled: boolean = true;
+}
 
-        preview: {
-            type: "object",
+export class PreferencesUIPreviewViewportConfiguration extends DataClass {
+    readonly enabled: boolean = true;
+}
 
-            properties: {
-                checkerboard: {
-                    type: "object",
+export class PreferencesUIPreviewConfiguration extends DataClass {
+    readonly checkerboard: PreferencesUIPreviewCheckerboardConfiguration =
+        new PreferencesUIPreviewCheckerboardConfiguration();
 
-                    properties: {
-                        enabled: {
-                            type: "boolean",
-                            default: true,
-                        },
-                    },
-                },
+    readonly controls: PreferencesUIPreviewControlsConfiguration =
+        new PreferencesUIPreviewControlsConfiguration();
 
-                controls: {
-                    type: "object",
+    readonly timeline: PreferencesUIPreviewTimelineConfiguration =
+        new PreferencesUIPreviewTimelineConfiguration();
 
-                    properties: {
-                        enabled: {
-                            type: "boolean",
-                            default: true,
-                        },
-                    },
-                },
+    readonly viewport: PreferencesUIPreviewViewportConfiguration =
+        new PreferencesUIPreviewViewportConfiguration();
+}
 
-                timeline: {
-                    type: "object",
+export class PreferencesUIConfiguration extends DataClass {
+    readonly editor: PreferencesUIEditorConfiguration = new PreferencesUIEditorConfiguration();
 
-                    properties: {
-                        enabled: {
-                            type: "boolean",
-                            default: true,
-                        },
-                    },
-                },
+    readonly preview: PreferencesUIPreviewConfiguration = new PreferencesUIPreviewConfiguration();
+}
 
-                viewport: {
-                    type: "object",
-
-                    properties: {
-                        enabled: {
-                            type: "boolean",
-                            default: true,
-                        },
-                    },
-                },
-            },
-        },
-    },
-});
+export class PreferencesConfiguration extends Configuration {
+    readonly ui: PreferencesUIConfiguration = new PreferencesUIConfiguration();
+}
