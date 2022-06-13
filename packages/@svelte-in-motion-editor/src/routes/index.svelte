@@ -1,10 +1,21 @@
 <script context="module" lang="ts">
+    import type {IAppContext} from "../lib/app";
+    import type {ILoadCallback} from "../lib/router";
+
     export const pattern: string = "/";
+
+    export const load: ILoadCallback<{app: IAppContext}> = async ({context}) => {
+        const {app} = context;
+
+        app.workspace = undefined;
+    };
 </script>
 
 <script lang="ts">
     import {Button, Hero, Stack, Tile, Text} from "@kahi-ui/framework";
     import {PackageX} from "lucide-svelte";
+
+    import {WorkspacesItemConfiguration} from "@svelte-in-motion/configuration";
 
     import AppLayout from "../components/app/AppLayout.svelte";
 
@@ -24,25 +35,19 @@
             throw err;
         }
 
-        workspaces.push({
-            name: workspace_configuration.name,
-            identifier: crypto.randomUUID(),
-            last_accessed: null,
+        workspaces.update((workspaces) => {
+            workspaces.workspaces.push(
+                WorkspacesItemConfiguration.from({
+                    name: workspace_configuration.name,
+                })
+            );
 
-            storage: {
-                driver: "indexeddb",
-            },
+            return workspaces;
         });
     }
 
-    $: recent_workspaces = $workspaces.slice().sort((workspace_a, workspace_b) => {
-        if (workspace_a.last_accessed === null) return 1;
-        if (workspace_b.last_accessed === null) return 0;
-
-        const timestamp_a = Temporal.ZonedDateTime.from(workspace_a.last_accessed);
-        const timestamp_b = Temporal.ZonedDateTime.from(workspace_b.last_accessed);
-
-        const {seconds} = timestamp_a.until(timestamp_b, {
+    $: recent_workspaces = $workspaces.workspaces.slice().sort((workspace_a, workspace_b) => {
+        const {seconds} = workspace_a.accessed_at.until(workspace_b.accessed_at, {
             largestUnit: "seconds",
             smallestUnit: "seconds",
         });
