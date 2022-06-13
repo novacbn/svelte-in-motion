@@ -1,0 +1,18 @@
+{
+    "compilerOptions": {
+        "moduleResolution": "node",
+        "module": "ES2020",
+        "target": "ES2019",
+        "strict": true,
+        "sourceMap": true,
+        "declaration": true,
+        "allowSyntheticDefaultImports": true,
+        "esModuleInterop": true,
+        "skipLibCheck": true,
+        "downlevelIteration": true,
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true
+    },
+    "reflection": true,
+    "include": ["src/**/*.d.ts", "src/**/*.ts"]
+}

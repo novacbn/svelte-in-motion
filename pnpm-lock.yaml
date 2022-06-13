@@ -146,6 +146,29 @@ importers:
       prettier: 2.5.1
       typescript: 4.6.2
 
+  packages/@svelte-in-motion-rpc:
+    specifiers:
+      '@deepkit/bson': ^1.0.1-alpha.71
+      '@deepkit/core': ^1.0.1-alpha.65
+      '@deepkit/core-rxjs': ^1.0.1-alpha.65
+      '@deepkit/injector': ^1.0.1-alpha.71
+      '@deepkit/rpc': ^1.0.1-alpha.71
+      '@deepkit/type': ^1.0.1-alpha.71
+      prettier: ^2.3.1
+      rxjs: ^7.5.5
+      typescript: ^4.3.5
+    dependencies:
+      '@deepkit/bson': 1.0.1-alpha.71_f45d4662aa19e6a8d273585c15f59e6f
+      '@deepkit/core': 1.0.1-alpha.65
+      '@deepkit/core-rxjs': 1.0.1-alpha.65_db241f1a212cabd96e6ce06b53253ee9
+      '@deepkit/injector': 1.0.1-alpha.71_f45d4662aa19e6a8d273585c15f59e6f
+      '@deepkit/rpc': 1.0.1-alpha.71_3ddc1be848a2b9d0cfd02b4c3f11a9c1
+      '@deepkit/type': 1.0.1-alpha.71_@deepkit+core@1.0.1-alpha.65
+      rxjs: 7.5.5
+    devDependencies:
+      prettier: 2.6.2
+      typescript: 4.6.2
+
   packages/@svelte-in-motion-storage:
     specifiers:
       '@svelte-in-motion/utilities': workspace:^
@@ -173,6 +196,19 @@ importers:
       '@svelte-in-motion/editor': link:../@svelte-in-motion-editor
     devDependencies:
       '@tauri-apps/cli': 1.0.0-rc.9
+
+  packages/@svelte-in-motion-type:
+    specifiers:
+      '@deepkit/core': ^1.0.1-alpha.65
+      '@deepkit/type': ^1.0.1-alpha.71
+      prettier: ^2.3.1
+      typescript: ^4.3.5
+    dependencies:
+      '@deepkit/core': 1.0.1-alpha.65
+      '@deepkit/type': 1.0.1-alpha.71_@deepkit+core@1.0.1-alpha.65
+    devDependencies:
+      prettier: 2.6.2
+      typescript: 4.6.2
 
   packages/@svelte-in-motion-utilities:
     specifiers:
@@ -206,6 +242,85 @@ importers:
       typescript: 4.6.2
 
 packages:
+
+  /@deepkit/bson/1.0.1-alpha.71_f45d4662aa19e6a8d273585c15f59e6f:
+    resolution: {integrity: sha512-Xg2APebnsfnrtjqJTm6W38YwJOnxUQZntKsIZ9JjXiQrUghPIqPYtp6NMYS8cIvCLHgirmJld+wV9QCFrs0AIQ==}
+    peerDependencies:
+      '@deepkit/core': ^1.0.1-alpha.13
+      '@deepkit/type': ^1.0.1-alpha.13
+    dependencies:
+      '@deepkit/core': 1.0.1-alpha.65
+      '@deepkit/crypto': 1.0.1-alpha.65
+      '@deepkit/type': 1.0.1-alpha.71_@deepkit+core@1.0.1-alpha.65
+    dev: false
+
+  /@deepkit/core-rxjs/1.0.1-alpha.65_db241f1a212cabd96e6ce06b53253ee9:
+    resolution: {integrity: sha512-1pWNTnnI4CxFK2C1tFpj4mr1JzE+5X22MOkc7x7hBUCeuQEXCJjfahHuxM9Oc2UTfqNkPqEjaI8p9ORQaS0Alw==}
+    peerDependencies:
+      '@deepkit/core': ^1.0.1-alpha.0
+      rxjs: '*'
+    dependencies:
+      '@deepkit/core': 1.0.1-alpha.65
+      rxjs: 7.5.5
+    dev: false
+
+  /@deepkit/core/1.0.1-alpha.65:
+    resolution: {integrity: sha512-L52r3uSGu+kEjsq/9vVoora2fIWDFi/wmwkGtDJjbpbW1oY02jGYy73ImM7jeKeTfFen+3bw6Fk+tTVH4EChRg==}
+    dependencies:
+      dot-prop: 5.3.0
+      to-fast-properties: 3.0.1
+    dev: false
+
+  /@deepkit/crypto/1.0.1-alpha.65:
+    resolution: {integrity: sha512-SMHXC9WNOR8D/bOoqnBgjJDYqTHLbgeZj+SvyAxKkBM5Z59vtj7Pm0JLSd7/FMIfLcEVROxOMSyd0Q5+9gp2/w==}
+    dev: false
+
+  /@deepkit/injector/1.0.1-alpha.71_f45d4662aa19e6a8d273585c15f59e6f:
+    resolution: {integrity: sha512-4Qi8rJXSz7zoTgArL7Z2sLuiGPkTx7D/FPWcGlroLHfz/J1l6n0C5rEkw3H7qfAbPemQjLkkZ2YeD6EmbTK6lw==}
+    peerDependencies:
+      '@deepkit/core': ^1.0.1-alpha.13
+      '@deepkit/type': ^1.0.1-alpha.13
+    dependencies:
+      '@deepkit/core': 1.0.1-alpha.65
+      '@deepkit/type': 1.0.1-alpha.71_@deepkit+core@1.0.1-alpha.65
+    dev: false
+
+  /@deepkit/rpc/1.0.1-alpha.71_3ddc1be848a2b9d0cfd02b4c3f11a9c1:
+    resolution: {integrity: sha512-dO1tLYFJaMB4NznmseQ/h7j1cTQWdWi2jFaWvO2jTR+OJ+AGf9yp4wbJoxMI3kwzHJCQbKIYfDrSnnJ7wxJflw==}
+    peerDependencies:
+      '@deepkit/bson': ^1.0.1-alpha.13
+      '@deepkit/core': ^1.0.1-alpha.13
+      '@deepkit/core-rxjs': ^1.0.1-alpha.13
+      '@deepkit/crypto': ^1.0.1-alpha.13
+      '@deepkit/injector': ^1.0.1-alpha.13
+      '@deepkit/logger': ^1.0.1-alpha.13
+      '@deepkit/type': ^1.0.1-alpha.13
+      rxjs: '*'
+    dependencies:
+      '@deepkit/bson': 1.0.1-alpha.71_f45d4662aa19e6a8d273585c15f59e6f
+      '@deepkit/core': 1.0.1-alpha.65
+      '@deepkit/core-rxjs': 1.0.1-alpha.65_db241f1a212cabd96e6ce06b53253ee9
+      '@deepkit/injector': 1.0.1-alpha.71_f45d4662aa19e6a8d273585c15f59e6f
+      '@deepkit/type': 1.0.1-alpha.71_@deepkit+core@1.0.1-alpha.65
+      dot-prop: 5.3.0
+      rxjs: 7.5.5
+    dev: false
+
+  /@deepkit/type-spec/1.0.1-alpha.71:
+    resolution: {integrity: sha512-Xug9GrBMMyZPyW4WLIVFd3wg126mNoViJpQaWZUbyDFTZWMIh+YCWbtsCSXTxOxk6QBZoB8Tq0OuUvrp+3crRg==}
+    dev: false
+
+  /@deepkit/type/1.0.1-alpha.71_@deepkit+core@1.0.1-alpha.65:
+    resolution: {integrity: sha512-/fGp3qCus+lY/G2AUyb5rPI72SyFvA5f+X3djKXgfk0QAB7pxNPjBLNBHXD+yupzl0im+YEL9K1AL+KNLF9m0w==}
+    peerDependencies:
+      '@deepkit/core': ^1.0.1-alpha.13
+    dependencies:
+      '@deepkit/core': 1.0.1-alpha.65
+      '@deepkit/type-spec': 1.0.1-alpha.71
+      '@types/uuid': 8.3.4
+      buffer: 5.7.1
+      uuid: 8.3.2
+    dev: false
 
   /@exodus/schemasafe/1.0.0-rc.6:
     resolution: {integrity: sha512-dDnQizD94EdBwEj/fh3zPRa/HWCS9O5au2PuHhZBbuM3xWHxuaKzPBOEWze7Nn0xW68MIpZ7Xdyn1CoCpjKCuQ==}
@@ -431,6 +546,10 @@ packages:
     resolution: {integrity: sha512-ijt3zdHi2DmZxQpQTmozXszzDo78V4R3EdvX0jFMfnMH2ZzQSmCbaWOMPGXFUYSzSIdStv78HDjg32m5dxc+tA==}
     dev: true
 
+  /@types/uuid/8.3.4:
+    resolution: {integrity: sha512-c/I8ZRb51j+pYGAu5CrFMRxqZ2ke4y2grEBO5AUjgSkSk+qT2Ea+OdWElz/OiMf5MNpn2b17kuVBwZLQJXzihw==}
+    dev: false
+
   /@zip.js/zip.js/2.4.7:
     resolution: {integrity: sha512-IbRUgSsPcnVth4fBljrQDfI6nZO5VqW1/49j9rMAShZ7sB8noRYgQR4nY9jeRw5ZrUM6lZrsuUr8OMF4M3mrsw==}
     dev: false
@@ -473,6 +592,13 @@ packages:
   /buffer-crc32/0.2.13:
     resolution: {integrity: sha1-DTM+PwDqxQqhRUq9MO+MKl2ackI=}
     dev: true
+
+  /buffer/5.7.1:
+    resolution: {integrity: sha512-EHcyIPBQ4BSGlvjB16k5KgAJ27CIsHY/2JBmCRReo48y9rQ3MaUzWX3KVlBa4U7MyX02HdVj0K7C3WaB3ju7FQ==}
+    dependencies:
+      base64-js: 1.5.1
+      ieee754: 1.2.1
+    dev: false
 
   /buffer/6.0.3:
     resolution: {integrity: sha512-FTiCpNxtwiZZHEZbcbTIcZjERVICn9yq/pDFkTl95/AxzD1naBctN7YO68riM/gLSDY7sdrMby8hofADYuuqOA==}
@@ -530,6 +656,13 @@ packages:
     resolution: {integrity: sha512-reYkTUJAZb9gUuZ2RvVCNhVHdg62RHnJ7WJl8ftMi4diZ6NWlciOzQN88pUhSELEwflJht4oQDv0F0BMlwaYtA==}
     engines: {node: '>=8'}
     dev: true
+
+  /dot-prop/5.3.0:
+    resolution: {integrity: sha512-QM8q3zDe58hqUqjraQOmzZ1LIH9SWQJTlEKCH4kJ2oQvLZk7RbQXvtDM2XEq3fwkV9CCvvH4LA0AV+ogFsBM2Q==}
+    engines: {node: '>=8'}
+    dependencies:
+      is-obj: 2.0.0
+    dev: false
 
   /dot-prop/7.2.0:
     resolution: {integrity: sha512-Ol/IPXUARn9CSbkrdV4VJo7uCy1I3VuSiWCaFSg+8BdUOzF9n3jefIpcgAydvUZbTdEBZs2vEiTiS9m61ssiDA==}
@@ -895,6 +1028,11 @@ packages:
     engines: {node: '>=0.12.0'}
     dev: true
 
+  /is-obj/2.0.0:
+    resolution: {integrity: sha512-drqDG3cbczxxEJRoOXcOjtdp1J/lyp1mNn0xaznRs8+muBhgQcrnbspox5X5fOw0HnMnbfDzvnEMEtqDEJEo8w==}
+    engines: {node: '>=8'}
+    dev: false
+
   /is-url/1.2.4:
     resolution: {integrity: sha512-ITvGim8FhRiYe4IQ5uHSkj7pVaPDrCTkNd3yq3cV7iZAcJdHTUMPMEHcqSOy9xZ9qFenQCvi+2wjH9a1nXqHww==}
     dev: false
@@ -1146,6 +1284,12 @@ packages:
       queue-microtask: 1.2.3
     dev: true
 
+  /rxjs/7.5.5:
+    resolution: {integrity: sha512-sy+H0pQofO95VDmFLzyaw9xNJU4KTRSwQIGM6+iG3SypAtCiLDzpeG8sJrNCWn2Up9km+KhkvTdbkrdy+yzZdw==}
+    dependencies:
+      tslib: 2.3.1
+    dev: false
+
   /sade/1.8.1:
     resolution: {integrity: sha512-xal3CZX1Xlo/k4ApwCFrHVACi9fBqJ7V+mwhBsuf/1IOKbBy098Fex+Wa/5QMubw09pSZ/u8EY8PWgevJsXp1A==}
     engines: {node: '>=6'}
@@ -1314,6 +1458,11 @@ packages:
     engines: {node: '>= 8'}
     dev: false
 
+  /to-fast-properties/3.0.1:
+    resolution: {integrity: sha512-/wtNi1tW1F3nf0OL6AqVxGw9Tr1ET70InMhJuVxPwFdGqparF0nQ4UWGLf2DsoI2bFDtthlBnALncZpUzOnsUw==}
+    engines: {node: '>=8'}
+    dev: false
+
   /to-regex-range/5.0.1:
     resolution: {integrity: sha512-65P7iz6X5yEr1cwcgvQxbbIw7Uk3gOy5dIdtZ4rDveLqhrdJP+Li/Hx6tyK0NEb+2GCyneCMJiGqrADCSNk8sQ==}
     engines: {node: '>=8.0'}
@@ -1345,6 +1494,11 @@ packages:
 
   /util-deprecate/1.0.2:
     resolution: {integrity: sha1-RQ1Nyfpw3nMnYvvS1KKJgUGaDM8=}
+    dev: false
+
+  /uuid/8.3.2:
+    resolution: {integrity: sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==}
+    hasBin: true
     dev: false
 
   /vite/2.9.8:
