@@ -1,4 +1,4 @@
-import type {Unsubscriber} from "svelte/store";
+import type {Writable} from "svelte/store";
 import {get, writable} from "svelte/store";
 
 import {debounce as _debounce} from "@svelte-in-motion/utilities";
@@ -6,28 +6,21 @@ import {debounce as _debounce} from "@svelte-in-motion/utilities";
 import type {IDriver, IWatchUnsubscriber} from "../drivers/driver";
 import {WATCH_EVENT_TYPES} from "../drivers/driver";
 
-export interface IFileBinaryStore {
-    set: (buffer: Uint8Array) => void;
+export type IFileBinaryStore = Writable<Uint8Array | null>;
 
-    subscribe: (callback: (buffer: Uint8Array | null) => void) => () => void;
+export type IPreloadedFileBinaryStore = Writable<Uint8Array>;
 
-    update: (callback: (buffer: Uint8Array | null) => Uint8Array) => void;
-}
+export type IFileTextStore = Writable<string | null>;
 
-export interface IFileTextStore {
-    set: (text: string) => void;
-
-    subscribe: (callback: (text: string | null) => void) => () => void;
-
-    update: (callback: (text: string | null) => string) => void;
-}
+export type IPreloadedFileTextStore = Writable<string>;
 
 export function file_binary(
     driver: IDriver,
     file_path: string,
+    initial_value: Uint8Array | null = null,
     debounce: number = 250
 ): IFileBinaryStore {
-    const store = writable<Uint8Array | null>(null, (set) => {
+    const store = writable<Uint8Array | null>(initial_value, (set) => {
         const read = _debounce(async () => {
             const buffer = await driver.read_file(file_path);
 
@@ -54,24 +47,25 @@ export function file_binary(
         };
     });
 
-    const write = _debounce(async (buffer: Uint8Array) => {
+    const write = _debounce(async (buffer: Uint8Array | null) => {
         const cache = get(store);
 
         if (cache !== buffer) {
-            await driver.write_file(file_path, buffer);
+            if (buffer === null) await driver.remove_file(file_path);
+            else await driver.write_file(file_path, buffer);
 
             store.set(buffer);
         }
     }, debounce);
 
     return {
-        set(buffer) {
+        set: (buffer) => {
             write(buffer);
         },
 
         subscribe: store.subscribe,
 
-        update(callback) {
+        update: (callback) => {
             const buffer = get(store);
 
             write(callback(buffer));
@@ -79,30 +73,23 @@ export function file_binary(
     };
 }
 
-export function preload_binary(
+export async function preload_binary(
     driver: IDriver,
     file_path: string,
     debounce?: number
-): Promise<IFileBinaryStore> {
-    return new Promise((resolve, reject) => {
-        const store = file_binary(driver, file_path, debounce);
+): Promise<IPreloadedFileBinaryStore> {
+    const buffer = await driver.read_file(file_path);
 
-        let destroy: Unsubscriber;
-        destroy = store.subscribe((buffer) => {
-            if (buffer !== undefined) {
-                if (destroy) destroy();
-                resolve(store);
-            }
-        });
-    });
+    return file_binary(driver, file_path, buffer, debounce) as IPreloadedFileBinaryStore;
 }
 
 export function file_text(
     driver: IDriver,
     file_path: string,
+    initial_value: string | null = null,
     debounce: number = 250
 ): IFileTextStore {
-    const store = writable<string | null>(null, (set) => {
+    const store = writable<string | null>(initial_value, (set) => {
         const read = _debounce(async () => {
             const text = await driver.read_file_text(file_path);
 
@@ -129,24 +116,25 @@ export function file_text(
         };
     });
 
-    const write = _debounce(async (text: string) => {
+    const write = _debounce(async (text: string | null) => {
         const cache = get(store);
 
         if (cache !== text) {
-            await driver.write_file_text(file_path, text);
+            if (text === null) await driver.remove_file(file_path);
+            else await driver.write_file_text(file_path, text);
 
             store.set(text);
         }
     }, debounce);
 
     return {
-        set(text) {
+        set: (text) => {
             write(text);
         },
 
         subscribe: store.subscribe,
 
-        update(callback) {
+        update: (callback) => {
             const text = get(store);
 
             write(callback(text));
@@ -154,20 +142,12 @@ export function file_text(
     };
 }
 
-export function preload_text(
+export async function preload_text(
     driver: IDriver,
     file_path: string,
     debounce?: number
-): Promise<IFileTextStore> {
-    return new Promise((resolve, reject) => {
-        const store = file_text(driver, file_path, debounce);
+): Promise<IPreloadedFileTextStore> {
+    const text = await driver.read_file_text(file_path);
 
-        let destroy: Unsubscriber;
-        destroy = store.subscribe((text) => {
-            if (text !== undefined) {
-                if (destroy) destroy();
-                resolve(store);
-            }
-        });
-    });
+    return file_text(driver, file_path, text, debounce) as IPreloadedFileTextStore;
 }
