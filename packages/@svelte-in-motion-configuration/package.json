@@ -29,11 +29,9 @@
         "typescript": "^4.7.3"
     },
     "dependencies": {
-        "@exodus/schemasafe": "^1.0.0-rc.6",
         "@svelte-in-motion/core": "workspace:^",
         "@svelte-in-motion/storage": "workspace:^",
         "@svelte-in-motion/type": "workspace:^",
-        "jsonc-parser": "^3.0.0",
         "svelte": "^3.48.0"
     }
 }
