@@ -10,34 +10,30 @@ export type IConfigurationFileStore<T extends Configuration> = Writable<T | null
 
 export type IPreloadedConfigurationFileStore<T extends Configuration> = Writable<T>;
 
+export interface IConfigurationFileStoreOptions {
+    parse?: IDataClassParseOptions;
+
+    stringify?: IDataClassStringifyOptions;
+}
+
 export class Configuration extends DataClass {
-    static async read<B extends typeof Configuration, I = InstanceType<B>>(
-        this: B,
-        driver: IDriver,
-        file_path: string,
-        options: IDataClassParseOptions = {}
-    ): Promise<I> | never {
-        const buffer = await driver.read_file_text(file_path);
-        const text = buffer.toString();
-
-        return this.parse(text, options);
-    }
-
     static file<B extends typeof Configuration, I extends Configuration = InstanceType<B>>(
         this: B,
         driver: IDriver,
         file_path: string,
         initial_value: I | null = null,
-        options: IDataClassParseOptions = {}
+        options: IConfigurationFileStoreOptions = {}
     ): IConfigurationFileStore<I> {
+        const {parse: parse_options, stringify: stringify_options} = options;
+
         const text_store = file_text(driver, file_path, null);
         const parsed_store = derived(text_store, ($text_store) =>
-            $text_store ? this.parse($text_store) : initial_value
+            $text_store ? this.parse($text_store, parse_options) : initial_value
         ) as Readable<I | null>;
 
         return {
             set: (value) => {
-                const serialized = value ? this.stringify(value) : null;
+                const serialized = value ? this.stringify(value, stringify_options) : null;
                 text_store.set(serialized);
             },
 
@@ -50,7 +46,7 @@ export class Configuration extends DataClass {
                 const cache = get(parsed_store);
                 const value = callback(cache);
 
-                const serialized = value ? this.stringify(value) : null;
+                const serialized = value ? this.stringify(value, stringify_options) : null;
                 text_store.set(serialized);
             },
         };
@@ -60,7 +56,7 @@ export class Configuration extends DataClass {
         this: B,
         driver: IDriver,
         file_path: string,
-        options: IDataClassParseOptions = {}
+        options: IConfigurationFileStoreOptions = {}
     ): Promise<IPreloadedConfigurationFileStore<I>> {
         if (await driver.exists(file_path)) {
             const configuration = await this.read(driver, file_path, options);
@@ -84,6 +80,18 @@ export class Configuration extends DataClass {
             configuration,
             options
         ) as IPreloadedConfigurationFileStore<I>;
+    }
+
+    static async read<B extends typeof Configuration, I = InstanceType<B>>(
+        this: B,
+        driver: IDriver,
+        file_path: string,
+        options: IDataClassParseOptions = {}
+    ): Promise<I> | never {
+        const buffer = await driver.read_file_text(file_path);
+        const text = buffer.toString();
+
+        return this.parse(text, options);
     }
 
     write(
