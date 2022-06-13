@@ -1,10 +1,6 @@
-import type {
-    IPreferencesConfiguration,
-    IWorkspacesConfiguration,
-} from "@svelte-in-motion/configuration";
-import {CONFIGURATION_PREFERENCES, CONFIGURATION_WORKSPACES} from "@svelte-in-motion/configuration";
-import type {ICollectionStore, IMapStore} from "@svelte-in-motion/utilities";
-import {collection, make_scoped_context, map} from "@svelte-in-motion/utilities";
+import type {IPreloadedConfigurationFileStore} from "@svelte-in-motion/configuration";
+import {PreferencesConfiguration, WorkspacesConfiguration} from "@svelte-in-motion/configuration";
+import {make_scoped_context} from "@svelte-in-motion/utilities";
 
 import type {INotificationsStore} from "./stores/notifications";
 import {notifications as make_notifications_store} from "./stores/notifications";
@@ -16,17 +12,20 @@ import {
     FILE_CONFIGURATION_WORKSPACES,
     STORAGE_USER,
 } from "./storage";
+import type {IWorkspaceContext} from "./workspace";
 
 export const CONTEXT_APP = make_scoped_context<IAppContext>("app");
 
 export interface IAppContext {
     notifications: INotificationsStore;
 
-    preferences: IMapStore<IPreferencesConfiguration>;
+    preferences: IPreloadedConfigurationFileStore<PreferencesConfiguration>;
 
     prompts: IPromptsStore;
 
-    workspaces: ICollectionStore<IWorkspacesConfiguration>;
+    workspace?: IWorkspaceContext;
+
+    workspaces: IPreloadedConfigurationFileStore<WorkspacesConfiguration>;
 }
 
 async function is_application_prepared(): Promise<boolean> {
@@ -41,9 +40,12 @@ async function is_application_prepared(): Promise<boolean> {
 async function prepare_application(): Promise<void> {
     // HACK: Validation happens via a JSONSchema, which will insert defaults for us
 
+    const preferences = new PreferencesConfiguration();
+    const workspaces = new WorkspacesConfiguration();
+
     await Promise.all([
-        CONFIGURATION_PREFERENCES.write(STORAGE_USER, FILE_CONFIGURATION_PREFERENCES, {} as any),
-        CONFIGURATION_WORKSPACES.write(STORAGE_USER, FILE_CONFIGURATION_WORKSPACES, [] as any),
+        preferences.write(STORAGE_USER, FILE_CONFIGURATION_PREFERENCES, {is_formatted: true}),
+        workspaces.write(STORAGE_USER, FILE_CONFIGURATION_WORKSPACES, {is_formatted: true}),
     ]);
 }
 
@@ -51,8 +53,13 @@ export async function app(): Promise<IAppContext> {
     if (!(await is_application_prepared())) await prepare_application();
 
     const [preferences, workspaces] = await Promise.all([
-        CONFIGURATION_PREFERENCES.watch_preload(STORAGE_USER, FILE_CONFIGURATION_PREFERENCES),
-        CONFIGURATION_WORKSPACES.watch_preload(STORAGE_USER, FILE_CONFIGURATION_WORKSPACES),
+        PreferencesConfiguration.preload(STORAGE_USER, FILE_CONFIGURATION_PREFERENCES, {
+            stringify: {is_formatted: true},
+        }),
+
+        WorkspacesConfiguration.preload(STORAGE_USER, FILE_CONFIGURATION_WORKSPACES, {
+            stringify: {is_formatted: true},
+        }),
     ]);
 
     const notifications = make_notifications_store();
@@ -60,8 +67,8 @@ export async function app(): Promise<IAppContext> {
 
     return {
         notifications,
-        preferences: map(preferences),
+        preferences,
         prompts,
-        workspaces: collection(workspaces),
+        workspaces,
     };
 }
