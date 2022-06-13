@@ -51,6 +51,7 @@ importers:
       '@exodus/schemasafe': ^1.0.0-rc.6
       '@svelte-in-motion/core': workspace:^
       '@svelte-in-motion/storage': workspace:^
+      '@svelte-in-motion/type': workspace:^
       '@types/node': ^17.0.31
       jsonc-parser: ^3.0.0
       prettier: ^2.3.1
@@ -60,6 +61,7 @@ importers:
       '@exodus/schemasafe': 1.0.0-rc.6
       '@svelte-in-motion/core': link:../@svelte-in-motion-core
       '@svelte-in-motion/storage': link:../@svelte-in-motion-storage
+      '@svelte-in-motion/type': link:../@svelte-in-motion-type
       jsonc-parser: 3.0.0
       svelte: 3.48.0
     devDependencies:

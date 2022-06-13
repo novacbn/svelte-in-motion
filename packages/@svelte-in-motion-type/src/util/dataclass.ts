@@ -35,7 +35,7 @@ export class DataClass {
         this: B,
         properties: any,
         options: IDataClassStringifyOptions = {}
-    ): string {
+    ): string | never {
         const {is_formatted = false} = options;
 
         const serialized = serialize<I>(
@@ -53,7 +53,7 @@ export class DataClass {
         return (this.constructor as typeof DataClass).from(this);
     }
 
-    stringify(options?: IDataClassStringifyOptions): string {
+    stringify(options?: IDataClassStringifyOptions): string | never {
         return (this.constructor as typeof DataClass).stringify(this, options);
     }
 }
