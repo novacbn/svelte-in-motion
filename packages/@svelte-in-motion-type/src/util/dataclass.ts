@@ -1,4 +1,5 @@
 import {cast, is, resolveReceiveType, serialize} from "@deepkit/type";
+import {parse} from "jsonc-parser";
 
 export interface IDataClassParseOptions {}
 
@@ -25,7 +26,7 @@ export class DataClass {
         text: string,
         options: IDataClassParseOptions = {}
     ): I | never {
-        const properties = JSON.parse(text);
+        const properties = parse(text);
 
         return this.from(properties);
     }

@@ -26,6 +26,7 @@
     },
     "dependencies": {
         "@deepkit/core": "^1.0.1-alpha.65",
-        "@deepkit/type": "^1.0.1-alpha.71"
+        "@deepkit/type": "^1.0.1-alpha.71",
+        "jsonc-parser": "^3.0.0"
     }
 }
