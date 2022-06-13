@@ -2,6 +2,10 @@ import type {IPreloadedConfigurationFileStore} from "@svelte-in-motion/configura
 import {PreferencesConfiguration, WorkspacesConfiguration} from "@svelte-in-motion/configuration";
 import {make_scoped_context} from "@svelte-in-motion/utilities";
 
+import type {ICommandsStore} from "./stores/commands";
+import {commands as make_commands_store} from "./stores/commands";
+import type {IKeybindsStore} from "./stores/keybinds";
+import {keybinds as make_keybinds_store} from "./stores/keybinds";
 import type {INotificationsStore} from "./stores/notifications";
 import {notifications as make_notifications_store} from "./stores/notifications";
 import type {IPromptsStore} from "./stores/prompts";
@@ -17,6 +21,10 @@ import type {IWorkspaceContext} from "./workspace";
 export const CONTEXT_APP = make_scoped_context<IAppContext>("app");
 
 export interface IAppContext {
+    commands: ICommandsStore;
+
+    keybinds: IKeybindsStore;
+
     notifications: INotificationsStore;
 
     preferences: IPreloadedConfigurationFileStore<PreferencesConfiguration>;
@@ -65,7 +73,12 @@ export async function app(): Promise<IAppContext> {
     const notifications = make_notifications_store();
     const prompts = make_prompt_store();
 
+    const commands = make_commands_store();
+    const keybinds = make_keybinds_store();
+
     return {
+        commands,
+        keybinds,
         notifications,
         preferences,
         prompts,
