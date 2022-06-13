@@ -13,22 +13,24 @@ export type IContext = Record<string, any>;
 
 export type IProps = Record<string, any>;
 
-export type ILoadCallback = (input: ILoadInput) => ILoadOutput | void | Promise<ILoadOutput | void>;
+export type ILoadCallback<Context extends IContext = IContext> = (
+    input: ILoadInput<Context>
+) => ILoadOutput | void | Promise<ILoadOutput | void>;
 
 export type INavigatingStore = Readable<boolean>;
 
 export type IRouterStore = Readable<IRouterOutput | null>;
 
-export interface ILoadInput {
-    context: IContext;
+export interface ILoadInput<Context extends IContext = IContext> {
+    context: Context;
 
     url: URLPatternResult;
 }
 
 export interface ILoadOutput {
-    context?: Record<string | symbol, any>;
+    context?: IContext;
 
-    props?: Record<string, any>;
+    props?: IProps;
 
     redirect?: string;
 }
