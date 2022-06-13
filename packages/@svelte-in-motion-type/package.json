@@ -30,6 +30,7 @@
     "dependencies": {
         "@deepkit/core": "^1.0.1-alpha.65",
         "@deepkit/type": "^1.0.1-alpha.71",
+        "@svelte-in-motion/temporal": "workspace:^",
         "jsonc-parser": "^3.0.0"
     }
 }
