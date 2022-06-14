@@ -1,7 +1,7 @@
 import type {IDriver} from "@svelte-in-motion/storage";
 import {indexeddb} from "@svelte-in-motion/storage";
 import {Instant, Now} from "@svelte-in-motion/temporal";
-import {Alphanumeric, UUID, DataClass, uuid} from "@svelte-in-motion/type";
+import {Ascii, MaxLength, MinLength, UUID, DataClass, uuid} from "@svelte-in-motion/type";
 
 import {Configuration} from "./configuration";
 
@@ -27,7 +27,7 @@ export class WorkspacesItemConfiguration extends DataClass {
 
     created_at: Instant = Now.instant();
 
-    name!: string & Alphanumeric;
+    name!: string & Ascii & MinLength<1> & MaxLength<32>;
 
     identifier: UUID = uuid();
 
