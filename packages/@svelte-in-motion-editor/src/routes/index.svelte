@@ -53,8 +53,6 @@
 
         return seconds > 0 ? 1 : seconds < 0 ? -1 : 0;
     });
-
-    $: console.log({recent_workspaces});
 </script>
 
 <AppLayout>
