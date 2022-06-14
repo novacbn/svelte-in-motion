@@ -16,7 +16,6 @@ import {
 } from "@svelte-in-motion/core";
 import {clamp, evaluate_code, message} from "@svelte-in-motion/utilities";
 
-import {REPL_CONTEXT, REPL_IMPORTS} from "./lib/repl";
 import {
     FILE_CONFIGURATION_WORKSPACE,
     FILE_CONFIGURATION_WORKSPACES,
@@ -31,6 +30,8 @@ import type {
     IRenderStartMessage,
 } from "./lib/types/render";
 import {MESSAGES_RENDER} from "./lib/types/render";
+
+import {REPL_CONTEXT, REPL_IMPORTS} from "./lib/util/repl";
 
 (async () => {
     const url = new URL(location.href);

@@ -18,7 +18,6 @@ import {
 } from "@svelte-in-motion/core";
 import {evaluate_code, map, message, normalize_pathname} from "@svelte-in-motion/utilities";
 
-import {REPL_CONTEXT, REPL_IMPORTS} from "./lib/repl";
 import {
     FILE_CONFIGURATION_WORKSPACE,
     FILE_CONFIGURATION_WORKSPACES,
@@ -35,6 +34,8 @@ import type {
     IPreviewReadyMessage,
 } from "./lib/types/preview";
 import {MESSAGES_PREVIEW} from "./lib/types/preview";
+
+import {REPL_CONTEXT, REPL_IMPORTS} from "./lib/util/repl";
 
 (async () => {
     const url = new URL(location.href);

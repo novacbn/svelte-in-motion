@@ -11,7 +11,7 @@ import CreateWorkspace from "../../components/prompts/CreateWorkspace.svelte";
 import ExportFramesPrompt from "../../components/prompts/ExportFramesPrompt.svelte";
 import ExportVideoPrompt from "../../components/prompts/ExportVideoPrompt.svelte";
 
-import type {IError} from "../errors";
+import type {IError} from "../util/errors";
 
 export interface ICreateWorkspacePromptEvent {
     name: string;

@@ -2,10 +2,10 @@
     import {Anchor, Button, Card, Code, Text} from "@kahi-ui/framework";
     import {createEventDispatcher} from "svelte";
 
-    import {APPLICATION_VERSION} from "../../lib/constants";
-    import {PromptDismissError} from "../../lib/errors";
-
     import type {IPromptRejectEvent} from "../../lib/stores/prompts";
+
+    import {APPLICATION_VERSION} from "../../lib/util/constants";
+    import {PromptDismissError} from "../../lib/util/errors";
 
     type $$Events = {
         reject: CustomEvent<IPromptRejectEvent>;

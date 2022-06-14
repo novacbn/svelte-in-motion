@@ -14,9 +14,9 @@
         get_supported_crf_range,
     } from "@svelte-in-motion/encoding";
 
-    import {PromptDismissError} from "../../lib/errors";
-
     import type {IExportVideoPromptEvent, IPromptRejectEvent} from "../../lib/stores/prompts";
+
+    import {PromptDismissError} from "../../lib/util/errors";
 
     type $$Events = {
         reject: CustomEvent<IPromptRejectEvent>;

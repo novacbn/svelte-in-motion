@@ -10,11 +10,12 @@
 
     import {CONTEXT_APP} from "../../lib/app";
     import {CONTEXT_EDITOR} from "../../lib/editor";
-    import {is_prompt_dismiss_error} from "../../lib/errors";
-    import {zip_frames} from "../../lib/io";
     import {CONTEXT_WORKSPACE} from "../../lib/workspace";
 
     import type {IExportFramesPromptEvent, IExportVideoPromptEvent} from "../../lib/stores/prompts";
+
+    import {is_prompt_dismiss_error} from "../../lib/util/errors";
+    import {zip_frames} from "../../lib/util/io";
 
     const {notifications, prompts} = CONTEXT_APP.get()!;
     const editor = CONTEXT_EDITOR.get();
