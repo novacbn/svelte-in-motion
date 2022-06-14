@@ -49,7 +49,7 @@ export interface IEncodingOptions {
     width?: number;
 }
 
-function EncodingOptions(options: IEncodingOptions): Required<IEncodingOptions> {
+export function EncodingOptions(options: IEncodingOptions): Required<IEncodingOptions> {
     const {codec, crf, frames, framerate, height, pixel_format, width} = options;
 
     // NOTE: Default calls might be expensive depending

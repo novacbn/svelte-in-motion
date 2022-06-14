@@ -2,14 +2,16 @@
 
 /packages/@svelte-in-motion-animations/node_modules/
 /packages/@svelte-in-motion-bundling/node_modules/
-/packages/@svelte-in-motion-configuration/node_modules/
 /packages/@svelte-in-motion-configuration/dist/
+/packages/@svelte-in-motion-configuration/node_modules/
 /packages/@svelte-in-motion-core/node_modules/
 /packages/@svelte-in-motion-editor/.vercel/
 /packages/@svelte-in-motion-editor/dist/
 /packages/@svelte-in-motion-editor/node_modules/
 /packages/@svelte-in-motion-encoding/dist/
 /packages/@svelte-in-motion-encoding/node_modules/
+/packages/@svelte-in-motion-rendering/dist/
+/packages/@svelte-in-motion-rendering/node_modules/
 /packages/@svelte-in-motion-rpc/dist/
 /packages/@svelte-in-motion-rpc/node_modules/
 /packages/@svelte-in-motion-storage/node_modules/
