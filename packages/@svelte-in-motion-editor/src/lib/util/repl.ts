@@ -12,18 +12,7 @@ import * as sim_animations from "@svelte-in-motion/animations";
 import * as sim_core from "@svelte-in-motion/core";
 import * as sim_utilities from "@svelte-in-motion/utilities";
 
-export const REPL_CONTEXT: IEvaluationContext = {
-    ...svelte,
-    ...svelte_animate,
-    ...svelte_easing,
-    ...svelte_motion,
-    ...svelte_store,
-    ...svelte_transition,
-
-    ...sim_animations,
-    ...sim_core,
-    ...sim_utilities,
-};
+export const REPL_CONTEXT: IEvaluationContext = {};
 
 export const REPL_IMPORTS: IEvaluationImports = {
     svelte: svelte,
