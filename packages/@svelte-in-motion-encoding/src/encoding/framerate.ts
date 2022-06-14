@@ -1,6 +1,6 @@
 import type {ICodecNames} from "./codec";
 
-export function get_supported_framerate_range(
+export function get_available_framerate_range(
     codec: ICodecNames,
     width: number,
     height: number

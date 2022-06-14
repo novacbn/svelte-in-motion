@@ -1,6 +1,6 @@
 import type {ICodecNames} from "./codec";
 
-export function get_supported_dimensions_range(
+export function get_available_dimensions_ranges(
     codec: ICodecNames
 ): [[number, number], [number, number]] {
     // NOTE: Depending on platform it might be wise to limit codecs to
