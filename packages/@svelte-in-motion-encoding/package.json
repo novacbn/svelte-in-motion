@@ -30,6 +30,7 @@
     "dependencies": {
         "@ffmpeg/ffmpeg": "^0.10.1",
         "@svelte-in-motion/rpc": "workspace:^",
+        "@svelte-in-motion/type": "workspace:^",
         "@svelte-in-motion/utilities": "workspace:^"
     }
 }

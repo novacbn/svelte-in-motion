@@ -146,12 +146,14 @@ importers:
       '@deepkit/type-compiler': ^1.0.1-alpha.71
       '@ffmpeg/ffmpeg': ^0.10.1
       '@svelte-in-motion/rpc': workspace:^
+      '@svelte-in-motion/type': workspace:^
       '@svelte-in-motion/utilities': workspace:^
       prettier: ^2.3.1
       typescript: ^4.7.3
     dependencies:
       '@ffmpeg/ffmpeg': 0.10.1
       '@svelte-in-motion/rpc': link:../@svelte-in-motion-rpc
+      '@svelte-in-motion/type': link:../@svelte-in-motion-type
       '@svelte-in-motion/utilities': link:../@svelte-in-motion-utilities
     devDependencies:
       '@deepkit/type-compiler': 1.0.1-alpha.71_typescript@4.7.3
