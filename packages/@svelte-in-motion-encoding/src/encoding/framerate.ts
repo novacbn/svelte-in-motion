@@ -11,3 +11,7 @@ export function get_available_framerate_range(
 
     return [0, 120];
 }
+
+export function get_default_framerate(codec: ICodecNames, width: number, height: number): number {
+    return 60;
+}

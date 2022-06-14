@@ -11,3 +11,7 @@ export function get_available_dimensions_ranges(
         [0, 2160],
     ];
 }
+
+export function get_default_dimensions(codec: ICodecNames): [number, number] {
+    return [1280, 720];
+}
