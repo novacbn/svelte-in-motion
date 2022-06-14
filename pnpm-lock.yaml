@@ -184,7 +184,9 @@ importers:
       '@deepkit/bson': ^1.0.1-alpha.71
       '@deepkit/core': ^1.0.1-alpha.65
       '@deepkit/core-rxjs': ^1.0.1-alpha.65
+      '@deepkit/crypto': ^1.0.1-alpha.65
       '@deepkit/injector': ^1.0.1-alpha.71
+      '@deepkit/logger': ^1.0.1-alpha.65
       '@deepkit/rpc': ^1.0.1-alpha.71
       '@deepkit/type': ^1.0.1-alpha.71
       '@deepkit/type-compiler': ^1.0.1-alpha.71
@@ -195,8 +197,10 @@ importers:
       '@deepkit/bson': 1.0.1-alpha.71_f45d4662aa19e6a8d273585c15f59e6f
       '@deepkit/core': 1.0.1-alpha.65
       '@deepkit/core-rxjs': 1.0.1-alpha.65_db241f1a212cabd96e6ce06b53253ee9
+      '@deepkit/crypto': 1.0.1-alpha.65
       '@deepkit/injector': 1.0.1-alpha.71_f45d4662aa19e6a8d273585c15f59e6f
-      '@deepkit/rpc': 1.0.1-alpha.71_3ddc1be848a2b9d0cfd02b4c3f11a9c1
+      '@deepkit/logger': 1.0.1-alpha.65_@deepkit+core@1.0.1-alpha.65
+      '@deepkit/rpc': 1.0.1-alpha.71_20cd80ae8fd76441682436d8b9f43a2e
       '@deepkit/type': 1.0.1-alpha.71_@deepkit+core@1.0.1-alpha.65
       rxjs: 7.5.5
     devDependencies:
@@ -343,7 +347,18 @@ packages:
       '@deepkit/type': 1.0.1-alpha.71_@deepkit+core@1.0.1-alpha.65
     dev: false
 
-  /@deepkit/rpc/1.0.1-alpha.71_3ddc1be848a2b9d0cfd02b4c3f11a9c1:
+  /@deepkit/logger/1.0.1-alpha.65_@deepkit+core@1.0.1-alpha.65:
+    resolution: {integrity: sha512-uVZUgx21qnt/es98SKmWp9Oc4smNlYHWmH3hQgrTM6DxEGef/36EMpUQEQBd+7T+wln9HcBU4CxA8LmpipLF2w==}
+    peerDependencies:
+      '@deepkit/core': ^1.0.1-alpha.13
+    dependencies:
+      '@deepkit/core': 1.0.1-alpha.65
+      '@types/format-util': 1.0.2
+      ansi-styles: 4.3.0
+      format-util: 1.0.5
+    dev: false
+
+  /@deepkit/rpc/1.0.1-alpha.71_20cd80ae8fd76441682436d8b9f43a2e:
     resolution: {integrity: sha512-dO1tLYFJaMB4NznmseQ/h7j1cTQWdWi2jFaWvO2jTR+OJ+AGf9yp4wbJoxMI3kwzHJCQbKIYfDrSnnJ7wxJflw==}
     peerDependencies:
       '@deepkit/bson': ^1.0.1-alpha.13
@@ -358,7 +373,9 @@ packages:
       '@deepkit/bson': 1.0.1-alpha.71_f45d4662aa19e6a8d273585c15f59e6f
       '@deepkit/core': 1.0.1-alpha.65
       '@deepkit/core-rxjs': 1.0.1-alpha.65_db241f1a212cabd96e6ce06b53253ee9
+      '@deepkit/crypto': 1.0.1-alpha.65
       '@deepkit/injector': 1.0.1-alpha.71_f45d4662aa19e6a8d273585c15f59e6f
+      '@deepkit/logger': 1.0.1-alpha.65_@deepkit+core@1.0.1-alpha.65
       '@deepkit/type': 1.0.1-alpha.71_@deepkit+core@1.0.1-alpha.65
       dot-prop: 5.3.0
       rxjs: 7.5.5
@@ -578,6 +595,10 @@ packages:
     resolution: {integrity: sha512-aqkICXbM1oX5FfgZd2qSSAGdyo/NRxjWCamxoyi3T8iVQnzGge19HhDYzZ6NrVOW7bhcWNSq9XexWFtMzbB24A==}
     dev: true
 
+  /@types/format-util/1.0.2:
+    resolution: {integrity: sha512-9SrLCpgzWo2yHHhiMOX0WwgDh37nSbDbWUsRc1ss++o8O97E3tB6SJiyUQM21UeUsKvZNuhDCmkRaINZ4uJAfg==}
+    dev: false
+
   /@types/github-slugger/1.3.0:
     resolution: {integrity: sha512-J/rMZa7RqiH/rT29TEVZO4nBoDP9XJOjnbbIofg7GQKs4JIduEO3WLpte+6WeUz/TcrXKlY+bM7FYrp8yFB+3g==}
     dev: true
@@ -618,6 +639,13 @@ packages:
 
   /@zip.js/zip.js/2.4.7:
     resolution: {integrity: sha512-IbRUgSsPcnVth4fBljrQDfI6nZO5VqW1/49j9rMAShZ7sB8noRYgQR4nY9jeRw5ZrUM6lZrsuUr8OMF4M3mrsw==}
+    dev: false
+
+  /ansi-styles/4.3.0:
+    resolution: {integrity: sha512-zbB9rCJAT1rbjiVDb2hqKFHNYLxgtk8NURxZ3IZwD3F6NtxbXZQCnnSi1Lkx+IDohdPlFp222wVALIheZJQSEg==}
+    engines: {node: '>=8'}
+    dependencies:
+      color-convert: 2.0.1
     dev: false
 
   /anymatch/3.1.2:
@@ -695,6 +723,17 @@ packages:
 
   /codejar/3.5.0:
     resolution: {integrity: sha512-uXrFZZ+yb23YY7+WtTux2Yyokt+Lty/kBnW/OhhEGp8IW8/lrJw5Gs1wwCyt2vpMfsVdudLmV5xAgYqsZY/49A==}
+    dev: false
+
+  /color-convert/2.0.1:
+    resolution: {integrity: sha512-RRECPsj7iu/xb5oKYcsFHSppFNnsj/52OVTRKb4zP5onXwVF3zVmmToNcOfGC+CRDpfK/U584fMg38ZHCaElKQ==}
+    engines: {node: '>=7.0.0'}
+    dependencies:
+      color-name: 1.1.4
+    dev: false
+
+  /color-name/1.1.4:
+    resolution: {integrity: sha512-dOy+3AuW3a2wNbZHIuMZpTcgjGuLU/uBL/ubcZF9OXbDo8ff4O8yVp5Bf0efS8uEoYo5q4Fx7dY9OgQGXgAsQA==}
     dev: false
 
   /compatfactory/0.0.13_typescript@4.7.3:
@@ -996,6 +1035,10 @@ packages:
     dependencies:
       to-regex-range: 5.0.1
     dev: true
+
+  /format-util/1.0.5:
+    resolution: {integrity: sha512-varLbTj0e0yVyRpqQhuWV+8hlePAgaoFRhNFj50BNjEIrw1/DphHSObtqwskVCPWNgzwPoQrZAbfa/SBiicNeg==}
+    dev: false
 
   /fs.realpath/1.0.0:
     resolution: {integrity: sha512-OO0pH2lK6a0hZnAdau5ItzHPI6pUlvI7jMVnxUQRtw4owF2wk8lOSabtGDCTP4Ggrg2MbGnWO9X8K1t4+fGMDw==}
