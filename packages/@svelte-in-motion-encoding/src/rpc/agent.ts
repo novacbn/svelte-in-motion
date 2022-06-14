@@ -33,7 +33,7 @@ export interface IRPCEncodingAgentController {
 
     get_agent_version(): Promise<[number, number, number]>;
 
-    get_protocol_version(): Promise<[number, number, number]>;
+    get_protocol_version(): Promise<[number, number]>;
 
     start_job(options: IEncodingOptions): Promise<UUID>;
 }

@@ -12,5 +12,5 @@ export interface IRPCEncodingHostController {
 
     get_host_version(): Promise<[number, number, number]>;
 
-    get_protocol_version(): Promise<[number, number, number]>;
+    get_protocol_version(): Promise<[number, number]>;
 }
