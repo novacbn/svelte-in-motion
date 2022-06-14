@@ -5,9 +5,9 @@ import {IS_BROWSER, event} from "@svelte-in-motion/utilities";
 
 import {get_codec, get_codec_arguments, get_codec_extension, ICodecNames} from "./codec";
 import {get_default_codec} from "./codec";
-import {get_default_crf, get_supported_crf_range} from "./crf";
-import {get_supported_dimensions_range} from "./dimensions";
-import {get_supported_framerate_range} from "./framerate";
+import {get_available_crf_range, get_default_crf} from "./crf";
+import {get_available_dimensions_ranges, get_default_dimensions} from "./dimensions";
+import {get_available_framerate_range, get_default_framerate} from "./framerate";
 import {get_pixel_format, IPixelFormatNames} from "./pixel_format";
 import {get_default_pixel_format} from "./pixel_format";
 
@@ -40,34 +40,39 @@ export interface IEncodingOptions {
 
     frames: Uint8Array[];
 
-    framerate: number;
+    framerate?: number;
 
-    height: number;
+    height?: number;
 
     pixel_format?: IPixelFormatNames;
 
-    width: number;
+    width?: number;
 }
 
 function EncodingOptions(options: IEncodingOptions): Required<IEncodingOptions> {
-    const {
-        codec = get_default_codec(),
-        crf,
-        frames,
-        framerate,
-        height,
-        pixel_format,
-        width,
-    } = options;
+    const {codec, crf, frames, framerate, height, pixel_format, width} = options;
+
+    // NOTE: Default calls might be expensive depending
+    // on the platform (e.g. reading a file, spawning a CLI process)
+    const preferred_codec = codec ?? get_default_codec();
+
+    const default_dimensions =
+        width === undefined || height === undefined
+            ? get_default_dimensions(preferred_codec)
+            : [0, 0];
+
+    const preferred_height = height ?? default_dimensions[1];
+    const preferred_width = width ?? default_dimensions[0];
 
     return {
-        codec,
-        crf: crf ?? get_default_crf(codec),
+        codec: preferred_codec,
+        crf: crf ?? get_default_crf(preferred_codec),
         frames,
-        framerate,
-        height,
-        pixel_format: pixel_format ?? get_default_pixel_format(codec),
-        width,
+        framerate:
+            framerate ?? get_default_framerate(preferred_codec, preferred_width, preferred_height),
+        height: preferred_height,
+        pixel_format: pixel_format ?? get_default_pixel_format(preferred_codec),
+        width: preferred_width,
     };
 }
 
@@ -78,14 +83,14 @@ export function encode(options: IEncodingOptions): IEncodingHandle {
 
     const {codec, crf, frames, framerate, height, pixel_format, width} = EncodingOptions(options);
 
-    const [crf_minimum, crf_maximum] = get_supported_crf_range(codec);
+    const [crf_minimum, crf_maximum] = get_available_crf_range(codec);
     if (crf < crf_minimum || crf > crf_maximum) {
         throw new ReferenceError(
             `bad option 'IEncodingOptions.crf' to 'encode' (crf '${crf}' outside of '${crf_minimum}...${crf_maximum}' range for codec '${codec}')`
         );
     }
 
-    const [width_range, height_range] = get_supported_dimensions_range(codec);
+    const [width_range, height_range] = get_available_dimensions_ranges(codec);
 
     const [width_minimum, width_maximum] = width_range;
     if (width < width_minimum || width > width_maximum) {
@@ -101,7 +106,7 @@ export function encode(options: IEncodingOptions): IEncodingHandle {
         );
     }
 
-    const [framerate_minimum, framerate_maximum] = get_supported_framerate_range(
+    const [framerate_minimum, framerate_maximum] = get_available_framerate_range(
         codec,
         width,
         height
