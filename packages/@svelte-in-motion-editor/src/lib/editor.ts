@@ -1,5 +1,6 @@
+import type {IDriver, IFileTextStore} from "@svelte-in-motion/storage";
+import {preload_text} from "@svelte-in-motion/storage";
 import {make_scoped_context} from "@svelte-in-motion/utilities";
-import {IDriver, IFileTextStore, preload_text} from "@svelte-in-motion/storage";
 
 export const CONTEXT_EDITOR = make_scoped_context<IEditorContext>("editor");
 

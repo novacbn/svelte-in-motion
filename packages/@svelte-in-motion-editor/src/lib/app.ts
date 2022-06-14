@@ -15,7 +15,8 @@ import {
     FILE_CONFIGURATION_PREFERENCES,
     FILE_CONFIGURATION_WORKSPACES,
     STORAGE_USER,
-} from "./storage";
+} from "./util/storage";
+
 import type {IWorkspaceContext} from "./workspace";
 
 export const CONTEXT_APP = make_scoped_context<IAppContext>("app");

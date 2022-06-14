@@ -6,8 +6,6 @@ import {WorkspaceConfiguration, WorkspacesItemConfiguration} from "@svelte-in-mo
 import type {IDriver} from "@svelte-in-motion/storage";
 import {make_scoped_context} from "@svelte-in-motion/utilities";
 
-import {FILE_CONFIGURATION_WORKSPACE} from "./storage";
-
 import SAMPLE from "./storage/SAMPLE.svelte?raw";
 
 import type {IEncodesStore} from "./stores/encodes";
@@ -18,6 +16,8 @@ import type {IJobsStore} from "./stores/jobs";
 import {jobs as make_jobs_store} from "./stores/jobs";
 import type {IRendersStore} from "./stores/renders";
 import {renders as make_renders_store} from "./stores/renders";
+
+import {FILE_CONFIGURATION_WORKSPACE} from "./util/storage";
 
 import type {IAppContext} from "./app";
 import type {IEditorContext} from "./editor";
