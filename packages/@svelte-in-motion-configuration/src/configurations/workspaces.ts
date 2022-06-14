@@ -1,5 +1,6 @@
 import type {IDriver} from "@svelte-in-motion/storage";
 import {indexeddb} from "@svelte-in-motion/storage";
+import type {Duration} from "@svelte-in-motion/temporal";
 import {Instant, Now} from "@svelte-in-motion/temporal";
 import {Ascii, MaxLength, MinLength, UUID, DataClass, uuid} from "@svelte-in-motion/type";
 
@@ -33,12 +34,16 @@ export class WorkspacesItemConfiguration extends DataClass {
 
     storage: WorkspacesItemStorageConfiguration = new WorkspacesItemStorageConfiguration();
 
-    format_last_accessed(): string {
+    get_accessed_duration(): Duration {
         const current_instant = Now.instant();
 
+        return this.accessed_at.until(current_instant, {largestUnit: "hour"});
+    }
+
+    format_accessed(): string {
         // HACK: Nothing supports `Intl.DurationFormat` yet, so have to manually handle output
+        const duration = this.get_accessed_duration();
         const relative = new Intl.RelativeTimeFormat();
-        const duration = current_instant.until(this.accessed_at, {largestUnit: "hour"});
 
         if (duration.hours > 0) return relative.format(duration.hours, "hour");
         else if (duration.minutes > 0) return relative.format(duration.minutes, "minutes");

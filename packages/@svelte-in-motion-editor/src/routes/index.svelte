@@ -65,7 +65,7 @@
                     <Tile.Section>
                         <Tile.Header>{workspace.name}</Tile.Header>
                         <Text is="small">
-                            Last Accessed: {workspace.format_last_accessed()}
+                            Last Accessed: {workspace.format_accessed()}
                         </Text>
                     </Tile.Section>
 
