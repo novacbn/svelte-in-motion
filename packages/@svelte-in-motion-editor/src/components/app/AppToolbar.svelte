@@ -5,6 +5,7 @@
 <script lang="ts">
     import {Dropdown, Menu} from "@kahi-ui/framework";
     import {Archive, Download} from "lucide-svelte";
+    import {get} from "svelte/store";
 
     import {download_blob, download_buffer} from "@svelte-in-motion/utilities";
 
@@ -33,13 +34,17 @@
         const {file_path} = editor!;
         const {configuration, renders} = workspace!;
 
+        // HACK: Would prefer to just use `$configuration`, but Svelte
+        // does NOT support non-top level declared stores
+        const {height, maxframes, width} = get(configuration);
+
         (document.activeElement as HTMLElement).blur();
 
         let export_configuration: IExportFramesPromptEvent;
         try {
             export_configuration = await prompts.prompt_export_frames({
                 frame_min: 0,
-                frame_max: configuration.get("maxframes")!,
+                frame_max: maxframes,
             });
         } catch (err) {
             if (!is_prompt_dismiss_error(err)) return;
@@ -50,8 +55,8 @@
             workspace: workspace!.identifier,
             file: file_path,
 
-            height: configuration.get("height")!,
-            width: configuration.get("width")!,
+            height,
+            width,
 
             end: export_configuration.end,
             start: export_configuration.start,
@@ -86,13 +91,15 @@
         const {file_path} = editor!;
         const {configuration, jobs} = workspace!;
 
+        const {framerate, height, maxframes, width} = get(configuration);
+
         (document.activeElement as HTMLElement).blur();
 
         let export_configuration: IExportVideoPromptEvent;
         try {
             export_configuration = await prompts.prompt_export_video({
                 frame_min: 0,
-                frame_max: configuration.get("maxframes")!,
+                frame_max: maxframes,
             });
         } catch (err) {
             if (!is_prompt_dismiss_error(err)) return;
@@ -106,17 +113,17 @@
             encode: {
                 codec: export_configuration.codec,
                 crf: export_configuration.crf,
-                framerate: configuration.get("framerate")!,
-                height: configuration.get("height")!,
+                framerate,
+                height,
                 pixel_format: export_configuration.pixel_format,
-                width: configuration.get("width")!,
+                width,
             },
 
             render: {
                 end: export_configuration.end,
                 start: export_configuration.start,
-                height: configuration.get("height")!,
-                width: configuration.get("width")!,
+                height,
+                width,
             },
         });
 
