@@ -34,17 +34,12 @@
     const {metadata} = CONTEXT_WORKSPACE.get()!;
     const {text} = CONTEXT_EDITOR.get()!;
 
-    workspaces.update((workspaces) => {
-        workspaces.workspaces = workspaces.workspaces.map((workspace) => {
-            if (workspace.identifier === $metadata.identifier) {
-                workspace.accessed_at = Now.instant();
-            }
-
-            return workspace;
-        });
-
-        return workspaces;
+    $workspaces.workspaces = $workspaces.workspaces.map((workspace) => {
+        if (workspace.identifier === $metadata.identifier) workspace.accessed_at = Now.instant();
+        return workspace;
     });
+
+    $workspaces = $workspaces;
 </script>
 
 <textarea>

@@ -36,15 +36,13 @@
             throw err;
         }
 
-        workspaces.update((workspaces) => {
-            workspaces.workspaces.push(
-                WorkspacesItemConfiguration.from({
-                    name: workspace_configuration.name,
-                })
-            );
+        $workspaces.workspaces.push(
+            WorkspacesItemConfiguration.from({
+                name: workspace_configuration.name,
+            })
+        );
 
-            return workspaces;
-        });
+        $workspaces = $workspaces;
     }
 
     $: recent_workspaces = $workspaces.workspaces.slice().sort((workspace_a, workspace_b) => {

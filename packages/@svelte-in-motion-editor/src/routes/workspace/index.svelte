@@ -32,17 +32,12 @@
     const {workspaces} = CONTEXT_APP.get()!;
     const {metadata} = CONTEXT_WORKSPACE.get()!;
 
-    workspaces.update((workspaces) => {
-        workspaces.workspaces = workspaces.workspaces.map((workspace) => {
-            if (workspace.identifier === $metadata.identifier) {
-                workspace.accessed_at = Now.instant();
-            }
-
-            return workspace;
-        });
-
-        return workspaces;
+    $workspaces.workspaces = $workspaces.workspaces.map((workspace) => {
+        if (workspace.identifier === $metadata.identifier) workspace.accessed_at = Now.instant();
+        return workspace;
     });
+
+    $workspaces = $workspaces;
 </script>
 
 <EditorLayout>
