@@ -3,6 +3,7 @@
         "moduleResolution": "node",
         "module": "ES2020",
         "target": "ES2019",
+        "outDir": "./dist",
         "strict": true,
         "sourceMap": true,
         "declaration": true,
@@ -13,5 +14,6 @@
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true
     },
+    "reflection": true,
     "include": ["src/**/*.d.ts", "src/**/*.ts"]
 }
