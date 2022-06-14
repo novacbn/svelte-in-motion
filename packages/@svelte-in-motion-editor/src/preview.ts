@@ -1,13 +1,8 @@
 import type {SvelteComponent} from "svelte";
-import type {Readable} from "svelte/store";
-import {get} from "svelte/store";
+import {derived, get} from "svelte/store";
 
 import {bundle} from "@svelte-in-motion/bundling";
-import {
-    CONFIGURATION_WORKSPACE,
-    CONFIGURATION_WORKSPACES,
-    preload_configuration,
-} from "@svelte-in-motion/configuration";
+import {WorkspaceConfiguration, WorkspacesConfiguration} from "@svelte-in-motion/configuration";
 import {
     CONTEXT_FRAME,
     CONTEXT_FRAMERATE,
@@ -16,14 +11,7 @@ import {
     frame as make_frame_store,
     playing as make_playing_store,
 } from "@svelte-in-motion/core";
-import {evaluate_code, map, message, normalize_pathname} from "@svelte-in-motion/utilities";
-
-import {
-    FILE_CONFIGURATION_WORKSPACE,
-    FILE_CONFIGURATION_WORKSPACES,
-    STORAGE_USER,
-    make_driver,
-} from "./lib/storage";
+import {evaluate_code, message, normalize_pathname} from "@svelte-in-motion/utilities";
 
 import type {
     IPreviewDestroyMessage,
@@ -36,6 +24,11 @@ import type {
 import {MESSAGES_PREVIEW} from "./lib/types/preview";
 
 import {REPL_CONTEXT, REPL_IMPORTS} from "./lib/util/repl";
+import {
+    FILE_CONFIGURATION_WORKSPACE,
+    FILE_CONFIGURATION_WORKSPACES,
+    STORAGE_USER,
+} from "./lib/util/storage";
 
 (async () => {
     const url = new URL(location.href);
@@ -47,12 +40,14 @@ import {REPL_CONTEXT, REPL_IMPORTS} from "./lib/util/repl";
         );
     }
 
-    const workspaces = await CONFIGURATION_WORKSPACES.read(
+    const workspaces = await WorkspacesConfiguration.read(
         STORAGE_USER,
         FILE_CONFIGURATION_WORKSPACES
     );
 
-    const workspace = workspaces.find((workspace) => workspace.identifier === workspace_identifier);
+    const workspace = workspaces.workspaces.find(
+        (workspace) => workspace.identifier === workspace_identifier
+    );
 
     if (!workspace) {
         throw new ReferenceError(
@@ -60,7 +55,7 @@ import {REPL_CONTEXT, REPL_IMPORTS} from "./lib/util/repl";
         );
     }
 
-    const storage = make_driver(workspace);
+    const storage = await workspace.make_driver();
 
     if (!file) {
         throw new ReferenceError(
@@ -74,15 +69,15 @@ import {REPL_CONTEXT, REPL_IMPORTS} from "./lib/util/repl";
         );
     }
 
-    const configuration = map(
-        await preload_configuration(storage, CONFIGURATION_WORKSPACE, FILE_CONFIGURATION_WORKSPACE)
+    const configuration = await WorkspaceConfiguration.preload(
+        storage,
+        FILE_CONFIGURATION_WORKSPACE
     );
 
     const frame = make_frame_store();
 
-    // HACK: The JSON Schema validation makes sure these properties are /ALWAYS/ a number
-    const framerate = configuration.watch<number>("framerate") as Readable<number>;
-    const maxframes = configuration.watch<number>("maxframes") as Readable<number>;
+    const framerate = derived(configuration, ($configuration) => $configuration.framerate);
+    const maxframes = derived(configuration, ($configuration) => $configuration.maxframes);
 
     const playing = make_playing_store();
 
