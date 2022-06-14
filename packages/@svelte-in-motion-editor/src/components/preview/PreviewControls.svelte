@@ -28,10 +28,8 @@
         event.preventDefault();
         if (!event.detail.active) return;
 
-        preferences.set(
-            "ui.preview.controls.enabled",
-            !preferences.get("ui.preview.controls.enabled")
-        );
+        $preferences.ui.preview.controls.enabled = !$preferences.ui.preview.controls.enabled;
+        $preferences = $preferences;
     }
 
     function on_frame_increment(event: IKeybindEvent | MouseEvent, delta: number): void {

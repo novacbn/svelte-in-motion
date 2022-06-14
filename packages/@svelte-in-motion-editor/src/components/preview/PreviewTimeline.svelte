@@ -2,6 +2,7 @@
     import type {IKeybindEvent} from "@kahi-ui/framework";
     import {Box, Code, Divider, Stack} from "@kahi-ui/framework";
     import type {Readable} from "svelte/store";
+    import {derived} from "svelte/store";
 
     import {duration, seek} from "@svelte-in-motion/core";
     import {truncate} from "@svelte-in-motion/utilities";
@@ -16,9 +17,8 @@
     const {frame} = CONTEXT_PREVIEW.get()!;
     const {configuration} = CONTEXT_WORKSPACE.get()!;
 
-    // HACK: The JSON Schema validation makes sure these properties are /ALWAYS/ a number
-    const framerate = configuration.watch<number>("framerate") as Readable<number>;
-    const maxframes = configuration.watch<number>("maxframes") as Readable<number>;
+    const framerate = derived(configuration, ($configuration) => $configuration.framerate);
+    const maxframes = derived(configuration, ($configuration) => $configuration.maxframes);
 
     const _duration = duration({
         framerate,
@@ -37,10 +37,8 @@
         event.preventDefault();
         if (!event.detail.active) return;
 
-        preferences.set(
-            "ui.preview.timeline.enabled",
-            !preferences.get("ui.preview.timeline.enabled")
-        );
+        $preferences.ui.preview.timeline.enabled = !$preferences.ui.preview.timeline.enabled;
+        $preferences = $preferences;
     }
 </script>
 

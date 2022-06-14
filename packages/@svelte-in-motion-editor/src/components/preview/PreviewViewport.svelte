@@ -1,8 +1,7 @@
 <script lang="ts">
     import type {IKeybindEvent} from "@kahi-ui/framework";
     import {Badge, Divider, Position} from "@kahi-ui/framework";
-    import {onMount} from "svelte";
-    import type {Readable} from "svelte/store";
+    import {derived} from "svelte/store";
 
     import {advance as make_advance_store} from "@svelte-in-motion/core";
     import type {IMessageEvent} from "@svelte-in-motion/utilities";
@@ -30,9 +29,8 @@
     const {file_path, frame, playing} = CONTEXT_PREVIEW.get()!;
     const {configuration, errors} = CONTEXT_WORKSPACE.get()!;
 
-    // HACK: The JSON Schema validation makes sure these properties are /ALWAYS/ a number
-    const framerate = configuration.watch<number>("framerate") as Readable<number>;
-    const maxframes = configuration.watch<number>("maxframes") as Readable<number>;
+    const framerate = derived(configuration, ($configuration) => $configuration.framerate);
+    const maxframes = derived(configuration, ($configuration) => $configuration.maxframes);
 
     const advance = make_advance_store({frame, framerate, maxframes, playing});
 
@@ -70,10 +68,9 @@
         event.preventDefault();
         if (!event.detail.active) return;
 
-        preferences.set(
-            "ui.preview.checkerboard.enabled",
-            !preferences.get("ui.preview.checkerboard.enabled")
-        );
+        $preferences.ui.preview.checkerboard.enabled =
+            !$preferences.ui.preview.checkerboard.enabled;
+        $preferences = $preferences;
     }
 
     function on_resolution_enter(event: PointerEvent): void {
@@ -90,10 +87,8 @@
         event.preventDefault();
         if (!event.detail.active) return;
 
-        preferences.set(
-            "ui.preview.viewport.enabled",
-            !preferences.get("ui.preview.viewport.enabled")
-        );
+        $preferences.ui.preview.viewport.enabled = !$preferences.ui.preview.viewport.enabled;
+        $preferences = $preferences;
     }
 
     // HACK: Need to subscribe to it, so it'll run

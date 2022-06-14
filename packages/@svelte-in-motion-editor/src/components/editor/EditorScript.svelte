@@ -25,10 +25,8 @@
         event.preventDefault();
         if (!event.detail.active) return;
 
-        preferences.set(
-            "ui.preview.timeline.enabled",
-            !preferences.get("ui.preview.timeline.enabled")
-        );
+        $preferences.ui.preview.timeline.enabled = !$preferences.ui.preview.timeline.enabled;
+        $preferences = $preferences;
     }
 </script>
 

@@ -12,7 +12,7 @@
     import {CONTEXT_WORKSPACE} from "../../lib/workspace";
 
     const {preferences} = CONTEXT_APP.get()!;
-    const {file_path} = CONTEXT_EDITOR.get()!;
+    const editor = CONTEXT_EDITOR.get();
     const {storage} = CONTEXT_WORKSPACE.get()!;
 
     let files: string[] = [];
@@ -27,10 +27,8 @@
         event.preventDefault();
         if (!event.detail.active) return;
 
-        preferences.set(
-            "ui.editor.file_tree.enabled",
-            !preferences.get("ui.editor.file_tree.enabled")
-        );
+        $preferences.ui.editor.file_tree.enabled = !$preferences.ui.editor.file_tree.enabled;
+        $preferences = $preferences;
     }
 
     onMount(async () => {
@@ -56,7 +54,7 @@
 >
     <Menu.Container sizing="nano" padding="medium">
         {#each files as file}
-            <Menu.Anchor href="#/{file}" active={file === file_path}>
+            <Menu.Anchor href="#/{file}" active={file === editor?.file_path}>
                 <FileCode size="1em" />
 
                 {file.slice(1)}
