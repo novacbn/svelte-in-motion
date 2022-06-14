@@ -6,12 +6,12 @@
     import type {ICodecNames, IPixelFormatNames} from "@svelte-in-motion/encoding";
     import {
         get_available_codecs,
+        get_available_crf_range,
         get_available_pixel_formats,
         get_codec_extension,
         get_default_codec,
         get_default_crf,
         get_default_pixel_format,
-        get_supported_crf_range,
     } from "@svelte-in-motion/encoding";
 
     import type {IExportVideoPromptEvent, IPromptRejectEvent} from "../../lib/stores/prompts";
@@ -70,7 +70,7 @@
         codec;
 
         crf = get_default_crf(codec as any);
-        [crf_min, crf_max] = get_supported_crf_range(codec as any);
+        [crf_min, crf_max] = get_available_crf_range(codec as any);
     }
 
     let AVAILABLE_PIXEL_FORMATS: {id: string; text: string; palette: PROPERTY_PALETTE}[];
