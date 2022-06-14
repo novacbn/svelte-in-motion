@@ -6,6 +6,8 @@ export type ICommandArguments = Record<string, string | undefined>;
 export interface ICommand extends ICollectionItem {
     identifier: string;
 
+    is_visible?: boolean;
+
     on_execute: (args: ICommandArguments) => void;
 }
 
