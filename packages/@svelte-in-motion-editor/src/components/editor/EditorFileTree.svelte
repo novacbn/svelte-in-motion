@@ -54,7 +54,7 @@
 >
     <Menu.Container sizing="nano" padding="medium">
         {#each files as file}
-            <Menu.Anchor href="#/{file}" active={file === editor?.file_path}>
+            <Menu.Anchor href="#{file}" active={file === editor?.file_path}>
                 <FileCode size="1em" />
 
                 {file.slice(1)}
