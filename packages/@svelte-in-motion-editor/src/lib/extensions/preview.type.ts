@@ -2,6 +2,7 @@
 import {get} from "svelte/store";
 
 import type {IExtension} from "../stores/extensions";
+import type {IKeybindEvent} from "../stores/keybinds";
 
 import type {IAppContext} from "../app";
 
@@ -10,12 +11,20 @@ export const extension = {
     is_builtin: true,
 
     on_activate(app: IAppContext) {
-        const {commands} = app;
+        const {commands, keybinds} = app;
 
         commands.push({
             identifier: "preview.playback.frame.next",
             is_visible: true,
             on_execute: this.command_playback_frame_next.bind(this),
+        });
+
+        keybinds.push({
+            identifier: "preview.playback.frame.next",
+            binds: [["arrowright"]],
+            repeat: true,
+            repeat_throttle: 250,
+            on_bind: this.keybind_playback_frame_next.bind(this),
         });
 
         commands.push({
@@ -24,10 +33,24 @@ export const extension = {
             on_execute: this.command_playback_frame_previous.bind(this),
         });
 
+        keybinds.push({
+            identifier: "preview.playback.frame.previous",
+            binds: [["arrowleft"]],
+            repeat: true,
+            repeat_throttle: 250,
+            on_bind: this.keybind_playback_frame_previous.bind(this),
+        });
+
         commands.push({
             identifier: "preview.playback.toggle",
             is_visible: true,
             on_execute: this.command_playback_toggle.bind(this),
+        });
+
+        keybinds.push({
+            identifier: "preview.playback.toggle",
+            binds: [[" "]],
+            on_bind: this.keybind_playback_toggle.bind(this),
         });
 
         commands.push({
@@ -36,10 +59,22 @@ export const extension = {
             on_execute: this.command_ui_checkerboard_toggle.bind(this),
         });
 
+        keybinds.push({
+            identifier: "preview.ui.checkerboard.toggle",
+            binds: [["control", "b"]],
+            on_bind: this.keybind_ui_checkerboard_toggle.bind(this),
+        });
+
         commands.push({
             identifier: "preview.ui.controls.toggle",
             is_visible: true,
             on_execute: this.command_ui_controls_toggle.bind(this),
+        });
+
+        keybinds.push({
+            identifier: "preview.ui.controls.toggle",
+            binds: [["control", "l"]],
+            on_bind: this.keybind_ui_controls_toggle.bind(this),
         });
 
         commands.push({
@@ -48,10 +83,22 @@ export const extension = {
             on_execute: this.command_ui_timeline_toggle.bind(this),
         });
 
+        keybinds.push({
+            identifier: "preview.ui.timeline.toggle",
+            binds: [["control", "i"]],
+            on_bind: this.keybind_ui_timeline_toggle.bind(this),
+        });
+
         commands.push({
             identifier: "preview.ui.viewport.toggle",
             is_visible: true,
             on_execute: this.command_ui_viewport_toggle.bind(this),
+        });
+
+        keybinds.push({
+            identifier: "preview.ui.viewport.toggle",
+            binds: [["control", "v"]],
+            on_bind: this.keybind_ui_viewport_toggle.bind(this),
         });
     },
 
@@ -180,6 +227,34 @@ export const extension = {
 
             return $preferences;
         });
+    },
+
+    keybind_playback_frame_next(app: IAppContext, event: IKeybindEvent) {
+        if (event.active && app.workspace?.preview) this.command_playback_frame_next(app);
+    },
+
+    keybind_playback_frame_previous(app: IAppContext, event: IKeybindEvent) {
+        if (event.active && app.workspace?.preview) this.command_playback_frame_previous(app);
+    },
+
+    keybind_playback_toggle(app: IAppContext, event: IKeybindEvent) {
+        if (event.active && app.workspace?.preview) this.command_playback_toggle(app);
+    },
+
+    keybind_ui_checkerboard_toggle(app: IAppContext, event: IKeybindEvent) {
+        if (event.active && app.workspace?.preview) this.command_ui_checkerboard_toggle(app);
+    },
+
+    keybind_ui_controls_toggle(app: IAppContext, event: IKeybindEvent) {
+        if (event.active && app.workspace?.preview) this.command_ui_controls_toggle(app);
+    },
+
+    keybind_ui_timeline_toggle(app: IAppContext, event: IKeybindEvent) {
+        if (event.active && app.workspace?.preview) this.command_ui_timeline_toggle(app);
+    },
+
+    keybind_ui_viewport_toggle(app: IAppContext, event: IKeybindEvent) {
+        if (event.active && app.workspace?.preview) this.command_ui_viewport_toggle(app);
     },
 };
 

@@ -17,8 +17,8 @@ export const extension = {
         });
 
         keybinds.push({
-            binds: [["control", "f"]],
             identifier: "editor.ui.file_tree.toggle",
+            binds: [["control", "f"]],
             on_bind: this.keybind_ui_file_tree_toggle.bind(this),
         });
 
@@ -26,6 +26,12 @@ export const extension = {
             identifier: "editor.ui.script.toggle",
             is_visible: true,
             on_execute: this.command_ui_script_toggle.bind(this),
+        });
+
+        keybinds.push({
+            identifier: "editor.ui.script.toggle",
+            binds: [["control", "s"]],
+            on_bind: this.keybind_ui_script_toggle.bind(this),
         });
     },
 
@@ -51,6 +57,10 @@ export const extension = {
 
     keybind_ui_file_tree_toggle(app: IAppContext, event: IKeybindEvent) {
         if (event.active) this.command_ui_file_tree_toggle(app);
+    },
+
+    keybind_ui_script_toggle(app: IAppContext, event: IKeybindEvent) {
+        if (event.active) this.command_ui_script_toggle(app);
     },
 };
 
