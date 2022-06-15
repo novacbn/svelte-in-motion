@@ -49,4 +49,7 @@ import * as WorkspaceFile from "./routes/workspace/file.svelte";
             props,
         });
     });
+
+    // @ts-expect-error - HACK: For debugging purposes only
+    window.APP_CONTEXT = app_context;
 })();
