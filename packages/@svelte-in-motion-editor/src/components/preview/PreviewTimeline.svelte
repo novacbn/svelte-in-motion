@@ -44,7 +44,7 @@
 
 <svelte:window use:action_toggle_timeline={{on_bind: on_timeline_toggle}} />
 
-<Box class="sim--preview-timeline" hidden={$preferences.ui.preview.timeline.enabled}>
+<Box class="sim--preview-timeline" hidden={!$preferences.ui.preview.timeline.enabled}>
     <Divider palette="inverse" margin="none" margin_bottom="tiny" />
 
     <Stack.Container alignment_x="left" padding_x="tiny" padding_bottom="tiny">

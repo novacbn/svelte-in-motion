@@ -50,7 +50,7 @@
     class="sim--editor-file-tree"
     palette="auto"
     width="small"
-    hidden={$preferences.ui.editor.file_tree.enabled}
+    hidden={!$preferences.ui.editor.file_tree.enabled}
 >
     <Menu.Container sizing="nano" padding="medium">
         {#each files as file}
