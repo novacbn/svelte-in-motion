@@ -5,11 +5,11 @@ import type {ICollectionItem, ICollectionStore} from "@svelte-in-motion/utilitie
 import {collection, generate_uuid} from "@svelte-in-motion/utilities";
 
 export interface INotification extends ICollectionItem {
-    dismissible?: boolean;
-
     icon?: typeof SvelteComponent;
 
     identifier: string;
+
+    is_dismissible?: boolean;
 
     header: string;
 

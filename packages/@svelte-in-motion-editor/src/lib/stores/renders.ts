@@ -203,7 +203,7 @@ export function renders(notifications: INotificationsStore): IRendersStore {
                         notifications.update("identifier", notification_identifier, {
                             icon: Check,
                             header: "Render Finished",
-                            dismissible: true,
+                            is_dismissible: true,
                         });
 
                         break;

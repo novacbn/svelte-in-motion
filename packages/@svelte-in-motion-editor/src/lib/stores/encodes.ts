@@ -174,7 +174,7 @@ export function encodes(notifications: INotificationsStore): IEncodesStore {
                         notifications.update("identifier", notification_identifier, {
                             icon: Check,
                             header: "Encode Finished",
-                            dismissible: true,
+                            is_dismissible: true,
                         });
 
                         break;

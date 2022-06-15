@@ -217,7 +217,7 @@ export function jobs(
                         notifications.update("identifier", notification_identifier, {
                             icon: Check,
                             header: "Job Finished",
-                            dismissible: true,
+                            is_dismissible: true,
                         });
 
                         break;

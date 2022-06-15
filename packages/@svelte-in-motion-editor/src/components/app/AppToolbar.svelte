@@ -70,7 +70,7 @@
         notifications.update("identifier", notification_identifier, {
             icon: Archive,
             header: "Archiving Frames",
-            dismissible: false,
+            is_dismissible: false,
         });
 
         const zip = await zip_frames(frames);
@@ -78,7 +78,7 @@
         notifications.update("identifier", notification_identifier, {
             icon: Download,
             header: "Downloading Archive",
-            dismissible: true,
+            is_dismissible: true,
         });
 
         download_blob(
@@ -135,7 +135,7 @@
         notifications.update("identifier", notification_identifier, {
             icon: Download,
             header: "Downloading Video",
-            dismissible: true,
+            is_dismissible: true,
         });
 
         // HACK: / TODO: Update later to support variable video container format

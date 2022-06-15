@@ -44,7 +44,7 @@
                     {/if}
                 </Tile.Section>
 
-                {#if notification.dismissible}
+                {#if notification.is_dismissible}
                     <Tile.Footer>
                         <Button
                             palette="negative"
