@@ -1,3 +1,6 @@
+import {X} from "lucide-svelte";
+import {get} from "svelte/store";
+
 import type {IExtension} from "../stores/extensions";
 
 import type {IAppContext} from "../app";
@@ -8,6 +11,24 @@ export const extension = {
 
     on_activate(app: IAppContext) {
         const {commands} = app;
+
+        commands.push({
+            identifier: "preview.playback.frame.next",
+            is_visible: true,
+            on_execute: this.command_playback_frame_next.bind(this),
+        });
+
+        commands.push({
+            identifier: "preview.playback.frame.previous",
+            is_visible: true,
+            on_execute: this.command_playback_frame_previous.bind(this),
+        });
+
+        commands.push({
+            identifier: "preview.playback.toggle",
+            is_visible: true,
+            on_execute: this.command_playback_toggle.bind(this),
+        });
 
         commands.push({
             identifier: "preview.ui.controls.toggle",
@@ -25,6 +46,92 @@ export const extension = {
             identifier: "preview.ui.viewport.toggle",
             is_visible: true,
             on_execute: this.command_ui_viewport_toggle.bind(this),
+        });
+    },
+
+    command_playback_frame_next(app: IAppContext) {
+        const {notifications, workspace} = app;
+        if (!workspace) {
+            notifications.push({
+                icon: X,
+                header: "No workspace is currently loaded",
+                is_dismissible: true,
+            });
+
+            return;
+        }
+
+        const {preview} = workspace;
+        if (!preview) {
+            notifications.push({
+                icon: X,
+                header: "No preview is currently loaded",
+                is_dismissible: true,
+            });
+
+            return;
+        }
+
+        preview.frame.update(($frame) => {
+            const {maxframes} = get(workspace.configuration);
+
+            return Math.min($frame + 1, maxframes);
+        });
+    },
+
+    command_playback_frame_previous(app: IAppContext) {
+        const {notifications, workspace} = app;
+        if (!workspace) {
+            notifications.push({
+                icon: X,
+                header: "No workspace is currently loaded",
+                is_dismissible: true,
+            });
+
+            return;
+        }
+
+        const {preview} = workspace;
+        if (!preview) {
+            notifications.push({
+                icon: X,
+                header: "No preview is currently loaded",
+                is_dismissible: true,
+            });
+
+            return;
+        }
+
+        preview.frame.update(($frame) => {
+            return Math.max($frame - 1, 0);
+        });
+    },
+
+    command_playback_toggle(app: IAppContext) {
+        const {notifications, workspace} = app;
+        if (!workspace) {
+            notifications.push({
+                icon: X,
+                header: "No workspace is currently loaded",
+                is_dismissible: true,
+            });
+
+            return;
+        }
+
+        const {preview} = workspace;
+        if (!preview) {
+            notifications.push({
+                icon: X,
+                header: "No preview is currently loaded",
+                is_dismissible: true,
+            });
+
+            return;
+        }
+
+        preview.playing.update(($playing) => {
+            return !$playing;
         });
     },
 
