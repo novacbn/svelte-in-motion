@@ -7,30 +7,16 @@
 </script>
 
 <script lang="ts">
-    import type {IKeybindEvent} from "@kahi-ui/framework";
     import {CodeJar} from "@novacbn/svelte-codejar";
 
     import {CONTEXT_APP} from "../../lib/app";
-    import {CONTEXT_EDITOR, has_focus} from "../../lib/editor";
-    import {action_toggle_script} from "../../lib/keybinds";
+    import {CONTEXT_EDITOR} from "../../lib/editor";
 
     import Loader from "../Loader.svelte";
 
     const {preferences} = CONTEXT_APP.get()!;
     const {text} = CONTEXT_EDITOR.get()!;
-
-    function on_script_toggle(event: IKeybindEvent): void {
-        if (!has_focus()) return;
-
-        event.preventDefault();
-        if (!event.detail.active) return;
-
-        $preferences.ui.preview.timeline.enabled = !$preferences.ui.preview.timeline.enabled;
-        $preferences = $preferences;
-    }
 </script>
-
-<svelte:window use:action_toggle_script={{on_bind: on_script_toggle}} />
 
 <div
     class="sim--editor-script"

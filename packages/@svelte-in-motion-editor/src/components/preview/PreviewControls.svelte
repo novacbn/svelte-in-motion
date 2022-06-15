@@ -7,12 +7,7 @@
 
     import {CONTEXT_APP} from "../../lib/app";
     import {has_focus} from "../../lib/editor";
-    import {
-        action_next_frame,
-        action_previous_frame,
-        action_toggle_controls,
-        action_toggle_play,
-    } from "../../lib/keybinds";
+
     import {CONTEXT_PREVIEW} from "../../lib/preview";
     import {CONTEXT_WORKSPACE} from "../../lib/workspace";
 
@@ -21,16 +16,6 @@
     const {preferences} = CONTEXT_APP.get()!;
     const {frame, playing} = CONTEXT_PREVIEW.get()!;
     const {configuration} = CONTEXT_WORKSPACE.get()!;
-
-    function on_controls_toggle(event: IKeybindEvent): void {
-        if (!has_focus()) return;
-
-        event.preventDefault();
-        if (!event.detail.active) return;
-
-        $preferences.ui.preview.controls.enabled = !$preferences.ui.preview.controls.enabled;
-        $preferences = $preferences;
-    }
 
     function on_frame_increment(event: IKeybindEvent | MouseEvent, delta: number): void {
         if ($playing || !has_focus()) return;
@@ -56,13 +41,6 @@
         $playing = !$playing;
     }
 </script>
-
-<svelte:window
-    use:action_next_frame={{on_bind: (event) => on_frame_increment(event, 1)}}
-    use:action_previous_frame={{on_bind: (event) => on_frame_increment(event, -1)}}
-    use:action_toggle_play={{on_bind: on_playing_toggle}}
-    use:action_toggle_controls={{on_bind: on_controls_toggle}}
-/>
 
 <Box
     class="sim--preview-controls"

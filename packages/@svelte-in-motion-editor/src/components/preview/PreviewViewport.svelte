@@ -1,5 +1,4 @@
 <script lang="ts">
-    import type {IKeybindEvent} from "@kahi-ui/framework";
     import {Badge, Divider, Position} from "@kahi-ui/framework";
     import {derived} from "svelte/store";
 
@@ -8,8 +7,6 @@
     import {debounce, message} from "@svelte-in-motion/utilities";
 
     import {CONTEXT_APP} from "../../lib/app";
-    import {has_focus} from "../../lib/editor";
-    import {action_toggle_checkerboard, action_toggle_viewport} from "../../lib/keybinds";
     import {CONTEXT_PREVIEW} from "../../lib/preview";
     import {CONTEXT_WORKSPACE} from "../../lib/workspace";
 
@@ -62,33 +59,12 @@
 
     const hide_resolution = debounce(() => (_show_resolution = false), 2500);
 
-    function on_checkerboard_toggle(event: IKeybindEvent): void {
-        if (!has_focus()) return;
-
-        event.preventDefault();
-        if (!event.detail.active) return;
-
-        $preferences.ui.preview.checkerboard.enabled =
-            !$preferences.ui.preview.checkerboard.enabled;
-        $preferences = $preferences;
-    }
-
     function on_resolution_enter(event: PointerEvent): void {
         _show_resolution = true;
     }
 
     function on_resolution_exit(event: PointerEvent): void {
         _show_resolution = false;
-    }
-
-    function on_viewport_toggle(event: IKeybindEvent): void {
-        if (!has_focus()) return;
-
-        event.preventDefault();
-        if (!event.detail.active) return;
-
-        $preferences.ui.preview.viewport.enabled = !$preferences.ui.preview.viewport.enabled;
-        $preferences = $preferences;
     }
 
     // HACK: Need to subscribe to it, so it'll run
@@ -174,11 +150,6 @@
         }
     }
 </script>
-
-<svelte:window
-    use:action_toggle_checkerboard={{on_bind: on_checkerboard_toggle}}
-    use:action_toggle_viewport={{on_bind: on_viewport_toggle}}
-/>
 
 <div
     bind:this={viewport_element}

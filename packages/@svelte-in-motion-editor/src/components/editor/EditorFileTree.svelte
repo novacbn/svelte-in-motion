@@ -1,5 +1,4 @@
 <script lang="ts">
-    import type {IKeybindEvent} from "@kahi-ui/framework";
     import {Box, Divider, Menu} from "@kahi-ui/framework";
     import {FileCode} from "lucide-svelte";
     import {onMount} from "svelte";
@@ -7,8 +6,7 @@
     import {debounce} from "@svelte-in-motion/utilities";
 
     import {CONTEXT_APP} from "../../lib/app";
-    import {CONTEXT_EDITOR, has_focus} from "../../lib/editor";
-    import {action_toggle_file_tree} from "../../lib/keybinds";
+    import {CONTEXT_EDITOR} from "../../lib/editor";
     import {CONTEXT_WORKSPACE} from "../../lib/workspace";
 
     const {preferences} = CONTEXT_APP.get()!;
@@ -20,16 +18,6 @@
     const update = debounce(async () => {
         files = await storage.read_directory("/", {exclude_directories: true});
     }, 100);
-
-    function on_file_tree_toggle(event: IKeybindEvent): void {
-        if (!has_focus()) return;
-
-        event.preventDefault();
-        if (!event.detail.active) return;
-
-        $preferences.ui.editor.file_tree.enabled = !$preferences.ui.editor.file_tree.enabled;
-        $preferences = $preferences;
-    }
 
     onMount(async () => {
         update();
@@ -43,8 +31,6 @@
         return () => destroy();
     });
 </script>
-
-<svelte:window use:action_toggle_file_tree={{on_bind: on_file_tree_toggle}} />
 
 <Box
     class="sim--editor-file-tree"

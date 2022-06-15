@@ -1,15 +1,11 @@
 <script lang="ts">
-    import type {IKeybindEvent} from "@kahi-ui/framework";
     import {Box, Code, Divider, Stack} from "@kahi-ui/framework";
-    import type {Readable} from "svelte/store";
     import {derived} from "svelte/store";
 
     import {duration, seek} from "@svelte-in-motion/core";
     import {truncate} from "@svelte-in-motion/utilities";
 
     import {CONTEXT_APP} from "../../lib/app";
-    import {has_focus} from "../../lib/editor";
-    import {action_toggle_timeline} from "../../lib/keybinds";
     import {CONTEXT_PREVIEW} from "../../lib/preview";
     import {CONTEXT_WORKSPACE} from "../../lib/workspace";
 
@@ -30,19 +26,7 @@
         framerate,
         maxframes,
     });
-
-    function on_timeline_toggle(event: IKeybindEvent): void {
-        if (!has_focus()) return;
-
-        event.preventDefault();
-        if (!event.detail.active) return;
-
-        $preferences.ui.preview.timeline.enabled = !$preferences.ui.preview.timeline.enabled;
-        $preferences = $preferences;
-    }
 </script>
-
-<svelte:window use:action_toggle_timeline={{on_bind: on_timeline_toggle}} />
 
 <Box class="sim--preview-timeline" hidden={!$preferences.ui.preview.timeline.enabled}>
     <Divider palette="inverse" margin="none" margin_bottom="tiny" />
