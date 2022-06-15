@@ -1,6 +1,6 @@
 <script lang="ts">
     import {Box, Menu, Text} from "@kahi-ui/framework";
-    import {Pause, Play, SkipBack, SkipForward} from "lucide-svelte";
+    //import {Pause, Play, SkipBack, SkipForward} from "lucide-svelte";
 
     import {CONTEXT_APP} from "../../lib/app";
 
@@ -25,7 +25,10 @@
                     palette="inverse"
                     on:click={(event) => commands.execute("preview.playback.frame.previous")}
                 >
-                    <SkipBack size="1em" />
+                    <!--
+                        <SkipBack size="1em" />
+                    -->
+                    PREV FRAME
                 </Menu.Button>
             </svelte:fragment>
 
@@ -39,9 +42,16 @@
                     on:click={(event) => commands.execute("preview.playback.toggle")}
                 >
                     {#if $playing}
-                        <Pause size="1em" />
+                        <!-- 
+                            <Pause size="1em" />
+                        -->
+                        PAUSE
                     {:else}
-                        <Play size="1em" />
+                        <!--
+                            <Play size="1em" />
+                        -->
+
+                        PLAY
                     {/if}
                 </Menu.Button>
             </svelte:fragment>
@@ -62,7 +72,10 @@
                     palette="inverse"
                     on:click={(event) => commands.execute("preview.playback.frame.next")}
                 >
-                    <SkipForward size="1em" />
+                    NEXT FRAME
+                    <!--
+                        <SkipForward size="1em" />
+                    -->
                 </Menu.Button>
             </svelte:fragment>
 

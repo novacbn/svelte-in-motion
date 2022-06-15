@@ -1,4 +1,4 @@
-import {Slash} from "lucide-svelte";
+//import {Slash} from "lucide-svelte";
 
 import type {ICollectionItem, ICollectionStore} from "@svelte-in-motion/utilities";
 import {collection, generate_uuid} from "@svelte-in-motion/utilities";
@@ -28,7 +28,7 @@ export function errors(notifications: INotificationsStore): IErrorsStore {
 
         push(item) {
             notifications.push({
-                icon: Slash,
+                //icon: Slash,
                 palette: "negative",
 
                 dismissible: true,

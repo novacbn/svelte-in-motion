@@ -1,4 +1,4 @@
-import {Check, Clock, Film, Video} from "lucide-svelte";
+//import {Check, Clock, Film, Video} from "lucide-svelte";
 import type {Readable} from "svelte/store";
 
 import type {ICollectionItem, IEvent} from "@svelte-in-motion/utilities";
@@ -215,7 +215,7 @@ export function jobs(
                 switch (item.state) {
                     case JOB_STATES.ended:
                         notifications.update("identifier", notification_identifier, {
-                            icon: Check,
+                            //icon: Check,
                             header: "Job Finished",
                             is_dismissible: true,
                         });
@@ -224,7 +224,7 @@ export function jobs(
 
                     case JOB_STATES.encoding:
                         notifications.update("identifier", notification_identifier, {
-                            icon: Film,
+                            //icon: Film,
                             header: "Encoding Video",
                         });
 
@@ -232,7 +232,7 @@ export function jobs(
 
                     case JOB_STATES.rendering:
                         notifications.update("identifier", notification_identifier, {
-                            icon: Video,
+                            //icon: Video,
                             header: "Rendering Frames",
                         });
 
@@ -240,7 +240,7 @@ export function jobs(
 
                     case JOB_STATES.uninitialized:
                         notifications.update("identifier", notification_identifier, {
-                            icon: Clock,
+                            //icon: Clock,
                             header: "Starting Job",
                         });
 

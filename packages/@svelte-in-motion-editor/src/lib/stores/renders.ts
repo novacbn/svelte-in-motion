@@ -1,4 +1,4 @@
-import {Check, Clock, Video} from "lucide-svelte";
+//import {Check, Clock, Video} from "lucide-svelte";
 import type {Readable} from "svelte/store";
 
 import type {ICollectionItem, IEvent} from "@svelte-in-motion/utilities";
@@ -201,7 +201,7 @@ export function renders(notifications: INotificationsStore): IRendersStore {
                 switch (item.state) {
                     case RENDER_STATES.ended:
                         notifications.update("identifier", notification_identifier, {
-                            icon: Check,
+                            //icon: Check,
                             header: "Render Finished",
                             is_dismissible: true,
                         });
@@ -210,7 +210,7 @@ export function renders(notifications: INotificationsStore): IRendersStore {
 
                     case RENDER_STATES.started:
                         notifications.update("identifier", notification_identifier, {
-                            icon: Video,
+                            //icon: Video,
                             header: "Rendering Frames",
                         });
 
@@ -218,7 +218,7 @@ export function renders(notifications: INotificationsStore): IRendersStore {
 
                     case RENDER_STATES.uninitialized:
                         notifications.update("identifier", notification_identifier, {
-                            icon: Clock,
+                            //icon: Clock,
                             header: "Starting Render",
                         });
 

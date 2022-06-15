@@ -13,7 +13,7 @@
 
 <script lang="ts">
     import {Button, Hero, Stack, Tile, Text} from "@kahi-ui/framework";
-    import {PackageX} from "lucide-svelte";
+    //import {PackageX} from "lucide-svelte";
 
     import {WorkspacesItemConfiguration} from "@svelte-in-motion/configuration";
 
@@ -86,7 +86,10 @@
     {:else}
         <Hero.Container class="sim--app-dashboard">
             <Hero.Header>
-                <PackageX size="1em" strokeWidth="1" />
+                <!--
+                    <PackageX size="1em" strokeWidth="1" />
+                -->
+                NOT FOUND
             </Hero.Header>
 
             <Hero.Section>No available workspaces.</Hero.Section>

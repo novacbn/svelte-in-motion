@@ -1,6 +1,6 @@
 <script lang="ts">
     import {Box, Divider, Menu} from "@kahi-ui/framework";
-    import {FileCode} from "lucide-svelte";
+    //import {FileCode} from "lucide-svelte";
     import {onMount} from "svelte";
 
     import {debounce} from "@svelte-in-motion/utilities";
@@ -44,7 +44,9 @@
                 href="#/workspace/{identifier}{file}"
                 active={file.slice(1) === editor?.file_path}
             >
-                <FileCode size="1em" />
+                <!--
+                    <FileCode size="1em" />
+                -->
 
                 {file.slice(1)}
             </Menu.Anchor>

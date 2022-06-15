@@ -1,4 +1,4 @@
-import {X} from "lucide-svelte";
+//import {X} from "lucide-svelte";
 import {get} from "svelte/store";
 
 import type {IExtension} from "../stores/extensions";
@@ -59,7 +59,7 @@ export const extension = {
         const {notifications, workspace} = app;
         if (!workspace) {
             notifications.push({
-                icon: X,
+                //icon: X,
                 header: "No workspace is currently loaded",
                 is_dismissible: true,
             });
@@ -70,7 +70,7 @@ export const extension = {
         const {preview} = workspace;
         if (!preview) {
             notifications.push({
-                icon: X,
+                //icon: X,
                 header: "No preview is currently loaded",
                 is_dismissible: true,
             });
@@ -89,7 +89,7 @@ export const extension = {
         const {notifications, workspace} = app;
         if (!workspace) {
             notifications.push({
-                icon: X,
+                //icon: X,
                 header: "No workspace is currently loaded",
                 is_dismissible: true,
             });
@@ -100,7 +100,7 @@ export const extension = {
         const {preview} = workspace;
         if (!preview) {
             notifications.push({
-                icon: X,
+                //icon: X,
                 header: "No preview is currently loaded",
                 is_dismissible: true,
             });
@@ -117,7 +117,7 @@ export const extension = {
         const {notifications, workspace} = app;
         if (!workspace) {
             notifications.push({
-                icon: X,
+                //icon: X,
                 header: "No workspace is currently loaded",
                 is_dismissible: true,
             });
@@ -128,7 +128,7 @@ export const extension = {
         const {preview} = workspace;
         if (!preview) {
             notifications.push({
-                icon: X,
+                //icon: X,
                 header: "No preview is currently loaded",
                 is_dismissible: true,
             });

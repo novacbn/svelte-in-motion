@@ -1,6 +1,6 @@
 <script lang="ts">
     import {Button, Overlay, Tile, Text} from "@kahi-ui/framework";
-    import {X} from "lucide-svelte";
+    //import {X} from "lucide-svelte";
 
     import {CONTEXT_APP} from "../../lib/app";
 
@@ -52,7 +52,10 @@
                             sizing="tiny"
                             on:click={(event) => on_dismiss_click(event, notification)}
                         >
-                            <X size="1em" />
+                            CLOSE
+                            <!--
+                                <X size="1em" />
+                            -->
                         </Button>
                     </Tile.Footer>
                 {/if}

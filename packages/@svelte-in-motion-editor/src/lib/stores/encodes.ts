@@ -1,4 +1,4 @@
-import {Check, Clock, Film} from "lucide-svelte";
+//import {Check, Clock, Film} from "lucide-svelte";
 import type {Readable} from "svelte/store";
 
 import type {ICodecNames, IPixelFormatNames} from "@svelte-in-motion/encoding";
@@ -172,7 +172,7 @@ export function encodes(notifications: INotificationsStore): IEncodesStore {
                 switch (encode.state) {
                     case ENCODE_STATES.ended:
                         notifications.update("identifier", notification_identifier, {
-                            icon: Check,
+                            //icon: Check,
                             header: "Encode Finished",
                             is_dismissible: true,
                         });
@@ -181,7 +181,7 @@ export function encodes(notifications: INotificationsStore): IEncodesStore {
 
                     case ENCODE_STATES.started:
                         notifications.update("identifier", notification_identifier, {
-                            icon: Film,
+                            //icon: Film,
                             header: "Encoding Video",
                         });
 
@@ -189,7 +189,7 @@ export function encodes(notifications: INotificationsStore): IEncodesStore {
 
                     case ENCODE_STATES.uninitialized:
                         notifications.update("identifier", notification_identifier, {
-                            icon: Clock,
+                            //icon: Clock,
                             header: "Starting Encode",
                         });
 

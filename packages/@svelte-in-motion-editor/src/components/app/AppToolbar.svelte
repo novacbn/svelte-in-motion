@@ -4,7 +4,7 @@
 
 <script lang="ts">
     import {Dropdown, Menu} from "@kahi-ui/framework";
-    import {Archive, Download} from "lucide-svelte";
+    //import {Archive, Download} from "lucide-svelte";
     import {get} from "svelte/store";
 
     import {download_blob, download_buffer} from "@svelte-in-motion/utilities";
@@ -68,7 +68,7 @@
         const frames = await renders.yield(render_identifier);
 
         notifications.update("identifier", notification_identifier, {
-            icon: Archive,
+            //icon: Archive,
             header: "Archiving Frames",
             is_dismissible: false,
         });
@@ -76,7 +76,7 @@
         const zip = await zip_frames(frames);
 
         notifications.update("identifier", notification_identifier, {
-            icon: Download,
+            //icon: Download,
             header: "Downloading Archive",
             is_dismissible: true,
         });
@@ -133,7 +133,7 @@
         const video = await jobs.yield(job_identifier);
 
         notifications.update("identifier", notification_identifier, {
-            icon: Download,
+            //icon: Download,
             header: "Downloading Video",
             is_dismissible: true,
         });
