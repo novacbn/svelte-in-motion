@@ -17,7 +17,7 @@
         "test:types": "tsc --noEmit"
     },
     "devDependencies": {
-        "@sveltejs/vite-plugin-svelte": "1.0.0-next.43",
+        "@sveltejs/vite-plugin-svelte": "1.0.0-next.49",
         "@tsconfig/svelte": "^2.0.1",
         "@types/prismjs": "^1.26.0",
         "prettier-plugin-svelte": "^2.7.0",
@@ -27,7 +27,7 @@
         "svelte2tsx": "^0.5.10",
         "tslib": "^2.3.1",
         "typescript": "^4.7.3",
-        "vite": "2.9.8"
+        "vite": "2.9.12"
     },
     "dependencies": {
         "@kahi-ui/framework": "0.6.4",
