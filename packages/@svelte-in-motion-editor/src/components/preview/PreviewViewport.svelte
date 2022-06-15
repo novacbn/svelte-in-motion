@@ -27,7 +27,7 @@
 
     const {preferences} = CONTEXT_APP.get()!;
     const {file_path, frame, playing} = CONTEXT_PREVIEW.get()!;
-    const {configuration, errors} = CONTEXT_WORKSPACE.get()!;
+    const {configuration, errors, identifier} = CONTEXT_WORKSPACE.get()!;
 
     const framerate = derived(configuration, ($configuration) => $configuration.framerate);
     const maxframes = derived(configuration, ($configuration) => $configuration.maxframes);
@@ -196,7 +196,7 @@
         <iframe
             class="sim--preview-viewport--preview"
             bind:this={iframe_element}
-            src="/preview.html?file={file_path}"
+            src="/preview.html?workspace={identifier}&file={file_path}"
             data-checkerboard={$preferences.ui.preview.checkerboard.enabled}
         />
 

@@ -42,6 +42,7 @@
 
     import PreviewControls from "../../components/preview/PreviewControls.svelte";
     import PreviewTimeline from "../../components/preview/PreviewTimeline.svelte";
+    import PreviewViewport from "../../components/preview/PreviewViewport.svelte";
 
     import {CONTEXT_APP} from "../../lib/app";
 
@@ -60,6 +61,8 @@
 <EditorLayout>
     <EditorScript />
     <EditorFileTree />
+
+    <PreviewViewport />
 
     <PreviewControls />
     <PreviewTimeline />
