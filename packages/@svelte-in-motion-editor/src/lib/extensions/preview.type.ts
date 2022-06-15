@@ -31,6 +31,12 @@ export const extension = {
         });
 
         commands.push({
+            identifier: "preview.ui.checkerboard.toggle",
+            is_visible: true,
+            on_execute: this.command_ui_checkerboard_toggle.bind(this),
+        });
+
+        commands.push({
             identifier: "preview.ui.controls.toggle",
             is_visible: true,
             on_execute: this.command_ui_controls_toggle.bind(this),
@@ -132,6 +138,17 @@ export const extension = {
 
         preview.playing.update(($playing) => {
             return !$playing;
+        });
+    },
+
+    command_ui_checkerboard_toggle(app: IAppContext) {
+        const {preferences} = app;
+
+        preferences.update(($preferences) => {
+            $preferences.ui.preview.checkerboard.enabled =
+                !$preferences.ui.preview.checkerboard.enabled;
+
+            return $preferences;
         });
     },
 
