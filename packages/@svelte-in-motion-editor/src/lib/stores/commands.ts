@@ -10,18 +10,24 @@ export interface ICommand extends ICollectionItem {
 
     is_visible?: boolean;
 
-    on_execute: (app: IAppContext, args: ICommandArguments) => void;
+    on_execute: <T extends ICommandArguments | undefined = undefined>(
+        app: IAppContext,
+        args: T
+    ) => void;
 }
 
 export interface ICommandsStore extends ICollectionStore<ICommand> {
-    execute: (command: string, args: ICommandArguments) => void;
+    execute: <T extends ICommandArguments | undefined = undefined>(
+        command: string,
+        args?: T
+    ) => void;
 }
 
 export function commands(app: IAppContext): ICommandsStore {
     const {find, has, push, subscribe, remove, update, watch} = collection<ICommand>();
 
     return {
-        execute(identifier, args) {
+        execute<T extends ICommandArguments | undefined = undefined>(identifier: string, args: T) {
             const item = find("identifier", identifier);
             if (!item) {
                 throw new ReferenceError(
@@ -29,7 +35,7 @@ export function commands(app: IAppContext): ICommandsStore {
                 );
             }
 
-            item.on_execute(app, args);
+            item.on_execute<T>(app, args);
         },
 
         find,
