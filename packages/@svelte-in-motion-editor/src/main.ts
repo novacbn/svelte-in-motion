@@ -6,8 +6,10 @@ import "@kahi-ui/framework/dist/kahi-ui.theme.default.min.css";
 import type {SvelteComponent} from "svelte";
 
 import {CONTEXT_APP, app} from "./lib/app";
-
 import {app_router} from "./lib/router";
+
+import {EXTENSION_EDITOR} from "./lib/extensions/editor.type";
+import {EXTENSION_PREVIEW} from "./lib/extensions/preview.type";
 
 import * as Index from "./routes/index.svelte";
 
@@ -16,6 +18,9 @@ import * as WorkspaceFile from "./routes/workspace/file.svelte";
 
 (async () => {
     const app_context = await app();
+
+    app_context.extensions.push(EXTENSION_EDITOR);
+    app_context.extensions.push(EXTENSION_PREVIEW);
 
     const [_, router] = app_router({
         context: {
