@@ -3,6 +3,8 @@ import {get} from "svelte/store";
 import type {ICollectionItem, ICollectionStore} from "@svelte-in-motion/utilities";
 import {collection} from "@svelte-in-motion/utilities";
 
+import type {IAppContext} from "../app";
+
 export type IKeybindBinds = string[][];
 
 export interface IKeybindEvent {
@@ -20,14 +22,14 @@ export interface IKeybind extends ICollectionItem {
 
     repeat_throttle?: number;
 
-    on_bind: (event: IKeybindEvent) => void;
+    on_bind: (app: IAppContext, event: IKeybindEvent) => void;
 }
 
 export interface IKeybindsStore extends ICollectionStore<IKeybind> {
     execute: (event: KeyboardEvent, is_down: boolean) => void;
 }
 
-export function keybinds(): IKeybindsStore {
+export function keybinds(app: IAppContext): IKeybindsStore {
     const store = collection<IKeybind>();
     const {find, has, push, subscribe, remove, update, watch} = store;
 
@@ -92,7 +94,7 @@ export function keybinds(): IKeybindsStore {
                 }
 
                 if (current_active !== previous_active || is_repeating) {
-                    item.on_bind({
+                    item.on_bind(app, {
                         active: current_active,
                         repeat,
                     });

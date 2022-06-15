@@ -1,6 +1,8 @@
 import type {ICollectionItem, ICollectionStore} from "@svelte-in-motion/utilities";
 import {collection} from "@svelte-in-motion/utilities";
 
+import type {IAppContext} from "../app";
+
 export type ICommandArguments = Record<string, string | undefined>;
 
 export interface ICommand extends ICollectionItem {
@@ -8,14 +10,14 @@ export interface ICommand extends ICollectionItem {
 
     is_visible?: boolean;
 
-    on_execute: (args: ICommandArguments) => void;
+    on_execute: (app: IAppContext, args: ICommandArguments) => void;
 }
 
 export interface ICommandsStore extends ICollectionStore<ICommand> {
     execute: (command: string, args: ICommandArguments) => void;
 }
 
-export function commands(): ICommandsStore {
+export function commands(app: IAppContext): ICommandsStore {
     const {find, has, push, subscribe, remove, update, watch} = collection<ICommand>();
 
     return {
@@ -27,7 +29,7 @@ export function commands(): ICommandsStore {
                 );
             }
 
-            item.on_execute(args);
+            item.on_execute(app, args);
         },
 
         find,

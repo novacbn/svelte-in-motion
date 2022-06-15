@@ -74,15 +74,17 @@ export async function app(): Promise<IAppContext> {
     const notifications = make_notifications_store();
     const prompts = make_prompt_store();
 
-    const commands = make_commands_store();
-    const keybinds = make_keybinds_store();
-
-    return {
-        commands,
-        keybinds,
+    // HACK: Not great passing context to dependent stores without having
+    // other properties fill. But they don't do anything on initialization /anyway/
+    const app = {
         notifications,
         preferences,
         prompts,
         workspaces,
-    };
+    } as IAppContext;
+
+    app.commands = make_commands_store(app);
+    app.keybinds = make_keybinds_store(app);
+
+    return app;
 }
