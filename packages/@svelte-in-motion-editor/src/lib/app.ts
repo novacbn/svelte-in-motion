@@ -4,6 +4,8 @@ import {make_scoped_context} from "@svelte-in-motion/utilities";
 
 import type {ICommandsStore} from "./stores/commands";
 import {commands as make_commands_store} from "./stores/commands";
+import type {IExtensionsStore} from "./stores/extensions";
+import {extensions as make_extensions_store} from "./stores/extensions";
 import type {IKeybindsStore} from "./stores/keybinds";
 import {keybinds as make_keybinds_store} from "./stores/keybinds";
 import type {INotificationsStore} from "./stores/notifications";
@@ -23,6 +25,8 @@ export const CONTEXT_APP = make_scoped_context<IAppContext>("app");
 
 export interface IAppContext {
     commands: ICommandsStore;
+
+    extensions: IExtensionsStore;
 
     keybinds: IKeybindsStore;
 
@@ -74,16 +78,17 @@ export async function app(): Promise<IAppContext> {
     const notifications = make_notifications_store();
     const prompts = make_prompt_store();
 
-    // HACK: Not great passing context to dependent stores without having
+    // @ts-expect-error - HACK: Not great passing context to dependent stores without having
     // other properties fill. But they don't do anything on initialization /anyway/
-    const app = {
+    const app: IAppContext = {
         notifications,
         preferences,
         prompts,
         workspaces,
-    } as IAppContext;
+    };
 
     app.commands = make_commands_store(app);
+    app.extensions = make_extensions_store(app);
     app.keybinds = make_keybinds_store(app);
 
     return app;
