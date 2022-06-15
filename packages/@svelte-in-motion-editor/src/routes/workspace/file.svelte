@@ -48,7 +48,6 @@
 
     const {workspaces} = CONTEXT_APP.get()!;
     const {metadata} = CONTEXT_WORKSPACE.get()!;
-    const {text} = CONTEXT_EDITOR.get()!;
 
     $workspaces.workspaces = $workspaces.workspaces.map((workspace) => {
         if (workspace.identifier === $metadata.identifier) workspace.accessed_at = Now.instant();
