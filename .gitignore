@@ -8,6 +8,7 @@
 /packages/@svelte-in-motion-editor/.vercel/
 /packages/@svelte-in-motion-editor/dist/
 /packages/@svelte-in-motion-editor/node_modules/
+/packages/@svelte-in-motion-editor/vite.config.ts.js
 /packages/@svelte-in-motion-encoding/dist/
 /packages/@svelte-in-motion-encoding/node_modules/
 /packages/@svelte-in-motion-rendering/dist/

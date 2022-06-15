@@ -3,6 +3,8 @@ import {resolve} from "path";
 import {defineConfig} from "vite";
 import {svelte} from "@sveltejs/vite-plugin-svelte";
 
+// import {DeepkitTypePlugin} from "./vite/deepkit-type-plugin";
+
 // https://vitejs.dev/config/
 export default defineConfig({
     build: {
@@ -24,5 +26,8 @@ export default defineConfig({
         },
     },
 
-    plugins: [svelte()],
+    plugins: [
+        svelte(),
+        // DeepkitTypePlugin()
+    ],
 });
