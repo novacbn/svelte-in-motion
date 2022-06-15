@@ -5,7 +5,7 @@ import "@kahi-ui/framework/dist/kahi-ui.theme.default.min.css";
 
 import type {SvelteComponent} from "svelte";
 
-import {CONTEXT_APP, app} from "./lib/app";
+import {CONTEXT_APP, app as make_app_context} from "./lib/app";
 import {app_router} from "./lib/router";
 
 import {EXTENSION_EDITOR} from "./lib/extensions/editor.type";
@@ -17,20 +17,23 @@ import * as WorkspaceIndex from "./routes/workspace/index.svelte";
 import * as WorkspaceFile from "./routes/workspace/file.svelte";
 
 (async () => {
-    const app_context = await app();
+    const app = await make_app_context();
 
-    app_context.extensions.push(EXTENSION_EDITOR);
-    app_context.extensions.push(EXTENSION_PREVIEW);
+    app.extensions.push(EXTENSION_EDITOR);
+    app.extensions.push(EXTENSION_PREVIEW);
 
     const [_, router] = app_router({
         context: {
-            [CONTEXT_APP.key]: app_context,
+            [CONTEXT_APP.key]: app,
         },
 
         routes: [Index, WorkspaceFile, WorkspaceIndex],
     });
 
     let component: SvelteComponent | null = null;
+
+    window.addEventListener("keydown", (event) => app.keybinds.execute(event, true));
+    window.addEventListener("keyup", (event) => app.keybinds.execute(event, false));
 
     router.subscribe((route) => {
         const splash_element = document.querySelector(".sim--splash");
@@ -46,15 +49,12 @@ import * as WorkspaceFile from "./routes/workspace/file.svelte";
 
         component = new Component({
             target: document.body,
-            context: new Map<string, any>([
-                ...Object.entries(context),
-                [CONTEXT_APP.key, app_context],
-            ]),
+            context: new Map<string, any>([...Object.entries(context), [CONTEXT_APP.key, app]]),
 
             props,
         });
     });
 
     // @ts-expect-error - HACK: For debugging purposes only
-    window.APP_CONTEXT = app_context;
+    window.APP_CONTEXT = app;
 })();
