@@ -13,7 +13,7 @@
 
     const {preferences} = CONTEXT_APP.get()!;
     const editor = CONTEXT_EDITOR.get();
-    const {storage} = CONTEXT_WORKSPACE.get()!;
+    const {identifier, storage} = CONTEXT_WORKSPACE.get()!;
 
     let files: string[] = [];
 
@@ -54,7 +54,10 @@
 >
     <Menu.Container sizing="nano" padding="medium">
         {#each files as file}
-            <Menu.Anchor href="#{file}" active={file === editor?.file_path}>
+            <Menu.Anchor
+                href="#/workspace/{identifier}{file}"
+                active={file.slice(1) === editor?.file_path}
+            >
                 <FileCode size="1em" />
 
                 {file.slice(1)}

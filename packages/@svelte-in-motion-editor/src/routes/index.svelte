@@ -21,9 +21,9 @@
 
     import type {ICreateWorkspacePromptEvent} from "../lib/stores/prompts";
 
-    import {CONTEXT_APP} from "../lib/app";
-
     import {is_prompt_dismiss_error} from "../lib/util/errors";
+
+    import {CONTEXT_APP} from "../lib/app";
 
     const {prompts, workspaces} = CONTEXT_APP.get()!;
 
