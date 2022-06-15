@@ -1,4 +1,5 @@
 import type {IExtension} from "../stores/extensions";
+import type {IKeybindEvent} from "../stores/keybinds";
 
 import type {IAppContext} from "../app";
 
@@ -7,12 +8,18 @@ export const extension = {
     is_builtin: true,
 
     on_activate(app: IAppContext) {
-        const {commands} = app;
+        const {commands, keybinds} = app;
 
         commands.push({
             identifier: "editor.ui.file_tree.toggle",
             is_visible: true,
             on_execute: this.command_ui_file_tree_toggle.bind(this),
+        });
+
+        keybinds.push({
+            binds: [["control", "f"]],
+            identifier: "editor.ui.file_tree.toggle",
+            on_bind: this.keybind_ui_file_tree_toggle.bind(this),
         });
 
         commands.push({
@@ -40,6 +47,10 @@ export const extension = {
 
             return $preferences;
         });
+    },
+
+    keybind_ui_file_tree_toggle(app: IAppContext, event: IKeybindEvent) {
+        if (event.active) this.command_ui_file_tree_toggle(app);
     },
 };
 
