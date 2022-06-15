@@ -21,6 +21,7 @@ import SAMPLE from "./templates/SAMPLE.svelte?raw";
 
 import type {IAppContext} from "./app";
 import type {IEditorContext} from "./editor";
+import type {IPreviewContext} from "./preview";
 
 export const CONTEXT_WORKSPACE = make_scoped_context<IWorkspaceContext>("workspace");
 
@@ -38,6 +39,8 @@ export interface IWorkspaceContext {
     metadata: Readable<WorkspacesItemConfiguration>;
 
     jobs: IJobsStore;
+
+    preview?: IPreviewContext;
 
     renders: IRendersStore;
 
