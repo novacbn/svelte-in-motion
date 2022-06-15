@@ -1,45 +1,15 @@
 <script lang="ts">
-    import type {IKeybindEvent} from "@kahi-ui/framework";
     import {Box, Menu, Text} from "@kahi-ui/framework";
     import {Pause, Play, SkipBack, SkipForward} from "lucide-svelte";
 
-    import {clamp} from "@svelte-in-motion/utilities";
-
     import {CONTEXT_APP} from "../../lib/app";
-    import {has_focus} from "../../lib/editor";
 
     import {CONTEXT_PREVIEW} from "../../lib/preview";
-    import {CONTEXT_WORKSPACE} from "../../lib/workspace";
 
     import Tooltip from "../Tooltip.svelte";
 
-    const {preferences} = CONTEXT_APP.get()!;
-    const {frame, playing} = CONTEXT_PREVIEW.get()!;
-    const {configuration} = CONTEXT_WORKSPACE.get()!;
-
-    function on_frame_increment(event: IKeybindEvent | MouseEvent, delta: number): void {
-        if ($playing || !has_focus()) return;
-
-        if (typeof event.detail === "object") {
-            event.preventDefault();
-
-            if (!event.detail.active) return;
-        }
-
-        $frame = clamp($frame + delta, 0, $configuration.maxframes);
-    }
-
-    function on_playing_toggle(event: IKeybindEvent | MouseEvent): void {
-        if (!has_focus()) return;
-
-        if (typeof event.detail === "object") {
-            event.preventDefault();
-
-            if (!event.detail.active) return;
-        }
-
-        $playing = !$playing;
-    }
+    const {commands, preferences} = CONTEXT_APP.get()!;
+    const {playing} = CONTEXT_PREVIEW.get()!;
 </script>
 
 <Box
@@ -53,7 +23,7 @@
                 <Menu.Button
                     disabled={$playing}
                     palette="inverse"
-                    on:click={(event) => on_frame_increment(event, -1)}
+                    on:click={(event) => commands.execute("preview.playback.frame.previous")}
                 >
                     <SkipBack size="1em" />
                 </Menu.Button>
@@ -64,7 +34,10 @@
 
         <Tooltip placement="top" alignment_x="right">
             <svelte:fragment slot="activator">
-                <Menu.Button palette="inverse" on:click={on_playing_toggle}>
+                <Menu.Button
+                    palette="inverse"
+                    on:click={(event) => commands.execute("preview.playback.toggle")}
+                >
                     {#if $playing}
                         <Pause size="1em" />
                     {:else}
@@ -87,7 +60,7 @@
                 <Menu.Button
                     disabled={$playing}
                     palette="inverse"
-                    on:click={(event) => on_frame_increment(event, 1)}
+                    on:click={(event) => commands.execute("preview.playback.frame.next")}
                 >
                     <SkipForward size="1em" />
                 </Menu.Button>
