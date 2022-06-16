@@ -56,11 +56,11 @@ export const extension = {
     },
 
     keybind_ui_file_tree_toggle(app: IAppContext, event: IKeybindEvent) {
-        if (event.active) this.command_ui_file_tree_toggle(app);
+        if (event.active && app.workspace) this.command_ui_file_tree_toggle(app);
     },
 
     keybind_ui_script_toggle(app: IAppContext, event: IKeybindEvent) {
-        if (event.active) this.command_ui_script_toggle(app);
+        if (event.active && app.workspace?.editor) this.command_ui_script_toggle(app);
     },
 };
 
