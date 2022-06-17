@@ -1,4 +1,5 @@
 import type {IExtension} from "../stores/extensions";
+import type {IKeybindEvent} from "../stores/keybinds";
 
 import type {IAppContext} from "../app";
 
@@ -7,12 +8,18 @@ export const extension = {
     is_builtin: true,
 
     on_activate(app: IAppContext) {
-        const {commands} = app;
+        const {commands, keybinds} = app;
 
         commands.push({
             identifier: "application.prompt.about",
             is_visible: true,
             on_execute: this.command_prompt_about.bind(this),
+        });
+
+        keybinds.push({
+            identifier: "application.prompt.about",
+            binds: [["f1"]],
+            on_bind: this.keybind_prompt_about.bind(this),
         });
     },
 
@@ -22,6 +29,10 @@ export const extension = {
         try {
             await prompts.prompt_about();
         } catch (err) {}
+    },
+
+    keybind_prompt_about(app: IAppContext, event: IKeybindEvent) {
+        if (event.active && app.workspace?.editor) this.command_prompt_about(app);
     },
 };
 
