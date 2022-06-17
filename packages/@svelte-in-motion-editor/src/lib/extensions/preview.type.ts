@@ -23,7 +23,7 @@ export const extension = {
             identifier: "preview.playback.frame.next",
             binds: [["arrowright"]],
             repeat: true,
-            repeat_throttle: 250,
+            repeat_throttle: 50,
             on_bind: this.keybind_playback_frame_next.bind(this),
         });
 
@@ -37,7 +37,7 @@ export const extension = {
             identifier: "preview.playback.frame.previous",
             binds: [["arrowleft"]],
             repeat: true,
-            repeat_throttle: 250,
+            repeat_throttle: 50,
             on_bind: this.keybind_playback_frame_previous.bind(this),
         });
 
