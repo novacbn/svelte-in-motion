@@ -3,7 +3,7 @@ import type {SvelteComponent} from "svelte";
 import {tick} from "svelte";
 
 import {bundle} from "@svelte-in-motion/bundling";
-import {CONFIGURATION_WORKSPACE, CONFIGURATION_WORKSPACES} from "@svelte-in-motion/configuration";
+import {WorkspaceConfiguration, WorkspacesConfiguration} from "@svelte-in-motion/configuration";
 import {
     CONTEXT_FRAME,
     CONTEXT_FRAMERATE,
@@ -16,13 +16,6 @@ import {
 } from "@svelte-in-motion/core";
 import {clamp, evaluate_code, message} from "@svelte-in-motion/utilities";
 
-import {
-    FILE_CONFIGURATION_WORKSPACE,
-    FILE_CONFIGURATION_WORKSPACES,
-    STORAGE_USER,
-    make_driver,
-} from "./lib/storage";
-
 import type {
     IRenderEndMessage,
     IRenderErrorMessage,
@@ -31,6 +24,11 @@ import type {
 } from "./lib/types/render";
 import {MESSAGES_RENDER} from "./lib/types/render";
 
+import {
+    FILE_CONFIGURATION_WORKSPACE,
+    FILE_CONFIGURATION_WORKSPACES,
+    STORAGE_USER,
+} from "./lib/util/storage";
 import {REPL_CONTEXT, REPL_IMPORTS} from "./lib/util/repl";
 
 (async () => {
@@ -48,12 +46,14 @@ import {REPL_CONTEXT, REPL_IMPORTS} from "./lib/util/repl";
         );
     }
 
-    const workspaces = await CONFIGURATION_WORKSPACES.read(
+    const workspaces = await WorkspacesConfiguration.read(
         STORAGE_USER,
         FILE_CONFIGURATION_WORKSPACES
     );
 
-    const workspace = workspaces.find((workspace) => workspace.identifier === workspace_identifier);
+    const workspace = workspaces.workspaces.find(
+        (workspace) => workspace.identifier === workspace_identifier
+    );
 
     if (!workspace) {
         throw new ReferenceError(
@@ -61,7 +61,7 @@ import {REPL_CONTEXT, REPL_IMPORTS} from "./lib/util/repl";
         );
     }
 
-    const storage = make_driver(workspace);
+    const storage = await workspace.make_driver();
 
     if (!file) {
         throw new ReferenceError(
@@ -75,7 +75,7 @@ import {REPL_CONTEXT, REPL_IMPORTS} from "./lib/util/repl";
         );
     }
 
-    const configuration = await CONFIGURATION_WORKSPACE.read(storage, FILE_CONFIGURATION_WORKSPACE);
+    const configuration = await WorkspaceConfiguration.read(storage, FILE_CONFIGURATION_WORKSPACE);
 
     const parsed_end = clamp(parseInt(end) || 0, 0, configuration.maxframes);
     const parsed_start = Math.max(parseInt(start) || 0, 0);
