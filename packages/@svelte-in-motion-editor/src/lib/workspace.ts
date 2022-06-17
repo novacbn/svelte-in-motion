@@ -73,7 +73,7 @@ export async function workspace(identifier: string, app: IAppContext): Promise<I
 
         if (!workspace) {
             throw new ReferenceError(
-                `bad update to 'metadata' (workspace '${identifier}' not found)`
+                `bad argument #0 to 'workspace' (workspace '${identifier}' not found)`
             );
         }
 
