@@ -18,7 +18,7 @@ export const extension = {
 
         keybinds.push({
             identifier: "editor.ui.file_tree.toggle",
-            binds: [["control", "f"]],
+            binds: [["shift", "f"]],
             on_bind: this.keybind_ui_file_tree_toggle.bind(this),
         });
 
@@ -30,7 +30,7 @@ export const extension = {
 
         keybinds.push({
             identifier: "editor.ui.script.toggle",
-            binds: [["control", "s"]],
+            binds: [["shift", "s"]],
             on_bind: this.keybind_ui_script_toggle.bind(this),
         });
     },

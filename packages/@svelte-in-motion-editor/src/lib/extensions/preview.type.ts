@@ -61,7 +61,7 @@ export const extension = {
 
         keybinds.push({
             identifier: "preview.ui.checkerboard.toggle",
-            binds: [["control", "b"]],
+            binds: [["shift", "b"]],
             on_bind: this.keybind_ui_checkerboard_toggle.bind(this),
         });
 
@@ -73,7 +73,7 @@ export const extension = {
 
         keybinds.push({
             identifier: "preview.ui.controls.toggle",
-            binds: [["control", "l"]],
+            binds: [["shift", "l"]],
             on_bind: this.keybind_ui_controls_toggle.bind(this),
         });
 
@@ -85,7 +85,7 @@ export const extension = {
 
         keybinds.push({
             identifier: "preview.ui.timeline.toggle",
-            binds: [["control", "i"]],
+            binds: [["shift", "i"]],
             on_bind: this.keybind_ui_timeline_toggle.bind(this),
         });
 
@@ -97,7 +97,7 @@ export const extension = {
 
         keybinds.push({
             identifier: "preview.ui.viewport.toggle",
-            binds: [["control", "v"]],
+            binds: [["shift", "v"]],
             on_bind: this.keybind_ui_viewport_toggle.bind(this),
         });
     },
