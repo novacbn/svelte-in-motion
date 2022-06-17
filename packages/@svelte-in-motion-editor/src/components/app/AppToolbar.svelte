@@ -24,14 +24,6 @@
     const preview = CONTEXT_PREVIEW.get();
     const workspace = CONTEXT_WORKSPACE.get();
 
-    async function on_about_click(event: MouseEvent): Promise<void> {
-        (document.activeElement as HTMLElement).blur();
-
-        try {
-            await prompts.prompt_about();
-        } catch (err) {}
-    }
-
     async function on_export_frames_click(event: MouseEvent): Promise<void> {
         const {file_path} = editor!;
         const {configuration, renders} = workspace!;

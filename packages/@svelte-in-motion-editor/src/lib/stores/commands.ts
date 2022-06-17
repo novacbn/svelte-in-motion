@@ -13,14 +13,14 @@ export interface ICommand extends ICollectionItem {
     on_execute: <T extends ICommandArguments | undefined = undefined>(
         app: IAppContext,
         args: T
-    ) => void;
+    ) => void | Promise<void>;
 }
 
 export interface ICommandsStore extends ICollectionStore<ICommand> {
     execute: <T extends ICommandArguments | undefined = undefined>(
         command: string,
         args?: T
-    ) => void;
+    ) => void | Promise<void>;
 }
 
 export function commands(app: IAppContext): ICommandsStore {

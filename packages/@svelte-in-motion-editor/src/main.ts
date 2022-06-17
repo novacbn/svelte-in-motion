@@ -8,6 +8,7 @@ import type {SvelteComponent} from "svelte";
 import {CONTEXT_APP, app as make_app_context} from "./lib/app";
 import {app_router} from "./lib/router";
 
+import {EXTENSION_APPLICATION} from "./lib/extensions/application.type";
 import {EXTENSION_EDITOR} from "./lib/extensions/editor.type";
 import {EXTENSION_PREVIEW} from "./lib/extensions/preview.type";
 
@@ -19,6 +20,7 @@ import * as WorkspaceFile from "./routes/workspace/file.svelte";
 (async () => {
     const app = await make_app_context();
 
+    app.extensions.push(EXTENSION_APPLICATION);
     app.extensions.push(EXTENSION_EDITOR);
     app.extensions.push(EXTENSION_PREVIEW);
 
