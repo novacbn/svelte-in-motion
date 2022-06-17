@@ -168,11 +168,11 @@
         </svelte:fragment>
 
         <Menu.Container sizing="nano">
-            <Menu.Button disabled={!in_editor} on:click={on_export_frames_click}>
+            <Menu.Button disabled={!in_preview} on:click={on_export_frames_click}>
                 Export Frames
             </Menu.Button>
 
-            <Menu.Button disabled={!in_editor} on:click={on_export_video_click}>
+            <Menu.Button disabled={!in_preview} on:click={on_export_video_click}>
                 Export Video
             </Menu.Button>
         </Menu.Container>
