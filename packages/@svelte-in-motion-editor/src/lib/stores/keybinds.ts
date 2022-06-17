@@ -30,6 +30,8 @@ export interface IKeybindsStore extends ICollectionStore<IKeybind> {
 }
 
 export function keybinds(app: IAppContext): IKeybindsStore {
+    const {prompts} = app;
+
     const store = collection<IKeybind>();
     const {find, has, push, subscribe, remove, update, watch} = store;
 
@@ -45,8 +47,19 @@ export function keybinds(app: IAppContext): IKeybindsStore {
             if (is_down) key_lookup.set(key, true);
             else key_lookup.delete(key);
 
-            const items = get(store);
+            const active_element = document.activeElement;
+            if (
+                active_element instanceof HTMLElement &&
+                (active_element.isContentEditable ||
+                    active_element.matches("input:not([disabled], [readonly])"))
+            ) {
+                return;
+            }
 
+            const prompt = get(prompts);
+            if (prompt) return;
+
+            const items = get(store);
             for (const item of items) {
                 const {binds, identifier, repeat: can_repeat = false, repeat_throttle = 0} = item;
 

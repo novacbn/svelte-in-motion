@@ -18,7 +18,3 @@ export async function editor(driver: IDriver, file_path: string): Promise<IEdito
         text,
     };
 }
-
-export function has_focus(): boolean {
-    return !document.activeElement?.hasAttribute("contenteditable");
-}
