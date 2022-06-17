@@ -1,10 +1,10 @@
 import {get} from "svelte/store";
 
-import {download_blob} from "@svelte-in-motion/utilities";
+import {download_blob, download_buffer} from "@svelte-in-motion/utilities";
 
 import type {IExtension} from "../stores/extensions";
 import type {IKeybindEvent} from "../stores/keybinds";
-import type {IExportFramesPromptEvent} from "../stores/prompts";
+import type {IExportFramesPromptEvent, IExportVideoPromptEvent} from "../stores/prompts";
 
 import {is_prompt_dismiss_error} from "../util/errors";
 import {zip_frames} from "../util/io";
@@ -26,8 +26,20 @@ export const extension = {
 
         keybinds.push({
             identifier: "export.prompt.frames",
-            binds: [["control", "e", "f"]],
+            binds: [["control", "alt", "f"]],
             on_bind: this.keybind_prompt_frames.bind(this),
+        });
+
+        commands.push({
+            identifier: "export.prompt.video",
+            is_visible: true,
+            on_execute: this.command_prompt_video.bind(this),
+        });
+
+        keybinds.push({
+            identifier: "export.prompt.video",
+            binds: [["control", "alt", "v"]],
+            on_bind: this.keybind_prompt_video.bind(this),
         });
     },
 
@@ -58,7 +70,7 @@ export const extension = {
         if (!preview) {
             notifications.push({
                 //icon: X,
-                header: "No preview is currently loaded",
+                header: "Opened file is not renderable",
                 is_dismissible: true,
             });
 
@@ -115,8 +127,101 @@ export const extension = {
         );
     },
 
+    async command_prompt_video(app: IAppContext) {
+        const {notifications, prompts, workspace} = app;
+        if (!workspace) {
+            notifications.push({
+                //icon: X,
+                header: "No workspace is currently loaded",
+                is_dismissible: true,
+            });
+
+            return;
+        }
+
+        const {configuration, editor, jobs, preview} = workspace;
+
+        if (!editor) {
+            notifications.push({
+                //icon: X,
+                header: "No editor is currently loaded",
+                is_dismissible: true,
+            });
+
+            return;
+        }
+
+        if (!preview) {
+            notifications.push({
+                //icon: X,
+                header: "Opened file is not renderable",
+                is_dismissible: true,
+            });
+
+            return;
+        }
+
+        const {file_path} = editor;
+        const {framerate, height, maxframes, width} = get(configuration);
+
+        let export_configuration: IExportVideoPromptEvent;
+        try {
+            export_configuration = await prompts.prompt_export_video({
+                frame_min: 0,
+                frame_max: maxframes,
+            });
+        } catch (err) {
+            if (!is_prompt_dismiss_error(err)) return;
+            throw err;
+        }
+
+        const job_identifier = jobs.queue({
+            file: file_path,
+            workspace: workspace.identifier,
+
+            encode: {
+                codec: export_configuration.codec,
+                crf: export_configuration.crf,
+                framerate,
+                height,
+                pixel_format: export_configuration.pixel_format,
+                width,
+            },
+
+            render: {
+                end: export_configuration.end,
+                start: export_configuration.start,
+                height,
+                width,
+            },
+        });
+
+        const notification_identifier = jobs.track(job_identifier, () =>
+            jobs.remove(job_identifier)
+        );
+        const video = await jobs.yield(job_identifier);
+
+        notifications.update("identifier", notification_identifier, {
+            //icon: Download,
+            header: "Downloading Video",
+            is_dismissible: true,
+        });
+
+        // HACK: / TODO: Update later to support variable video container format
+
+        download_buffer(
+            video,
+            `svelte-in-motion.video.${export_configuration.start}-${export_configuration.end}.${file_path}.webm`,
+            `video/webm`
+        );
+    },
+
     keybind_prompt_frames(app: IAppContext, event: IKeybindEvent) {
-        if (event.active && app.workspace?.editor) this.command_prompt_frames(app);
+        if (event.active && app.workspace?.preview) this.command_prompt_frames(app);
+    },
+
+    keybind_prompt_video(app: IAppContext, event: IKeybindEvent) {
+        if (event.active && app.workspace?.preview) this.command_prompt_video(app);
     },
 };
 
