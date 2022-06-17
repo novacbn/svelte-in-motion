@@ -10,6 +10,7 @@ import {app_router} from "./lib/router";
 
 import {EXTENSION_APPLICATION} from "./lib/extensions/application.type";
 import {EXTENSION_EDITOR} from "./lib/extensions/editor.type";
+import {EXTENSION_EXPORT} from "./lib/extensions/export.type";
 import {EXTENSION_PREVIEW} from "./lib/extensions/preview.type";
 
 import * as Index from "./routes/index.svelte";
@@ -21,6 +22,7 @@ import * as WorkspaceFile from "./routes/workspace/file.svelte";
     const app = await make_app_context();
 
     app.extensions.push(EXTENSION_APPLICATION);
+    app.extensions.push(EXTENSION_EXPORT);
     app.extensions.push(EXTENSION_EDITOR);
     app.extensions.push(EXTENSION_PREVIEW);
 
