@@ -85,6 +85,9 @@ export function prompts(): IPromptsStore {
     const EVENT_RESOLVE = event<IPromptResolveEvent<any>>();
 
     function prompt<Props, Result>(prompt: IPrompt<Props>): Promise<Result> {
+        const active_element = document.activeElement;
+        if (active_element instanceof HTMLElement) active_element.blur();
+
         set(prompt);
         EVENT_PROMPT.dispatch({prompt});
 
