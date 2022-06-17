@@ -65,20 +65,11 @@ export function keybinds(app: IAppContext): IKeybindsStore {
 
                 const can_handle = !!binds.find((bind) => bind.includes(key));
                 if (can_handle) {
-                    let current_active = false;
-                    for (const bind of binds) {
-                        if (current_active) break;
-                        current_active = true;
-
-                        for (const bind_key of bind) {
-                            if (!key_lookup.has(bind_key)) {
-                                current_active = false;
-                                break;
-                            }
-                        }
-                    }
-
+                    const current_active = binds.some((binds) =>
+                        binds.every((key) => key_lookup.has(key))
+                    );
                     const previous_active = bind_lookup.has(identifier);
+
                     if (current_active) {
                         event.preventDefault();
                         event.stopPropagation();
@@ -106,7 +97,7 @@ export function keybinds(app: IAppContext): IKeybindsStore {
                     if (current_active) bind_lookup.set(identifier, true);
                     else bind_lookup.delete(identifier);
 
-                    break;
+                    if (current_active || current_active !== previous_active) break;
                 }
             }
         },
