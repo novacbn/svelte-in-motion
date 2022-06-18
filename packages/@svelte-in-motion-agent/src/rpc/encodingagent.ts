@@ -1,8 +1,6 @@
+import {ICodecNames, IEncodingOptions} from "@svelte-in-motion/encoding";
 import {ControllerSymbol} from "@svelte-in-motion/rpc";
 import {UUID} from "@svelte-in-motion/type";
-
-import type {ICodecNames} from "../encoding/codec";
-import type {IEncodingOptions} from "../encoding/encode";
 
 export const IRPCEncodingAgentController =
     ControllerSymbol<IRPCEncodingAgentController>("Encoding.Agent");

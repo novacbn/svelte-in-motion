@@ -1,7 +1,7 @@
 import {ControllerSymbol} from "@svelte-in-motion/rpc";
 import {UUID} from "@svelte-in-motion/type";
 
-import type {IRenderingOptions} from "../rendering/render";
+import {IRenderingOptions} from "@svelte-in-motion/rendering";
 
 export const IRPCRenderingAgentController =
     ControllerSymbol<IRPCRenderingAgentController>("Rendering.Agent");

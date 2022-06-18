@@ -1,5 +1,7 @@
 /node_modules/
 
+/packages/@svelte-in-motion-agent/dist/
+/packages/@svelte-in-motion-agent/node_modules/
 /packages/@svelte-in-motion-animations/node_modules/
 /packages/@svelte-in-motion-bundling/node_modules/
 /packages/@svelte-in-motion-configuration/dist/
