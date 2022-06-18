@@ -54,6 +54,11 @@ function is_workspace_prepared(driver: IDriver): Promise<boolean> {
 async function prepare_workspace(driver: IDriver): Promise<void> {
     const configuration = new WorkspaceConfiguration();
 
+    // TODO: Replace these after templating system is worked out
+
+    configuration.framerate = 60;
+    configuration.maxframes = 270;
+
     await Promise.all([
         // TODO: replace with eventual templating system
         await driver.write_file_text("Sample.svelte", SAMPLE),
