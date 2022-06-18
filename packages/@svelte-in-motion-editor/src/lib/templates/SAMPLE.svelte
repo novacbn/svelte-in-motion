@@ -1,13 +1,7 @@
 <script>
-    import {
-        Fade,
-        Rotate,
-        Scale,
-        Translate,
-        backOut,
-        bounceOut,
-        cubicInOut,
-    } from "@svelte-in-motion/animations";
+    import {backOut, bounceOut, cubicInOut} from "svelte/easing";
+
+    import {Fade, Rotate, Scale, Translate} from "@svelte-in-motion/animations";
     import {CONTEXT_STATE} from "@svelte-in-motion/core";
 
     const rotation = CONTEXT_STATE.get({
