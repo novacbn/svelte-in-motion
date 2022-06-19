@@ -59,18 +59,14 @@ export function EncodingOptions(options: IEncodingOptions): Required<IEncodingOp
             ? get_default_dimensions(preferred_codec)
             : [0, 0];
 
-    const preferred_height = height ?? default_dimensions[1];
-    const preferred_width = width ?? default_dimensions[0];
-
     return {
         codec: preferred_codec,
         crf: crf ?? get_default_crf(preferred_codec),
         frames,
-        framerate:
-            framerate ?? get_default_framerate(preferred_codec, preferred_width, preferred_height),
-        height: preferred_height,
+        framerate: framerate ?? get_default_framerate(preferred_codec),
+        height: height ?? default_dimensions[1],
         pixel_format: pixel_format ?? get_default_pixel_format(preferred_codec),
-        width: preferred_width,
+        width: width ?? default_dimensions[0],
     };
 }
 
@@ -104,11 +100,7 @@ export function encode(options: IEncodingOptions): IEncodingHandle {
         );
     }
 
-    const [framerate_minimum, framerate_maximum] = get_available_framerate_range(
-        codec,
-        width,
-        height
-    );
+    const [framerate_minimum, framerate_maximum] = get_available_framerate_range(codec);
     if (framerate < framerate_minimum || framerate > framerate_maximum) {
         throw new ReferenceError(
             `bad option 'IEncodingOptions.framerate' to 'encode' (framerate '${framerate}' outside of '${framerate_minimum}...${framerate_maximum}' range for codec '${codec}')`
