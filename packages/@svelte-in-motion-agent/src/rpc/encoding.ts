@@ -206,9 +206,9 @@ export class RPCEncodingAgentController implements IRPCEncodingAgentController {
             );
         }
 
-        const {handle} = job;
-
         return new Observable((observer) => {
+            const {handle} = job;
+
             const destroy_end = handle.EVENT_END.subscribe((detail) => {
                 observer.next({
                     identifier,
