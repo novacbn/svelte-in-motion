@@ -21,6 +21,7 @@ importers:
       '@svelte-in-motion/type': workspace:^
       '@svelte-in-motion/utilities': workspace:^
       prettier: ^2.3.1
+      rxjs: ^7.5.5
       typescript: ^4.7.3
     dependencies:
       '@svelte-in-motion/encoding': link:../@svelte-in-motion-encoding
@@ -28,6 +29,7 @@ importers:
       '@svelte-in-motion/rpc': link:../@svelte-in-motion-rpc
       '@svelte-in-motion/type': link:../@svelte-in-motion-type
       '@svelte-in-motion/utilities': link:../@svelte-in-motion-utilities
+      rxjs: 7.5.5
     devDependencies:
       '@deepkit/type-compiler': 1.0.1-alpha.71_typescript@4.7.3
       prettier: 2.7.0

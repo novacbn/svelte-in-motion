@@ -32,6 +32,7 @@
         "@svelte-in-motion/rendering": "workspace:^",
         "@svelte-in-motion/rpc": "workspace:^",
         "@svelte-in-motion/type": "workspace:^",
-        "@svelte-in-motion/utilities": "workspace:^"
+        "@svelte-in-motion/utilities": "workspace:^",
+        "rxjs": "^7.5.5"
     }
 }
