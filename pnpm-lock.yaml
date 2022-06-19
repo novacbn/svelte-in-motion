@@ -112,6 +112,7 @@ importers:
       '@deepkit/type-compiler': ^1.0.1-alpha.71
       '@kahi-ui/framework': 0.6.4
       '@novacbn/svelte-codejar': ^0.1.2
+      '@svelte-in-motion/agent': workspace:^
       '@svelte-in-motion/animations': workspace:^
       '@svelte-in-motion/bundling': workspace:^
       '@svelte-in-motion/configuration': workspace:^
@@ -139,6 +140,7 @@ importers:
     dependencies:
       '@kahi-ui/framework': 0.6.4
       '@novacbn/svelte-codejar': 0.1.2
+      '@svelte-in-motion/agent': link:../@svelte-in-motion-agent
       '@svelte-in-motion/animations': link:../@svelte-in-motion-animations
       '@svelte-in-motion/bundling': link:../@svelte-in-motion-bundling
       '@svelte-in-motion/configuration': link:../@svelte-in-motion-configuration

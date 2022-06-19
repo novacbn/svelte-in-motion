@@ -23,8 +23,8 @@ import {ControllerSymbol, rpc} from "@svelte-in-motion/rpc";
 import {UUID} from "@svelte-in-motion/type";
 import {uuid} from "@svelte-in-motion/type";
 
-import {Agent} from "../agent";
-import {Host} from "../host";
+import type {Agent} from "../agent";
+import type {Host} from "../host";
 
 export enum ENCODING_EVENTS {
     initialize,
@@ -112,7 +112,7 @@ export interface IRPCEncodingAgentController {
     watch_job(
         identifier: UUID
     ): Observable<
-        IEncodingEndEvent | IEncodingProgressEvent | IEncodingStartEvent | IEncodingInitializeEvent
+        IEncodingEndEvent | IEncodingInitializeEvent | IEncodingProgressEvent | IEncodingStartEvent
     >;
 }
 
@@ -127,8 +127,6 @@ export interface IRPCEncodingHostController {
 @rpc.controller(IRPCEncodingAgentController)
 export class RPCEncodingAgentController implements IRPCEncodingAgentController {
     protected jobs: IEncodeJob[] = [];
-
-    constructor(protected agent: Agent) {}
 
     @rpc.action()
     async cancel_job(identifier: UUID): Promise<void> {

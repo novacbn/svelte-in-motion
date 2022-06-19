@@ -175,7 +175,7 @@ export const extension = {
             throw err;
         }
 
-        const job_identifier = jobs.queue({
+        const job_identifier = await jobs.queue({
             file: file_path,
             workspace: workspace.identifier,
 

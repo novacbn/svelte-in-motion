@@ -1,9 +1,12 @@
+import {Agent} from "@svelte-in-motion/agent";
 import type {IPreloadedConfigurationFileStore} from "@svelte-in-motion/configuration";
 import {PreferencesConfiguration, WorkspacesConfiguration} from "@svelte-in-motion/configuration";
 import {make_scoped_context} from "@svelte-in-motion/utilities";
 
 import type {ICommandsStore} from "./stores/commands";
 import {commands as make_commands_store} from "./stores/commands";
+import type {IEncodesStore} from "./stores/encodes";
+import {encodes as make_encodes_store} from "./stores/encodes";
 import type {IExtensionsStore} from "./stores/extensions";
 import {extensions as make_extensions_store} from "./stores/extensions";
 import type {IKeybindsStore} from "./stores/keybinds";
@@ -25,6 +28,8 @@ export const CONTEXT_APP = make_scoped_context<IAppContext>("app");
 
 export interface IAppContext {
     commands: ICommandsStore;
+
+    encodes: IEncodesStore;
 
     extensions: IExtensionsStore;
 
@@ -90,6 +95,10 @@ export async function app(): Promise<IAppContext> {
     app.commands = make_commands_store(app);
     app.extensions = make_extensions_store(app);
     app.keybinds = make_keybinds_store(app);
+
+    const agent = await Agent.connect_to();
+
+    app.encodes = make_encodes_store(app, agent);
 
     return app;
 }

@@ -1,25 +1,23 @@
 //import {Check, Clock, Film} from "lucide-svelte";
 import type {Readable} from "svelte/store";
 
+import {ENCODING_EVENTS, Agent} from "@svelte-in-motion/agent";
 import type {ICodecNames, IPixelFormatNames} from "@svelte-in-motion/encoding";
-import {encode} from "@svelte-in-motion/encoding";
 import type {ICollectionItem, IEvent} from "@svelte-in-motion/utilities";
-import {collection, event, generate_uuid} from "@svelte-in-motion/utilities";
+import {collection, event} from "@svelte-in-motion/utilities";
 
-import type {INotification, INotificationsStore} from "./notifications";
+import type {IAppContext} from "../app";
+
+import type {INotification} from "./notifications";
 
 export enum ENCODE_STATES {
     ended = "ended",
 
-    started = "started",
+    encoding = "encoding",
+
+    initializing = "initializing",
 
     uninitialized = "uninitialized",
-}
-
-export interface IEncodeDimensions {
-    width: number;
-
-    height: number;
 }
 
 export interface IEncodeEvent {
@@ -38,21 +36,22 @@ export interface IEncode extends ICollectionItem {
     completion: number;
 }
 
-export interface IEncodeVideoSettings {
+export type IEncodeQueueOptions = {
     // NOTE: We're only going to support VP9/WebM for the forseeable future
     codec: ICodecNames;
 
     crf: number;
 
+    height: number;
+
+    frames: Uint8Array[];
+
     framerate: number;
 
     pixel_format: IPixelFormatNames;
-}
 
-export type IEncodeQueueOptions = {
-    frames: Uint8Array[];
-} & IEncodeDimensions &
-    IEncodeVideoSettings;
+    width: number;
+};
 
 export interface IEncodesStore extends Readable<IEncode[]> {
     EVENT_END: IEvent<IEncodeEndEvent>;
@@ -61,7 +60,7 @@ export interface IEncodesStore extends Readable<IEncode[]> {
 
     has(identifier: string): boolean;
 
-    queue(options: IEncodeQueueOptions): string;
+    queue(options: IEncodeQueueOptions): Promise<string>;
 
     remove(identifier: string): IEncode;
 
@@ -70,7 +69,10 @@ export interface IEncodesStore extends Readable<IEncode[]> {
     yield(identifier: string): Promise<Uint8Array>;
 }
 
-export function encodes(notifications: INotificationsStore): IEncodesStore {
+export function encodes(app: IAppContext, agent: Agent): IEncodesStore {
+    const {encoding} = agent;
+    const {notifications} = app;
+
     const {find, has, push, subscribe, remove, update} = collection<IEncode>();
 
     const EVENT_END = event<IEncodeEndEvent>();
@@ -84,10 +86,10 @@ export function encodes(notifications: INotificationsStore): IEncodesStore {
 
         has,
 
-        queue(options) {
+        async queue(options) {
             const {codec, crf, framerate, frames, height, pixel_format, width} = options;
 
-            const handle = encode({
+            const identifier = await encoding.start_job({
                 codec,
                 crf,
                 framerate,
@@ -97,36 +99,53 @@ export function encodes(notifications: INotificationsStore): IEncodesStore {
                 width,
             });
 
-            const item = push({
-                identifier: generate_uuid(),
+            push({
+                identifier,
                 state: ENCODE_STATES.uninitialized,
                 completion: 0,
             });
 
-            const {identifier} = item;
+            const observable = await encoding.watch_job(identifier);
 
-            const destroy_start = handle.EVENT_START.subscribe(() => {
-                const encode = update("identifier", identifier, {state: ENCODE_STATES.started});
+            const subscription = observable.subscribe((event) => {
+                switch (event.type) {
+                    case ENCODING_EVENTS.end: {
+                        subscription.unsubscribe();
 
-                EVENT_START.dispatch({
-                    encode,
-                });
-            });
+                        const encode = update("identifier", identifier, {
+                            state: ENCODE_STATES.ended,
+                        });
 
-            const destroy_progress = handle.EVENT_PROGRESS.subscribe((completion) => {
-                update("identifier", identifier, {completion});
-            });
+                        EVENT_END.dispatch({
+                            encode,
+                            video: event.result,
+                        });
 
-            handle.result.then((buffer) => {
-                destroy_progress();
-                destroy_start();
+                        break;
+                    }
 
-                const encode = update("identifier", identifier, {state: ENCODE_STATES.ended});
+                    case ENCODING_EVENTS.initialize:
+                        update("identifier", identifier, {state: ENCODE_STATES.initializing});
 
-                EVENT_END.dispatch({
-                    encode,
-                    video: buffer,
-                });
+                        break;
+
+                    case ENCODING_EVENTS.progress:
+                        update("identifier", identifier, {completion: event.completion});
+
+                        break;
+
+                    case ENCODING_EVENTS.start: {
+                        const encode = update("identifier", identifier, {
+                            state: ENCODE_STATES.encoding,
+                        });
+
+                        EVENT_START.dispatch({
+                            encode,
+                        });
+
+                        break;
+                    }
+                }
             });
 
             return identifier;
@@ -170,19 +189,19 @@ export function encodes(notifications: INotificationsStore): IEncodesStore {
                 const encode = find("identifier", identifier)!;
 
                 switch (encode.state) {
+                    case ENCODE_STATES.encoding:
+                        notifications.update("identifier", notification_identifier, {
+                            //icon: Film,
+                            header: "Encoding Video",
+                        });
+
+                        break;
+
                     case ENCODE_STATES.ended:
                         notifications.update("identifier", notification_identifier, {
                             //icon: Check,
                             header: "Encode Finished",
                             is_dismissible: true,
-                        });
-
-                        break;
-
-                    case ENCODE_STATES.started:
-                        notifications.update("identifier", notification_identifier, {
-                            //icon: Film,
-                            header: "Encoding Video",
                         });
 
                         break;

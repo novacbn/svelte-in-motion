@@ -33,6 +33,7 @@
     "dependencies": {
         "@kahi-ui/framework": "0.6.4",
         "@novacbn/svelte-codejar": "^0.1.2",
+        "@svelte-in-motion/agent": "workspace:^",
         "@svelte-in-motion/animations": "workspace:^",
         "@svelte-in-motion/bundling": "workspace:^",
         "@svelte-in-motion/configuration": "workspace:^",

@@ -83,7 +83,7 @@ export interface IJobsStore extends Readable<IJob[]> {
 
     has(identifier: string): boolean;
 
-    queue(options: IJobQueueOptions): string;
+    queue(options: IJobQueueOptions): Promise<string>;
 
     remove(identifier: string): IJob;
 
@@ -105,55 +105,6 @@ export function jobs(
     const EVENT_ENCODING = event<IJobEncodingEvent>();
     const EVENT_RENDERING = event<IJobRenderingEvent>();
 
-    async function start_job(identifier: string, options: IJobQueueOptions): Promise<void> {
-        const {file, encode, render, workspace} = options;
-
-        const render_job = renders.queue({
-            ...render,
-            file,
-            workspace,
-        });
-
-        let job = update("identifier", identifier, {
-            state: JOB_STATES.rendering,
-            render: render_job,
-        });
-
-        EVENT_RENDERING.dispatch({
-            job: job as IJobRendering,
-            render: render_job,
-        });
-
-        const frames = await renders.yield(render_job);
-        renders.remove(render_job);
-
-        const encode_job = encodes.queue({...encode, frames});
-
-        job = update("identifier", identifier, {
-            state: JOB_STATES.encoding,
-            encode: encode_job,
-            render: undefined,
-        });
-
-        EVENT_ENCODING.dispatch({
-            job: job as IJobEncoding,
-            encode: encode_job,
-        });
-
-        const video = await encodes.yield(encode_job);
-        encodes.remove(encode_job);
-
-        job = update("identifier", identifier, {
-            state: JOB_STATES.ended,
-            encode: undefined,
-        });
-
-        EVENT_END.dispatch({
-            job,
-            video,
-        });
-    }
-
     return {
         EVENT_END,
         EVENT_START,
@@ -165,13 +116,59 @@ export function jobs(
 
         has,
 
-        queue(options) {
+        async queue(options) {
+            const {file, encode, render, workspace} = options;
+
             const {identifier} = push({
                 identifier: generate_uuid(),
                 state: JOB_STATES.uninitialized,
             });
 
-            start_job(identifier, options);
+            const render_job = renders.queue({
+                ...render,
+                file,
+                workspace,
+            });
+
+            let job = update("identifier", identifier, {
+                state: JOB_STATES.rendering,
+                render: render_job,
+            });
+
+            EVENT_RENDERING.dispatch({
+                job: job as IJobRendering,
+                render: render_job,
+            });
+
+            const frames = await renders.yield(render_job);
+            renders.remove(render_job);
+
+            const encode_job = await encodes.queue({...encode, frames});
+
+            job = update("identifier", identifier, {
+                state: JOB_STATES.encoding,
+                encode: encode_job,
+                render: undefined,
+            });
+
+            EVENT_ENCODING.dispatch({
+                job: job as IJobEncoding,
+                encode: encode_job,
+            });
+
+            const video = await encodes.yield(encode_job);
+            encodes.remove(encode_job);
+
+            job = update("identifier", identifier, {
+                state: JOB_STATES.ended,
+                encode: undefined,
+            });
+
+            EVENT_END.dispatch({
+                job,
+                video,
+            });
+
             return identifier;
         },
 

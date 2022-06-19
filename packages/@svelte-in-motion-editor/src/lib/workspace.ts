@@ -6,8 +6,6 @@ import {WorkspaceConfiguration, WorkspacesItemConfiguration} from "@svelte-in-mo
 import type {IDriver} from "@svelte-in-motion/storage";
 import {make_scoped_context} from "@svelte-in-motion/utilities";
 
-import type {IEncodesStore} from "./stores/encodes";
-import {encodes as make_encodes_store} from "./stores/encodes";
 import type {IErrorsStore} from "./stores/errors";
 import {errors as make_errors_store} from "./stores/errors";
 import type {IJobsStore} from "./stores/jobs";
@@ -29,8 +27,6 @@ export interface IWorkspaceContext {
     configuration: IPreloadedConfigurationFileStore<WorkspaceConfiguration>;
 
     editor?: IEditorContext;
-
-    encodes: IEncodesStore;
 
     errors: IErrorsStore;
 
@@ -99,15 +95,11 @@ export async function workspace(identifier: string, app: IAppContext): Promise<I
     );
 
     const errors = make_errors_store(notifications);
-
-    const encodes = make_encodes_store(notifications);
     const renders = make_renders_store(notifications);
-
-    const jobs = make_jobs_store(notifications, encodes, renders);
+    const jobs = make_jobs_store(notifications, app.encodes, renders);
 
     return {
         configuration,
-        encodes,
         errors,
         identifier,
         jobs,
