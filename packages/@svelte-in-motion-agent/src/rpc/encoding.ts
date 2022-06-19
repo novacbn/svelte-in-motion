@@ -130,18 +130,22 @@ export class RPCEncodingAgentController implements IRPCEncodingAgentController {
 
     constructor(protected agent: Agent) {}
 
+    @rpc.action()
     async cancel_job(identifier: UUID): Promise<void> {
         throw new TypeError("bad dispatch to 'cancel_job' (not implemented)");
     }
 
+    @rpc.action()
     async get_agent_version(): Promise<[number, number, number]> {
         return [0, 0, 1];
     }
 
+    @rpc.action()
     async get_available_codecs(): Promise<ICodecNames[]> {
         return get_available_codecs();
     }
 
+    @rpc.action()
     async get_available_codec_configuration(
         codec: ICodecNames
     ): Promise<IAvailableCodecConfiguration> {
@@ -158,10 +162,12 @@ export class RPCEncodingAgentController implements IRPCEncodingAgentController {
         };
     }
 
+    @rpc.action()
     async get_default_codec(): Promise<ICodecNames> {
         return get_default_codec();
     }
 
+    @rpc.action()
     async get_default_codec_configuration(codec: ICodecNames): Promise<ICodecConfiguration> {
         const crf = get_default_crf(codec);
         const dimensions = get_default_dimensions(codec);
@@ -171,10 +177,12 @@ export class RPCEncodingAgentController implements IRPCEncodingAgentController {
         return {crf, dimensions, framerate, pixel_format};
     }
 
+    @rpc.action()
     async get_protocol_version(): Promise<[number, number]> {
         return [0, 1];
     }
 
+    @rpc.action()
     async start_job(options: IEncodingOptions): Promise<UUID> {
         const identifier = uuid();
         const handle = encode(options);
@@ -194,6 +202,7 @@ export class RPCEncodingAgentController implements IRPCEncodingAgentController {
         return identifier;
     }
 
+    @rpc.action()
     watch_job(
         identifier: UUID
     ): Observable<
@@ -255,10 +264,12 @@ export class RPCEncodingAgentController implements IRPCEncodingAgentController {
 export class RPCEncodingHostController implements IRPCEncodingHostController {
     constructor(protected host: Host) {}
 
+    @rpc.action()
     async get_host_version(): Promise<[number, number, number]> {
         return [0, 0, 1];
     }
 
+    @rpc.action()
     async get_protocol_version(): Promise<[number, number]> {
         return [0, 1];
     }
