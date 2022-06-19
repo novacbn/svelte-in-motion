@@ -13,7 +13,7 @@ import {get_default_pixel_format} from "./pixel_format";
 
 const FFmpeg: typeof FFmpegLibrary = IS_BROWSER ? (globalThis as any).FFmpeg : FFmpegLibrary;
 
-export type IEncodingEndEvent = IEvent<void>;
+export type IEncodingEndEvent = IEvent<Uint8Array>;
 
 export type IEncodingInitializeEvent = IEvent<void>;
 
@@ -29,8 +29,6 @@ export interface IEncodingHandle {
     EVENT_PROGRESS: IEncodingProgressEvent;
 
     EVENT_START: IEncodingStartEvent;
-
-    result: Promise<Uint8Array>;
 }
 
 export interface IEncodingOptions {
@@ -126,53 +124,52 @@ export function encode(options: IEncodingOptions): IEncodingHandle {
     const EVENT_PROGRESS: IEncodingProgressEvent = event();
     const EVENT_START: IEncodingStartEvent = event();
 
+    (async () => {
+        const ffmpeg = FFmpeg.createFFmpeg({
+            progress: ({ratio}) => EVENT_PROGRESS.dispatch(ratio),
+        });
+
+        EVENT_INITIALIZE.dispatch();
+        await ffmpeg.load();
+
+        await Promise.all(
+            frames.map((buffer, index) => ffmpeg.FS("writeFile", `${index}.png`, buffer))
+        );
+
+        EVENT_START.dispatch();
+        await ffmpeg.run(
+            "-f",
+            "image2",
+            "-r",
+            framerate.toString(),
+            "-s",
+            `${width}x${height}`,
+            "-i",
+            "%01d.png",
+            "-vcodec",
+            codec_encoder,
+            "-crf",
+            crf.toString(),
+            "-pix_fmt",
+            pixel_format_name,
+            ...get_codec_arguments(codec),
+            `output.${codec_extension}`
+        );
+
+        const buffer = await ffmpeg.FS("readFile", `output.${codec_extension}`);
+
+        // HACK: `ffmpeg.exit` throws errors on exiting to emulate process termination (?)
+        try {
+            ffmpeg.exit();
+        } catch (err) {}
+
+        EVENT_END.dispatch(buffer);
+    })();
+
     return {
         EVENT_END,
         EVENT_INITIALIZE,
         EVENT_PROGRESS,
         EVENT_START,
-
-        result: new Promise(async (resolve, reject) => {
-            const ffmpeg = FFmpeg.createFFmpeg({
-                progress: ({ratio}) => EVENT_PROGRESS.dispatch(ratio),
-            });
-
-            EVENT_INITIALIZE.dispatch();
-            await ffmpeg.load();
-
-            await Promise.all(
-                frames.map((buffer, index) => ffmpeg.FS("writeFile", `${index}.png`, buffer))
-            );
-
-            EVENT_START.dispatch();
-            await ffmpeg.run(
-                "-f",
-                "image2",
-                "-r",
-                framerate.toString(),
-                "-s",
-                `${width}x${height}`,
-                "-i",
-                "%01d.png",
-                "-vcodec",
-                codec_encoder,
-                "-crf",
-                crf.toString(),
-                "-pix_fmt",
-                pixel_format_name,
-                ...get_codec_arguments(codec),
-                `output.${codec_extension}`
-            );
-
-            const buffer = await ffmpeg.FS("readFile", `output.${codec_extension}`);
-
-            // HACK: `ffmpeg.exit` throws errors on exiting to emulate process termination (?)
-            try {
-                ffmpeg.exit();
-            } catch (err) {}
-
-            EVENT_END.dispatch();
-            resolve(buffer);
-        }),
     };
 }
