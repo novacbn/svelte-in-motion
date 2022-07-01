@@ -7,6 +7,7 @@ import {
     IPixelFormatNames,
 } from "@svelte-in-motion/encoding";
 import {
+    encode,
     get_available_codecs,
     get_available_crf_range,
     get_available_dimensions_ranges,
@@ -17,7 +18,6 @@ import {
     get_default_dimensions,
     get_default_framerate,
     get_default_pixel_format,
-    encode,
 } from "@svelte-in-motion/encoding";
 import {ControllerSymbol, rpc} from "@svelte-in-motion/rpc";
 import {UUID} from "@svelte-in-motion/type";
@@ -64,29 +64,34 @@ export interface IEncodeJob {
     options: IEncodingOptions;
 }
 
-export interface IEncodingEvent {
+// HACK: DeepKit serialization doesn't work well with extended interfaces, so we
+// need to duplicate common properties in the events
+
+export interface IEncodingEndEvent {
     identifier: string;
 
-    type: ENCODING_EVENTS;
-}
-
-export interface IEncodingEndEvent extends IEncodingEvent {
     type: ENCODING_EVENTS.end;
 
     result: Uint8Array;
 }
 
-export interface IEncodingInitializeEvent extends IEncodingEvent {
+export interface IEncodingInitializeEvent {
+    identifier: string;
+
     type: ENCODING_EVENTS.initialize;
 }
 
-export interface IEncodingProgressEvent extends IEncodingEvent {
+export interface IEncodingProgressEvent {
+    identifier: string;
+
     type: ENCODING_EVENTS.progress;
 
     completion: number;
 }
 
-export interface IEncodingStartEvent extends IEncodingEvent {
+export interface IEncodingStartEvent {
+    identifier: string;
+
     type: ENCODING_EVENTS.start;
 }
 
@@ -224,7 +229,7 @@ export class RPCEncodingAgentController implements IRPCEncodingAgentController {
                 });
             });
 
-            const destroy_initialize = handle.EVENT_INITIALIZE.subscribe((detail) => {
+            const destroy_initialize = handle.EVENT_INITIALIZE.subscribe(() => {
                 observer.next({
                     identifier,
                     type: ENCODING_EVENTS.initialize,
@@ -239,7 +244,7 @@ export class RPCEncodingAgentController implements IRPCEncodingAgentController {
                 });
             });
 
-            const destroy_start = handle.EVENT_START.subscribe((detail) => {
+            const destroy_start = handle.EVENT_START.subscribe(() => {
                 observer.next({
                     identifier,
                     type: ENCODING_EVENTS.start,
