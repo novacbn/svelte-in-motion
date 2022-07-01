@@ -61,4 +61,8 @@ import * as WorkspaceFile from "./routes/workspace/file.svelte";
 
     // @ts-expect-error - HACK: For debugging purposes only
     window.APP_CONTEXT = app;
+
+    // HACK: DeepKit RPC tries to reference `global` for platform features, however it doesn't exist normally
+    // https://github.com/deepkit/deepkit-framework/issues/26#issuecomment-605295794
+    window.global = window;
 })();
