@@ -118,6 +118,7 @@ importers:
       '@svelte-in-motion/configuration': workspace:^
       '@svelte-in-motion/core': workspace:^
       '@svelte-in-motion/encoding': workspace:^
+      '@svelte-in-motion/screenshot': workspace:^
       '@svelte-in-motion/storage': workspace:^
       '@svelte-in-motion/temporal': workspace:^
       '@svelte-in-motion/utilities': workspace:^
@@ -125,7 +126,6 @@ importers:
       '@tsconfig/svelte': ^2.0.1
       '@types/prismjs': ^1.26.0
       buffer: ^6.0.3
-      html-to-image: ^1.9.0
       lucide-svelte: ^0.61.0
       prettier-plugin-svelte: ^2.7.0
       prismjs: ^1.27.0
@@ -146,11 +146,11 @@ importers:
       '@svelte-in-motion/configuration': link:../@svelte-in-motion-configuration
       '@svelte-in-motion/core': link:../@svelte-in-motion-core
       '@svelte-in-motion/encoding': link:../@svelte-in-motion-encoding
+      '@svelte-in-motion/screenshot': link:../@svelte-in-motion-screenshot
       '@svelte-in-motion/storage': link:../@svelte-in-motion-storage
       '@svelte-in-motion/temporal': link:../@svelte-in-motion-temporal
       '@svelte-in-motion/utilities': link:../@svelte-in-motion-utilities
       buffer: 6.0.3
-      html-to-image: 1.9.0
       lucide-svelte: 0.61.0_svelte2tsx@0.5.10+svelte@3.46.4
       prismjs: 1.27.0
       urlpattern-polyfill: 1.0.0-rc5

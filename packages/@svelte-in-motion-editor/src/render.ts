@@ -1,4 +1,3 @@
-import {toPng} from "html-to-image";
 import type {SvelteComponent} from "svelte";
 import {tick} from "svelte";
 
@@ -14,6 +13,7 @@ import {
     maxframes as make_maxframes_store,
     playing as make_playing_store,
 } from "@svelte-in-motion/core";
+import {screenshot_node} from "@svelte-in-motion/screenshot";
 import {clamp, evaluate_code, message} from "@svelte-in-motion/utilities";
 
 import type {
@@ -87,7 +87,7 @@ import {REPL_CONTEXT, REPL_IMPORTS} from "./lib/util/repl";
     }
 
     const total_frames = parsed_end - parsed_start;
-    const FRAMES: Record<number, string> = {};
+    const FRAMES: Record<number, Uint8Array> = {};
 
     const frame = make_frame_store(parsed_start);
     const framerate = make_framerate_store(configuration.framerate);
@@ -152,7 +152,7 @@ import {REPL_CONTEXT, REPL_IMPORTS} from "./lib/util/repl";
         frame.set(current_frame);
         await tick();
 
-        FRAMES[current_frame] = await toPng(document.documentElement);
+        FRAMES[current_frame] = await screenshot_node(document.documentElement);
 
         messages.dispatch({
             name: MESSAGES_RENDER.progress,

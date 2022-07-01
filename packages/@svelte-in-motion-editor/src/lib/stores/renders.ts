@@ -121,15 +121,6 @@ export function renders(notifications: INotificationsStore): IRendersStore {
                 const destroy = messages.subscribe(async (message) => {
                     switch (message.name) {
                         case MESSAGES_RENDER.end: {
-                            const frames = await Promise.all(
-                                message.detail.frames.map(async (uri, index) => {
-                                    const response = await fetch(uri);
-                                    const buffer = await response.arrayBuffer();
-
-                                    return new Uint8Array(buffer);
-                                })
-                            );
-
                             destroy();
                             iframe_element.remove();
 
@@ -137,7 +128,7 @@ export function renders(notifications: INotificationsStore): IRendersStore {
                                 state: RENDER_STATES.ended,
                             });
 
-                            EVENT_END.dispatch({render, frames});
+                            EVENT_END.dispatch({render, frames: message.detail.frames});
                             break;
                         }
 

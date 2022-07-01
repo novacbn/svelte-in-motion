@@ -11,7 +11,7 @@ export enum MESSAGES_RENDER {
 export type IRenderEndMessage = IMessage<
     MESSAGES_RENDER.end,
     {
-        frames: string[];
+        frames: Uint8Array[];
     }
 >;
 
