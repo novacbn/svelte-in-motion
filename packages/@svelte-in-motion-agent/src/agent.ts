@@ -15,8 +15,6 @@ export class Agent {
         kernel.registerController(IRPCEncodingAgentController, RPCEncodingAgentController);
 
         const client = new DirectClient(kernel);
-        await client.connect();
-
         return new Agent(client);
     }
 
