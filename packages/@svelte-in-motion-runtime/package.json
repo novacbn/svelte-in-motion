@@ -1,5 +1,5 @@
 {
-    "name": "@svelte-in-motion/rendering",
+    "name": "@svelte-in-motion/runtime",
     "author": "novacbn",
     "version": "0.0.1",
     "type": "module",
@@ -10,11 +10,12 @@
     },
     "repository": {
         "type": "git",
-        "url": "https://github.com/novacbn/svelte-in-motion/tree/main/packages/%40svelte-in-motion-rendering"
+        "url": "https://github.com/novacbn/svelte-in-motion/tree/main/packages/%40svelte-in-motion-runtime"
     },
     "scripts": {
-        "build:package": "tsc",
-        "dev:package": "tsc --watch",
+        "build:package": "node ./scripts/build-package.js",
+        "build:runtime": "vite build",
+        "dev:runtime": "vite build --watch",
         "format": "npm run format:package",
         "format:package": "prettier --config ../../.prettierrc --write ./src",
         "lint": "npm run lint:format",
@@ -23,13 +24,17 @@
         "test:types": "tsc --noEmit"
     },
     "devDependencies": {
-        "@deepkit/type-compiler": "^1.0.1-alpha.71",
+        "@sveltejs/vite-plugin-svelte": "1.0.0-next.49",
         "prettier": "^2.3.1",
         "svelte": "^3.48.0",
-        "typescript": "^4.7.3"
+        "svelte-preprocess": "^4.9.8",
+        "typescript": "^4.7.3",
+        "vite": "2.9.12",
+        "vite-plugin-singlefile": "^0.10.0-beta.2"
     },
     "dependencies": {
-        "@svelte-in-motion/rpc": "workspace:^",
-        "@svelte-in-motion/type": "workspace:^"
+        "@svelte-in-motion/animations": "workspace:^",
+        "@svelte-in-motion/core": "workspace:^",
+        "@svelte-in-motion/utilities": "workspace:^"
     }
 }
