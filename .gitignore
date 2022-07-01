@@ -17,6 +17,7 @@
 /packages/@svelte-in-motion-rendering/node_modules/
 /packages/@svelte-in-motion-rpc/dist/
 /packages/@svelte-in-motion-rpc/node_modules/
+/packages/@svelte-in-motion-screenshot/node_modules/
 /packages/@svelte-in-motion-storage/node_modules/
 /packages/@svelte-in-motion-utilities/node_modules/
 /packages/@svelte-in-motion-tauri/node_modules/
