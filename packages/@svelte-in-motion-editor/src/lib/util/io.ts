@@ -1,4 +1,4 @@
-import {zip_blobs} from "@svelte-in-motion/utilities";
+import {zip_blobs} from "@svelte-in-motion/storage";
 
 export async function zip_frames(frames: Uint8Array[]): Promise<Blob> {
     const blobs = await Promise.all(

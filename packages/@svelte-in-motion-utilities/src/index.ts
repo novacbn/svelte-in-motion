@@ -10,7 +10,6 @@ export * from "./stores/types";
 export * from "./util/contexts";
 export * from "./util/eval";
 export * from "./util/environment";
-export * from "./util/io";
 export * from "./util/math";
 export * from "./util/random";
 export * from "./util/router";
