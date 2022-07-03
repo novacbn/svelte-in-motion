@@ -72,7 +72,7 @@ export function EncodingOptions(options: IEncodingOptions): Required<IEncodingOp
 
 export function encode(options: IEncodingOptions): IEncodingHandle {
     if (!IS_BROWSER) {
-        throw new Error("bad dispatch to 'encode' (platforms besides Browsers are not supported");
+        throw new Error("bad dispatch to 'encode' (platforms besides Browsers are not supported)");
     }
 
     const {codec, crf, frames, framerate, height, pixel_format, width} = EncodingOptions(options);
