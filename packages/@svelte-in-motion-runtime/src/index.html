@@ -33,6 +33,7 @@
 
             import * as sim_animations from "@svelte-in-motion/animations";
             import * as sim_core from "@svelte-in-motion/core";
+            import * as sim_screenshot from "@svelte-in-motion/screenshot";
             import * as sim_utilities from "@svelte-in-motion/utilities";
 
             window.__SIM_RUNTIME = {
@@ -46,12 +47,15 @@
 
                 "@svelte-in-motion/animations": sim_animations,
                 "@svelte-in-motion/core": sim_core,
+                "@svelte-in-motion/screenshot": sim_screenshot,
                 "@svelte-in-motion/utilities": sim_utilities,
             };
         </script>
 
         <script type="application/javascript">
-            ${payload}
+            (async () => {
+                ${payload}
+            })();
         </script>
     </body>
 </html>

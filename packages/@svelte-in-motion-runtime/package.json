@@ -13,8 +13,9 @@
         "url": "https://github.com/novacbn/svelte-in-motion/tree/main/packages/%40svelte-in-motion-runtime"
     },
     "scripts": {
-        "build:package": "node ./scripts/build-package.js",
+        "build:package": "npm run build:runtime && npm run build:template",
         "build:runtime": "vite build",
+        "build:template": "node ./scripts/build-template.js",
         "dev:runtime": "vite build --watch",
         "format": "npm run format:package",
         "format:package": "prettier --config ../../.prettierrc --write ./src",
@@ -35,6 +36,7 @@
     "dependencies": {
         "@svelte-in-motion/animations": "workspace:^",
         "@svelte-in-motion/core": "workspace:^",
+        "@svelte-in-motion/screenshot": "workspace:^",
         "@svelte-in-motion/utilities": "workspace:^"
     }
 }
