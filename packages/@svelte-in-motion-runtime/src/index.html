@@ -50,11 +50,9 @@
                 "@svelte-in-motion/screenshot": sim_screenshot,
                 "@svelte-in-motion/utilities": sim_utilities,
             };
-        </script>
 
-        <script type="application/javascript">
             (async () => {
-                ${payload}
+                __SIM_PAYLOAD;
             })();
         </script>
     </body>

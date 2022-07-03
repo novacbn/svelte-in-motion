@@ -118,6 +118,7 @@ importers:
       '@svelte-in-motion/configuration': workspace:^
       '@svelte-in-motion/core': workspace:^
       '@svelte-in-motion/encoding': workspace:^
+      '@svelte-in-motion/rendering': workspace:^
       '@svelte-in-motion/screenshot': workspace:^
       '@svelte-in-motion/storage': workspace:^
       '@svelte-in-motion/temporal': workspace:^
@@ -146,6 +147,7 @@ importers:
       '@svelte-in-motion/configuration': link:../@svelte-in-motion-configuration
       '@svelte-in-motion/core': link:../@svelte-in-motion-core
       '@svelte-in-motion/encoding': link:../@svelte-in-motion-encoding
+      '@svelte-in-motion/rendering': link:../@svelte-in-motion-rendering
       '@svelte-in-motion/screenshot': link:../@svelte-in-motion-screenshot
       '@svelte-in-motion/storage': link:../@svelte-in-motion-storage
       '@svelte-in-motion/temporal': link:../@svelte-in-motion-temporal

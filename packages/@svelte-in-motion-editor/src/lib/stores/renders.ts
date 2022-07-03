@@ -1,13 +1,16 @@
 //import {Check, Clock, Video} from "lucide-svelte";
 import type {Readable} from "svelte/store";
+import {get} from "svelte/store";
 
+import {render} from "@svelte-in-motion/rendering";
 import type {ICollectionItem, IEvent} from "@svelte-in-motion/utilities";
-import {collection, event, generate_uuid, message} from "@svelte-in-motion/utilities";
+import {collection, event, generate_uuid} from "@svelte-in-motion/utilities";
 
-import type {IRenderEndMessage, IRenderProgressMessage, IRenderStartMessage} from "../types/render";
-import {MESSAGES_RENDER} from "../types/render";
+import type {IAppContext} from "../app";
+import {workspace as make_workspace_context} from "../workspace";
 
-import type {INotification, INotificationsStore} from "./notifications";
+import type {INotification} from "./notifications";
+import {bundle} from "@svelte-in-motion/bundling";
 
 export enum RENDER_STATES {
     ended = "ended",
@@ -17,24 +20,12 @@ export enum RENDER_STATES {
     uninitialized = "uninitialized",
 }
 
-export interface IRenderDimensions {
-    width: number;
-
-    height: number;
-}
-
 export interface IRenderEvent {
     render: IRender;
 }
 
 export interface IRenderEndEvent extends IRenderEvent {
     frames: Uint8Array[];
-}
-
-export interface IRenderRange {
-    end: number;
-
-    start: number;
 }
 
 export interface IRender extends ICollectionItem {
@@ -53,8 +44,11 @@ export type IRenderQueueOptions = {
     workspace: string;
 
     file: string;
-} & IRenderDimensions &
-    IRenderRange;
+
+    end: number;
+
+    start: number;
+};
 
 export interface IRendersStore extends Readable<IRender[]> {
     EVENT_END: IEvent<IRenderEndEvent>;
@@ -72,11 +66,63 @@ export interface IRendersStore extends Readable<IRender[]> {
     yield(identifier: string): Promise<Uint8Array[]>;
 }
 
-export function renders(notifications: INotificationsStore): IRendersStore {
+export function renders(app: IAppContext): IRendersStore {
+    const {notifications} = app;
+
     const {find, has, push, subscribe: subscribe_store, remove, update} = collection<IRender>();
 
     const EVENT_END = event<IRenderEndEvent>();
     const EVENT_START = event<IRenderEvent>();
+
+    async function render_job(identifier: string, options: IRenderQueueOptions): Promise<void> {
+        const {end, file, start, workspace} = options;
+
+        const context = await make_workspace_context(workspace, app);
+        const {framerate, height, maxframes, width} = get(context.configuration);
+
+        const result = await bundle({file, storage: context.storage});
+
+        if ("errors" in result) {
+            // TODO: Actually push to global error store
+            const [first_error] = result.errors;
+
+            throw new Error(first_error.message);
+        }
+
+        const handle = render({
+            framerate,
+            end,
+            maxframes,
+            height,
+            script: result.script,
+            start,
+            width,
+        });
+
+        const destroy_progress = handle.EVENT_PROGRESS.subscribe((completion) => {
+            update("identifier", identifier, {completion});
+        });
+
+        const destroy_start = handle.EVENT_START.subscribe(() => {
+            const render = update("identifier", identifier, {
+                state: RENDER_STATES.started,
+            });
+
+            EVENT_START.dispatch({render});
+        });
+
+        const destroy_end = handle.EVENT_END.subscribe((frames) => {
+            const render = update("identifier", identifier, {
+                state: RENDER_STATES.ended,
+            });
+
+            EVENT_END.dispatch({render, frames});
+
+            destroy_end();
+            destroy_progress();
+            destroy_start();
+        });
+    }
 
     return {
         EVENT_END,
@@ -87,9 +133,9 @@ export function renders(notifications: INotificationsStore): IRendersStore {
         has,
 
         queue(options) {
-            const {file, end, height, start, width, workspace} = options;
+            const {file, workspace} = options;
 
-            const item = push({
+            const {identifier} = push({
                 identifier: generate_uuid(),
 
                 workspace,
@@ -99,56 +145,7 @@ export function renders(notifications: INotificationsStore): IRendersStore {
                 completion: 0,
             });
 
-            const {identifier} = item;
-
-            const iframe_element = document.createElement("IFRAME") as HTMLIFrameElement;
-
-            // NOTE: Need to hide it so it basically acts like an "off-screen canvas"
-            iframe_element.style.position = "fixed";
-            iframe_element.style.pointerEvents = "none";
-            iframe_element.style.opacity = "0";
-
-            iframe_element.style.height = `${height}px`;
-            iframe_element.style.width = `${width}px`;
-
-            iframe_element.src = `/render.html?identifier=${identifier}&workspace=${workspace}&file=${file}&start=${start}&end=${end}`;
-
-            iframe_element.addEventListener("load", () => {
-                const messages = message<
-                    IRenderEndMessage | IRenderProgressMessage | IRenderStartMessage
-                >(iframe_element.contentWindow!);
-
-                const destroy = messages.subscribe(async (message) => {
-                    switch (message.name) {
-                        case MESSAGES_RENDER.end: {
-                            destroy();
-                            iframe_element.remove();
-
-                            const render = update("identifier", identifier, {
-                                state: RENDER_STATES.ended,
-                            });
-
-                            EVENT_END.dispatch({render, frames: message.detail.frames});
-                            break;
-                        }
-
-                        case MESSAGES_RENDER.progress:
-                            update("identifier", identifier, {completion: message.detail.progress});
-                            break;
-
-                        case MESSAGES_RENDER.start: {
-                            const render = update("identifier", identifier, {
-                                state: RENDER_STATES.started,
-                            });
-
-                            EVENT_START.dispatch({render});
-                            break;
-                        }
-                    }
-                });
-            });
-
-            document.body.appendChild(iframe_element);
+            render_job(identifier, options);
             return identifier;
         },
 

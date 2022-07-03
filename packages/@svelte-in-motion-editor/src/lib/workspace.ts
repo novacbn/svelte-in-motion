@@ -95,7 +95,7 @@ export async function workspace(identifier: string, app: IAppContext): Promise<I
     );
 
     const errors = make_errors_store(notifications);
-    const renders = make_renders_store(notifications);
+    const renders = make_renders_store(app);
     const jobs = make_jobs_store(notifications, app.encodes, renders);
 
     return {

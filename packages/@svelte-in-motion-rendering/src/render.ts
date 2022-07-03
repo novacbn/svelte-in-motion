@@ -70,15 +70,12 @@ for (let current_frame = ${options.start}; current_frame <= ${options.end}; curr
     );
 }
 
-const frames = Object.values(cache);
-
 window.postMessage(
     {
         type: ${RUNTIME_EVENTS.end},
-        frames,
+        frames: Object.values(cache),
     },
-    "${location.origin}",
-    frames
+    "${location.origin}"
 );
 `;
 
@@ -183,6 +180,8 @@ export function render(options: Partial<IRenderingOptions>): IRenderingHandle {
 
     const payload = TEMPLATE_PAYLOAD(options as IRenderingOptions);
     const runtime = TEMPLATE_RUNTIME({payload});
+
+    console.log({runtime});
 
     const EVENT_ERROR: IRenderingErrorEvent = event();
     const EVENT_END: IRenderingEndEvent = event();
