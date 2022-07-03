@@ -2,9 +2,10 @@
 import type {Readable} from "svelte/store";
 import {get} from "svelte/store";
 
-import {render} from "@svelte-in-motion/rendering";
+import type {Agent} from "@svelte-in-motion/agent";
+import {RENDERING_EVENTS} from "@svelte-in-motion/agent";
 import type {ICollectionItem, IEvent} from "@svelte-in-motion/utilities";
-import {collection, event, generate_uuid} from "@svelte-in-motion/utilities";
+import {collection, event} from "@svelte-in-motion/utilities";
 
 import type {IAppContext} from "../app";
 import {workspace as make_workspace_context} from "../workspace";
@@ -15,7 +16,9 @@ import {bundle} from "@svelte-in-motion/bundling";
 export enum RENDER_STATES {
     ended = "ended",
 
-    started = "started",
+    initializing = "initializing",
+
+    rendering = "rendering",
 
     uninitialized = "uninitialized",
 }
@@ -57,7 +60,7 @@ export interface IRendersStore extends Readable<IRender[]> {
 
     has(identifier: string): boolean;
 
-    queue(options: IRenderQueueOptions): string;
+    queue(options: IRenderQueueOptions): Promise<string>;
 
     remove(identifier: string): IRender;
 
@@ -66,63 +69,14 @@ export interface IRendersStore extends Readable<IRender[]> {
     yield(identifier: string): Promise<Uint8Array[]>;
 }
 
-export function renders(app: IAppContext): IRendersStore {
+export function renders(app: IAppContext, agent: Agent): IRendersStore {
+    const {rendering} = agent;
     const {notifications} = app;
 
     const {find, has, push, subscribe: subscribe_store, remove, update} = collection<IRender>();
 
     const EVENT_END = event<IRenderEndEvent>();
     const EVENT_START = event<IRenderEvent>();
-
-    async function render_job(identifier: string, options: IRenderQueueOptions): Promise<void> {
-        const {end, file, start, workspace} = options;
-
-        const context = await make_workspace_context(workspace, app);
-        const {framerate, height, maxframes, width} = get(context.configuration);
-
-        const result = await bundle({file, storage: context.storage});
-
-        if ("errors" in result) {
-            // TODO: Actually push to global error store
-            const [first_error] = result.errors;
-
-            throw new Error(first_error.message);
-        }
-
-        const handle = render({
-            framerate,
-            end,
-            maxframes,
-            height,
-            script: result.script,
-            start,
-            width,
-        });
-
-        const destroy_progress = handle.EVENT_PROGRESS.subscribe((completion) => {
-            update("identifier", identifier, {completion});
-        });
-
-        const destroy_start = handle.EVENT_START.subscribe(() => {
-            const render = update("identifier", identifier, {
-                state: RENDER_STATES.started,
-            });
-
-            EVENT_START.dispatch({render});
-        });
-
-        const destroy_end = handle.EVENT_END.subscribe((frames) => {
-            const render = update("identifier", identifier, {
-                state: RENDER_STATES.ended,
-            });
-
-            EVENT_END.dispatch({render, frames});
-
-            destroy_end();
-            destroy_progress();
-            destroy_start();
-        });
-    }
 
     return {
         EVENT_END,
@@ -132,11 +86,33 @@ export function renders(app: IAppContext): IRendersStore {
 
         has,
 
-        queue(options) {
-            const {file, workspace} = options;
+        async queue(options) {
+            const {end, file, start, workspace} = options;
 
-            const {identifier} = push({
-                identifier: generate_uuid(),
+            const context = await make_workspace_context(workspace, app);
+            const {framerate, height, maxframes, width} = get(context.configuration);
+
+            const result = await bundle({file, storage: context.storage});
+
+            if ("errors" in result) {
+                // TODO: Actually surface to global error store
+                const [first_error] = result.errors;
+
+                throw new Error(first_error.message);
+            }
+
+            const identifier = await rendering.start_job({
+                framerate,
+                end,
+                maxframes,
+                height,
+                script: result.script,
+                start,
+                width,
+            });
+
+            push({
+                identifier,
 
                 workspace,
                 file,
@@ -145,7 +121,49 @@ export function renders(app: IAppContext): IRendersStore {
                 completion: 0,
             });
 
-            render_job(identifier, options);
+            const observable = await rendering.watch_job(identifier);
+
+            const subscription = observable.subscribe((event) => {
+                switch (event.type) {
+                    case RENDERING_EVENTS.end: {
+                        subscription.unsubscribe();
+
+                        const render = update("identifier", identifier, {
+                            state: RENDER_STATES.ended,
+                        });
+
+                        EVENT_END.dispatch({
+                            render,
+                            frames: event.result,
+                        });
+
+                        break;
+                    }
+
+                    case RENDERING_EVENTS.initialize:
+                        update("identifier", identifier, {state: RENDER_STATES.initializing});
+
+                        break;
+
+                    case RENDERING_EVENTS.progress:
+                        update("identifier", identifier, {completion: event.completion});
+
+                        break;
+
+                    case RENDERING_EVENTS.start: {
+                        const render = update("identifier", identifier, {
+                            state: RENDER_STATES.rendering,
+                        });
+
+                        EVENT_START.dispatch({
+                            render,
+                        });
+
+                        break;
+                    }
+                }
+            });
+
             return identifier;
         },
 
@@ -196,7 +214,7 @@ export function renders(app: IAppContext): IRendersStore {
 
                         break;
 
-                    case RENDER_STATES.started:
+                    case RENDER_STATES.rendering:
                         notifications.update("identifier", notification_identifier, {
                             //icon: Video,
                             header: "Rendering Frames",

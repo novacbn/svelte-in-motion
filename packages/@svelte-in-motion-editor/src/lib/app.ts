@@ -11,10 +11,14 @@ import type {IExtensionsStore} from "./stores/extensions";
 import {extensions as make_extensions_store} from "./stores/extensions";
 import type {IKeybindsStore} from "./stores/keybinds";
 import {keybinds as make_keybinds_store} from "./stores/keybinds";
+import type {IJobsStore} from "./stores/jobs";
+import {jobs as make_jobs_store} from "./stores/jobs";
 import type {INotificationsStore} from "./stores/notifications";
 import {notifications as make_notifications_store} from "./stores/notifications";
 import type {IPromptsStore} from "./stores/prompts";
 import {prompts as make_prompt_store} from "./stores/prompts";
+import type {IRendersStore} from "./stores/renders";
+import {renders as make_renders_store} from "./stores/renders";
 
 import {
     FILE_CONFIGURATION_PREFERENCES,
@@ -35,7 +39,11 @@ export interface IAppContext {
 
     keybinds: IKeybindsStore;
 
+    jobs: IJobsStore;
+
     notifications: INotificationsStore;
+
+    renders: IRendersStore;
 
     preferences: IPreloadedConfigurationFileStore<PreferencesConfiguration>;
 
@@ -99,6 +107,8 @@ export async function app(): Promise<IAppContext> {
     const agent = await Agent.connect_to();
 
     app.encodes = make_encodes_store(app, agent);
+    app.renders = make_renders_store(app, agent);
+    app.jobs = make_jobs_store(app);
 
     return app;
 }

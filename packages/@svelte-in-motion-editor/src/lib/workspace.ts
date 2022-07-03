@@ -8,10 +8,6 @@ import {make_scoped_context} from "@svelte-in-motion/utilities";
 
 import type {IErrorsStore} from "./stores/errors";
 import {errors as make_errors_store} from "./stores/errors";
-import type {IJobsStore} from "./stores/jobs";
-import {jobs as make_jobs_store} from "./stores/jobs";
-import type {IRendersStore} from "./stores/renders";
-import {renders as make_renders_store} from "./stores/renders";
 
 import {FILE_CONFIGURATION_WORKSPACE} from "./util/storage";
 
@@ -34,11 +30,7 @@ export interface IWorkspaceContext {
 
     metadata: Readable<WorkspacesItemConfiguration>;
 
-    jobs: IJobsStore;
-
     preview?: IPreviewContext;
-
-    renders: IRendersStore;
 
     storage: IDriver;
 }
@@ -95,16 +87,12 @@ export async function workspace(identifier: string, app: IAppContext): Promise<I
     );
 
     const errors = make_errors_store(notifications);
-    const renders = make_renders_store(app);
-    const jobs = make_jobs_store(notifications, app.encodes, renders);
 
     return {
         configuration,
         errors,
         identifier,
-        jobs,
         metadata,
-        renders,
         storage,
     };
 }

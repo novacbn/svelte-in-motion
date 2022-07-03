@@ -101,6 +101,7 @@ export function encodes(app: IAppContext, agent: Agent): IEncodesStore {
 
             push({
                 identifier,
+
                 state: ENCODE_STATES.uninitialized,
                 completion: 0,
             });

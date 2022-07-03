@@ -44,7 +44,7 @@ export const extension = {
     },
 
     async command_prompt_frames(app: IAppContext) {
-        const {notifications, prompts, workspace} = app;
+        const {notifications, prompts, renders, workspace} = app;
         if (!workspace) {
             notifications.push({
                 //icon: X,
@@ -55,7 +55,7 @@ export const extension = {
             return;
         }
 
-        const {configuration, editor, preview, renders} = workspace;
+        const {configuration, editor, preview} = workspace;
 
         if (!editor) {
             notifications.push({
@@ -77,7 +77,7 @@ export const extension = {
             return;
         }
 
-        const {height, maxframes, width} = get(configuration);
+        const {maxframes} = get(configuration);
 
         let export_configuration: IExportFramesPromptEvent;
         try {
@@ -91,12 +91,9 @@ export const extension = {
         }
 
         const {file_path} = editor;
-        const render_identifier = renders.queue({
+        const render_identifier = await renders.queue({
             workspace: workspace.identifier,
             file: file_path,
-
-            height,
-            width,
 
             end: export_configuration.end,
             start: export_configuration.start,
@@ -128,7 +125,7 @@ export const extension = {
     },
 
     async command_prompt_video(app: IAppContext) {
-        const {notifications, prompts, workspace} = app;
+        const {jobs, notifications, prompts, workspace} = app;
         if (!workspace) {
             notifications.push({
                 //icon: X,
@@ -139,7 +136,7 @@ export const extension = {
             return;
         }
 
-        const {configuration, editor, jobs, preview} = workspace;
+        const {configuration, editor, preview} = workspace;
 
         if (!editor) {
             notifications.push({
@@ -191,8 +188,6 @@ export const extension = {
             render: {
                 end: export_configuration.end,
                 start: export_configuration.start,
-                height,
-                width,
             },
         });
 

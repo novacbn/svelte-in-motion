@@ -36,6 +36,14 @@ export enum ENCODING_EVENTS {
     end,
 }
 
+interface IEncodeJob {
+    identifier: UUID;
+
+    handle: IEncodingHandle;
+
+    options: IEncodingOptions;
+}
+
 export interface IAvailableCodecConfiguration {
     crf_range: [number, number];
 
@@ -54,14 +62,6 @@ export interface ICodecConfiguration {
     framerate: number;
 
     pixel_format: IPixelFormatNames;
-}
-
-export interface IEncodeJob {
-    identifier: UUID;
-
-    handle: IEncodingHandle;
-
-    options: IEncodingOptions;
 }
 
 // HACK: DeepKit serialization doesn't work well with extended interfaces, so we
@@ -222,6 +222,11 @@ export class RPCEncodingAgentController implements IRPCEncodingAgentController {
             const {handle} = job;
 
             const destroy_end = handle.EVENT_END.subscribe((detail) => {
+                destroy_end();
+                destroy_initialize();
+                destroy_progress();
+                destroy_start();
+
                 observer.next({
                     identifier,
                     type: ENCODING_EVENTS.end,

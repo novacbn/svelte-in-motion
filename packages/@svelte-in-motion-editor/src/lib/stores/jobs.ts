@@ -4,9 +4,11 @@ import type {Readable} from "svelte/store";
 import type {ICollectionItem, IEvent} from "@svelte-in-motion/utilities";
 import {collection, event, generate_uuid} from "@svelte-in-motion/utilities";
 
-import type {IEncodeQueueOptions, IEncodesStore} from "./encodes";
-import type {IRenderQueueOptions, IRendersStore} from "./renders";
-import type {INotification, INotificationsStore} from "./notifications";
+import type {IAppContext} from "../app";
+
+import type {IEncodeQueueOptions} from "./encodes";
+import type {IRenderQueueOptions} from "./renders";
+import type {INotification} from "./notifications";
 
 export enum JOB_STATES {
     ended = "ended",
@@ -94,11 +96,9 @@ export interface IJobsStore extends Readable<IJob[]> {
     yield(identifier: string): Promise<Uint8Array>;
 }
 
-export function jobs(
-    notifications: INotificationsStore,
-    encodes: IEncodesStore,
-    renders: IRendersStore
-): IJobsStore {
+export function jobs(app: IAppContext): IJobsStore {
+    const {encodes, notifications, renders} = app;
+
     const {find, has, push, subscribe, remove, update} = collection<IJob>();
 
     const EVENT_END = event<IJobEndEvent>();
@@ -110,7 +110,7 @@ export function jobs(
     async function run_job(identifier: string, options: IJobQueueOptions): Promise<void> {
         const {file, encode, render, workspace} = options;
 
-        const render_job = renders.queue({
+        const render_identifier = await renders.queue({
             ...render,
             file,
             workspace,
@@ -118,32 +118,32 @@ export function jobs(
 
         let job = update("identifier", identifier, {
             state: JOB_STATES.rendering,
-            render: render_job,
+            render: render_identifier,
         });
 
         EVENT_RENDERING.dispatch({
             job: job as IJobRendering,
-            render: render_job,
+            render: render_identifier,
         });
 
-        const frames = await renders.yield(render_job);
-        renders.remove(render_job);
+        const frames = await renders.yield(render_identifier);
+        renders.remove(render_identifier);
 
-        const encode_job = await encodes.queue({...encode, frames});
+        const encode_identifier = await encodes.queue({...encode, frames});
 
         job = update("identifier", identifier, {
             state: JOB_STATES.encoding,
-            encode: encode_job,
+            encode: encode_identifier,
             render: undefined,
         });
 
         EVENT_ENCODING.dispatch({
             job: job as IJobEncoding,
-            encode: encode_job,
+            encode: encode_identifier,
         });
 
-        const video = await encodes.yield(encode_job);
-        encodes.remove(encode_job);
+        const video = await encodes.yield(encode_identifier);
+        encodes.remove(encode_identifier);
 
         job = update("identifier", identifier, {
             state: JOB_STATES.ended,
