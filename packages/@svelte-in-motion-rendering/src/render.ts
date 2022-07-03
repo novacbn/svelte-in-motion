@@ -14,11 +14,15 @@ enum RUNTIME_EVENTS {
 
 const TEMPLATE_PAYLOAD = (options: IRenderingOptions) =>
     `
+const sim_core = require("@svelte-in-motion/core");
+const sim_screenshot = require("@svelte-in-motion/screenshot");
+const svelte = require("svelte");
+
 const cache = {};
 
-const frame = __SIM_RUNTIME["@svelte-in-motion/core"].frame(${options.start});
-const framerate = __SIM_RUNTIME["@svelte-in-motion/core"].framerate(${options.framerate});
-const maxframes = __SIM_RUNTIME["@svelte-in-motion/core"].maxframes(${options.maxframes});
+const frame = sim_core.frame(${options.start});
+const framerate = sim_core.framerate(${options.framerate});
+const maxframes = sim_core.maxframes(${options.maxframes});
 
 window.addEventListener("error", (event) => {
     window.postMessage(
@@ -31,18 +35,14 @@ window.addEventListener("error", (event) => {
     );
 });
 
-const module = __SIM_RUNTIME["@svelte-in-motion/utilities"].evaluate_code(
-    ${JSON.stringify(options.script)},
-    {},
-    __SIM_RUNTIME
-);
+eval(${JSON.stringify(options.script)});
 
-const component = new module.default({
+const component = new module.exports.default({
     target: document.body,
     context: new Map([
-        [__SIM_RUNTIME["@svelte-in-motion/core"].CONTEXT_FRAME.key, frame],
-        [__SIM_RUNTIME["@svelte-in-motion/core"].CONTEXT_FRAMERATE.key, framerate],
-        [__SIM_RUNTIME["@svelte-in-motion/core"].CONTEXT_MAXFRAMES.key, maxframes],
+        [sim_core.CONTEXT_FRAME.key, frame],
+        [sim_core.CONTEXT_FRAMERATE.key, framerate],
+        [sim_core.CONTEXT_MAXFRAMES.key, maxframes],
     ]),
 });
 
@@ -55,9 +55,9 @@ window.postMessage(
 
 for (let current_frame = ${options.start}; current_frame <= ${options.end}; current_frame++) {
     frame.set(current_frame);
-    await __SIM_RUNTIME["svelte"].tick();
+    await svelte.tick();
 
-    cache[current_frame] = await __SIM_RUNTIME["@svelte-in-motion/screenshot"].screenshot_node(
+    cache[current_frame] = await sim_screenshot.screenshot_node(
         document.documentElement
     );
 
@@ -180,8 +180,6 @@ export function render(options: Partial<IRenderingOptions>): IRenderingHandle {
 
     const payload = TEMPLATE_PAYLOAD(options as IRenderingOptions);
     const runtime = TEMPLATE_RUNTIME({payload});
-
-    console.log({runtime});
 
     const EVENT_ERROR: IRenderingErrorEvent = event();
     const EVENT_END: IRenderingEndEvent = event();

@@ -34,21 +34,38 @@
             import * as sim_animations from "@svelte-in-motion/animations";
             import * as sim_core from "@svelte-in-motion/core";
             import * as sim_screenshot from "@svelte-in-motion/screenshot";
-            import * as sim_utilities from "@svelte-in-motion/utilities";
 
-            window.__SIM_RUNTIME = {
-                svelte: svelte,
-                "svelte/animate": svelte_animate,
-                "svelte/easing": svelte_easing,
-                "svelte/internal": svelte_internal,
-                "svelte/motion": svelte_motion,
-                "svelte/store": svelte_store,
-                "svelte/transition": svelte_transition,
+            window.module = {};
+            window.module.exports = {};
 
-                "@svelte-in-motion/animations": sim_animations,
-                "@svelte-in-motion/core": sim_core,
-                "@svelte-in-motion/screenshot": sim_screenshot,
-                "@svelte-in-motion/utilities": sim_utilities,
+            window.require = (name) => {
+                switch (name) {
+                    case "svelte":
+                        return svelte;
+                    case "svelte/animate":
+                        return svelte_animate;
+                    case "svelte/easing":
+                        return svelte_easing;
+                    case "svelte/internal":
+                        return svelte_internal;
+                    case "svelte/motion":
+                        return svelte_motion;
+                    case "svelte/store":
+                        return svelte_store;
+                    case "svelte/transition":
+                        return svelte_transition;
+
+                    case "@svelte-in-motion/animations":
+                        return sim_animations;
+                    case "@svelte-in-motion/core":
+                        return sim_core;
+                    case "@svelte-in-motion/screenshot":
+                        return sim_screenshot;
+                }
+
+                throw new ReferenceError(
+                    `bad argument #0 to 'require' (module '${name}' not found)`
+                );
             };
 
             (async () => {
