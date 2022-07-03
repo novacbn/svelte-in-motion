@@ -18,8 +18,6 @@ export interface IBundleOptions {
     file: string;
 
     storage: IDriver;
-
-    worker?: boolean;
 }
 
 export interface IBundleError {
@@ -42,12 +40,12 @@ function map_messages(messages: Message[]): IError[] {
 }
 
 export async function bundle(options: IBundleOptions): Promise<IBundleError | IBundleSuccess> {
-    const {file, storage, worker = false} = options;
+    const {file, storage} = options;
 
     if (!has_initialized) {
         await initialize({
             wasmURL: "/extern/wasm/esbuild.wasm",
-            worker,
+            worker: true,
         });
 
         has_initialized = true;
