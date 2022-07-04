@@ -8,7 +8,9 @@ export type ICommandArguments = Record<string, string | undefined>;
 export interface ICommand extends ICollectionItem {
     identifier: string;
 
-    is_visible?: boolean;
+    is_disabled?: boolean | (() => boolean);
+
+    is_visible?: boolean | (() => boolean);
 
     on_execute: <T extends ICommandArguments | undefined = undefined>(
         app: IAppContext,

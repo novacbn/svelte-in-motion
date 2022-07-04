@@ -18,6 +18,10 @@ export interface IKeybind extends ICollectionItem {
 
     identifier: string;
 
+    is_disabled?: boolean | (() => boolean);
+
+    is_visible?: boolean | (() => boolean);
+
     repeat?: boolean;
 
     repeat_throttle?: number;

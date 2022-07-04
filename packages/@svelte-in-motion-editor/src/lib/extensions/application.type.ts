@@ -12,7 +12,6 @@ export const extension = {
 
         commands.push({
             identifier: "application.prompt.about",
-            is_visible: true,
             on_execute: this.command_prompt_about.bind(this),
         });
 

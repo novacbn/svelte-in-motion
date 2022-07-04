@@ -15,21 +15,18 @@ export const extension = {
 
         commands.push({
             identifier: "preview.playback.frame.next",
-            is_visible: true,
             on_execute: this.command_playback_frame_next.bind(this),
         });
 
         keybinds.push({
             identifier: "preview.playback.frame.next",
             binds: [["arrowright"]],
-            repeat: true,
             repeat_throttle: 50,
             on_bind: this.keybind_playback_frame_next.bind(this),
         });
 
         commands.push({
             identifier: "preview.playback.frame.previous",
-            is_visible: true,
             on_execute: this.command_playback_frame_previous.bind(this),
         });
 
@@ -43,7 +40,6 @@ export const extension = {
 
         commands.push({
             identifier: "preview.playback.toggle",
-            is_visible: true,
             on_execute: this.command_playback_toggle.bind(this),
         });
 
@@ -55,7 +51,6 @@ export const extension = {
 
         commands.push({
             identifier: "preview.ui.checkerboard.toggle",
-            is_visible: true,
             on_execute: this.command_ui_checkerboard_toggle.bind(this),
         });
 
@@ -67,7 +62,6 @@ export const extension = {
 
         commands.push({
             identifier: "preview.ui.controls.toggle",
-            is_visible: true,
             on_execute: this.command_ui_controls_toggle.bind(this),
         });
 
@@ -79,7 +73,6 @@ export const extension = {
 
         commands.push({
             identifier: "preview.ui.timeline.toggle",
-            is_visible: true,
             on_execute: this.command_ui_timeline_toggle.bind(this),
         });
 
@@ -91,7 +84,6 @@ export const extension = {
 
         commands.push({
             identifier: "preview.ui.viewport.toggle",
-            is_visible: true,
             on_execute: this.command_ui_viewport_toggle.bind(this),
         });
 
