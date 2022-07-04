@@ -26,7 +26,7 @@ export const extension = {
 
         keybinds.push({
             identifier: "export.prompt.frames",
-            binds: [["control", "alt", "f"]],
+            binds: [["control", "shift", "f"]],
             on_bind: this.keybind_prompt_frames.bind(this),
         });
 
@@ -38,7 +38,7 @@ export const extension = {
 
         keybinds.push({
             identifier: "export.prompt.video",
-            binds: [["control", "alt", "v"]],
+            binds: [["control", "shift", "v"]],
             on_bind: this.keybind_prompt_video.bind(this),
         });
     },
