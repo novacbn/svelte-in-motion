@@ -235,8 +235,12 @@ export function render(options: Partial<IRenderingOptions>): IRenderingHandle {
                 case RUNTIME_EVENTS.progress:
                     EVENT_PROGRESS.dispatch(message.progress);
 
+                    break;
+
                 case RUNTIME_EVENTS.start:
                     EVENT_START.dispatch();
+
+                    break;
             }
         }
 
