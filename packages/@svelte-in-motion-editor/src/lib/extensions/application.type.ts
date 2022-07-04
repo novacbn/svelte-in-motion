@@ -32,7 +32,7 @@ export const extension = {
     },
 
     keybind_prompt_about(app: IAppContext, event: IKeybindEvent) {
-        if (event.active && app.workspace?.editor) this.command_prompt_about(app);
+        if (event.active) this.command_prompt_about(app);
     },
 };
 
