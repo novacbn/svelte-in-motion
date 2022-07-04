@@ -209,7 +209,7 @@ export class RPCEncodingAgentController implements IRPCEncodingAgentController {
     watch_job(
         identifier: UUID
     ): Observable<
-        IEncodingEndEvent | IEncodingProgressEvent | IEncodingStartEvent | IEncodingInitializeEvent
+        IEncodingEndEvent | IEncodingInitializeEvent | IEncodingProgressEvent | IEncodingStartEvent
     > {
         const job = this.jobs.find((job) => job.identifier === identifier);
         if (!job) {

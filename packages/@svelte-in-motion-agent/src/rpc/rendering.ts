@@ -131,9 +131,9 @@ export class RPCRenderingAgentController implements IRPCRenderingAgentController
         identifier: UUID
     ): Observable<
         | IRenderingEndEvent
+        | IRenderingInitializeEvent
         | IRenderingProgressEvent
         | IRenderingStartEvent
-        | IRenderingInitializeEvent
     > {
         const job = this.jobs.find((job) => job.identifier === identifier);
         if (!job) {
@@ -150,8 +150,6 @@ export class RPCRenderingAgentController implements IRPCRenderingAgentController
                 destroy_initialize();
                 destroy_progress();
                 destroy_start();
-
-                console.log({detail});
 
                 observer.next({
                     identifier,
