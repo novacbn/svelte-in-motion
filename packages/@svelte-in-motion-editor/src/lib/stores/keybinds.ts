@@ -65,7 +65,13 @@ export function keybinds(app: IAppContext): IKeybindsStore {
 
             const items = get(store);
             for (const item of items) {
-                const {binds, identifier, repeat: can_repeat = false, repeat_throttle = 0} = item;
+                const {
+                    binds,
+                    identifier,
+                    is_disabled = false,
+                    repeat: can_repeat = false,
+                    repeat_throttle = 0,
+                } = item;
 
                 const can_handle = !!binds.find((bind) => bind.includes(key));
                 if (can_handle) {
@@ -90,10 +96,12 @@ export function keybinds(app: IAppContext): IKeybindsStore {
                     }
 
                     if (current_active !== previous_active || is_repeating) {
-                        item.on_bind(app, {
-                            active: current_active,
-                            repeat,
-                        });
+                        if (!is_disabled || (typeof is_disabled === "function" && !is_disabled())) {
+                            item.on_bind(app, {
+                                active: current_active,
+                                repeat,
+                            });
+                        }
 
                         if (is_repeating) timestamp_lookup.set(identifier, current_timestamp);
                     }
