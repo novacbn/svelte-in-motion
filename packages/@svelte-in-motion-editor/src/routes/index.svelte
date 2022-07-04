@@ -63,7 +63,9 @@
                     <Tile.Section>
                         <Tile.Header>{workspace.name}</Tile.Header>
                         <Text is="small">
-                            Last Accessed: {workspace.format_accessed()}
+                            {$translations("ui-view-dashboard-last_accessed_workspace", {
+                                timestamp: workspace.format_accessed(),
+                            })}
                         </Text>
                     </Tile.Section>
 
@@ -75,7 +77,7 @@
                             palette="accent"
                             sizing="nano"
                         >
-                            OPEN
+                            {$translations("ui-view-dashboard-open_workspace")}
                         </Button>
                     </Tile.Footer>
                 </Tile.Container>
@@ -83,7 +85,7 @@
         </Stack.Container>
 
         <Button palette="affirmative" on:click={on_create_click}>
-            {$translations("ui-actions-create_workspace")}
+            {$translations("ui-view-dashboard-create_workspace")}
         </Button>
     {:else}
         <Hero.Container class="sim--app-dashboard">
