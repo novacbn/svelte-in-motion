@@ -10,6 +10,7 @@ import AboutPrompt from "../../components/prompts/AboutPrompt.svelte";
 import CreateWorkspace from "../../components/prompts/CreateWorkspace.svelte";
 import ExportFramesPrompt from "../../components/prompts/ExportFramesPrompt.svelte";
 import ExportVideoPrompt from "../../components/prompts/ExportVideoPrompt.svelte";
+import SearchPrompt from "../../components/prompts/SearchPrompt.svelte";
 
 import type {IError} from "../util/errors";
 
@@ -37,6 +38,18 @@ export interface IExportVideoPromptEvent extends IExportFramesPromptEvent {
     crf: number;
 
     pixel_format: IPixelFormatNames;
+}
+
+export interface ISearchPromptProps {
+    documents: Record<string, string>[];
+
+    identifier: string;
+
+    index: string[];
+
+    limit?: number;
+
+    title: string;
 }
 
 export interface IPromptEvent {
@@ -75,6 +88,8 @@ export interface IPromptsStore extends Readable<IPrompt<any> | null> {
     prompt_export_frames(props: IExportFramesPromptProps): Promise<IExportFramesPromptEvent>;
 
     prompt_export_video(props: IExportVideoPromptProps): Promise<IExportVideoPromptEvent>;
+
+    prompt_search(props: ISearchPromptProps): Promise<void>;
 }
 
 export function prompts(): IPromptsStore {
@@ -142,6 +157,14 @@ export function prompts(): IPromptsStore {
         prompt_export_video(props) {
             return prompt<IExportVideoPromptProps, IExportVideoPromptEvent>({
                 Component: ExportVideoPrompt,
+                dismissible: true,
+                props,
+            });
+        },
+
+        prompt_search(props) {
+            return prompt<ISearchPromptProps, void>({
+                Component: SearchPrompt,
                 dismissible: true,
                 props,
             });

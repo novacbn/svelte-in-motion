@@ -127,8 +127,10 @@ importers:
       '@svelte-in-motion/utilities': workspace:^
       '@sveltejs/vite-plugin-svelte': 1.0.0-next.49
       '@tsconfig/svelte': ^2.0.1
+      '@types/flexsearch': ^0.7.3
       '@types/prismjs': ^1.26.0
       buffer: ^6.0.3
+      flexsearch: ^0.7.21
       lucide-svelte: ^0.61.0
       prettier-plugin-svelte: ^2.7.0
       prismjs: ^1.27.0
@@ -157,6 +159,7 @@ importers:
       '@svelte-in-motion/temporal': link:../@svelte-in-motion-temporal
       '@svelte-in-motion/utilities': link:../@svelte-in-motion-utilities
       buffer: 6.0.3
+      flexsearch: 0.7.21
       lucide-svelte: 0.61.0_svelte2tsx@0.5.10+svelte@3.46.4
       prismjs: 1.27.0
       urlpattern-polyfill: 1.0.0-rc5
@@ -164,6 +167,7 @@ importers:
       '@deepkit/type-compiler': 1.0.1-alpha.71_typescript@4.7.3
       '@sveltejs/vite-plugin-svelte': 1.0.0-next.49_svelte@3.46.4+vite@2.9.12
       '@tsconfig/svelte': 2.0.1
+      '@types/flexsearch': 0.7.3
       '@types/prismjs': 1.26.0
       prettier-plugin-svelte: 2.7.0_prettier@2.7.0+svelte@3.46.4
       svelte: 3.46.4
@@ -1333,6 +1337,10 @@ packages:
       '@babel/types': 7.18.7
     dev: true
 
+  /@types/flexsearch/0.7.3:
+    resolution: {integrity: sha512-HXwADeHEP4exXkCIwy2n1+i0f1ilP1ETQOH5KDOugjkTFZPntWo0Gr8stZOaebkxsdx+k0X/K6obU/+it07ocg==}
+    dev: true
+
   /@types/format-util/1.0.2:
     resolution: {integrity: sha512-9SrLCpgzWo2yHHhiMOX0WwgDh37nSbDbWUsRc1ss++o8O97E3tB6SJiyUQM21UeUsKvZNuhDCmkRaINZ4uJAfg==}
     dev: false
@@ -2118,6 +2126,10 @@ packages:
       locate-path: 5.0.0
       path-exists: 4.0.0
     dev: true
+
+  /flexsearch/0.7.21:
+    resolution: {integrity: sha512-W7cHV7Hrwjid6lWmy0IhsWDFQboWSng25U3VVywpHOTJnnAZNPScog67G+cVpeX9f7yDD21ih0WDrMMT+JoaYg==}
+    dev: false
 
   /format-util/1.0.5:
     resolution: {integrity: sha512-varLbTj0e0yVyRpqQhuWV+8hlePAgaoFRhNFj50BNjEIrw1/DphHSObtqwskVCPWNgzwPoQrZAbfa/SBiicNeg==}

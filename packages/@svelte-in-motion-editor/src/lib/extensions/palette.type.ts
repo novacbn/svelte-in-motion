@@ -72,7 +72,12 @@ export const extension = {
             };
         });
 
-        console.log({documents});
+        prompts.prompt_search({
+            documents,
+            identifier: "identifier",
+            index: ["identifier", "title", "description"],
+            title: "title",
+        });
     },
 
     keybind_prompt_frames(app: IAppContext, event: IKeybindEvent) {
