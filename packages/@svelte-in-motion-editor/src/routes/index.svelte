@@ -96,10 +96,14 @@
                 NOT FOUND
             </Hero.Header>
 
-            <Hero.Section>No available workspaces.</Hero.Section>
+            <Hero.Section>
+                {$translations("ui-view-dashboard-no_available_workspaces")}
+            </Hero.Section>
 
             <Hero.Footer>
-                <Button palette="affirmative" on:click={on_create_click}>Create Workspace</Button>
+                <Button palette="affirmative" on:click={on_create_click}>
+                    {$translations("ui-view-dashboard-create_workspace")}
+                </Button>
             </Hero.Footer>
         </Hero.Container>
     {/if}
