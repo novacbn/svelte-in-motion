@@ -214,7 +214,11 @@ export function render(options: Partial<IRenderingOptions>): IRenderingHandle {
 
             switch (message.type) {
                 case RUNTIME_EVENTS.end:
-                    EVENT_END.dispatch(message.frames);
+                    // NOTE: We need to clone the results since the underlying `ArrayBuffer`
+                    // instances are freed when the iframe is removed
+                    EVENT_END.dispatch(
+                        message.frames.map((frame) => new Uint8Array(frame.buffer.slice(0)))
+                    );
 
                     iframe_element.contentWindow!.removeEventListener("message", on_message);
                     iframe_element.remove();
