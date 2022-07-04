@@ -30,6 +30,9 @@ import {
     STORAGE_USER,
 } from "./lib/util/storage";
 
+// TODO: Update to get previewed file from IPC rather than URL parameters. That
+// way the iframe doesn't have to be teared down each file change
+
 (async () => {
     const url = new URL(location.href);
     const {file, workspace: workspace_identifier} = Object.fromEntries(url.searchParams.entries());

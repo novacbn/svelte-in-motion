@@ -123,6 +123,11 @@ export function renders(app: IAppContext, agent: Agent): IRendersStore {
 
             const observable = await rendering.watch_job(identifier);
 
+            // TODO: Update RPC protocol to support streaming out-of-order
+            // frame by frame. So agents can more efficiently process frames.
+
+            // TODO: Cache frames to temp folder on disk and emit path to event.
+
             const subscription = observable.subscribe((event) => {
                 switch (event.type) {
                     case RENDERING_EVENTS.end: {

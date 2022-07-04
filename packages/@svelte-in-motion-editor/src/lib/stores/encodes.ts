@@ -108,6 +108,8 @@ export function encodes(app: IAppContext, agent: Agent): IEncodesStore {
 
             const observable = await encoding.watch_job(identifier);
 
+            // TODO: Cache video to temp file on disk and emit path to event.
+
             const subscription = observable.subscribe((event) => {
                 switch (event.type) {
                     case ENCODING_EVENTS.end: {
