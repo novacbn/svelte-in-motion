@@ -25,7 +25,7 @@
 
     import {CONTEXT_APP} from "../lib/app";
 
-    const {prompts, translations, workspaces} = CONTEXT_APP.get()!;
+    const {prompts, translate, workspaces} = CONTEXT_APP.get()!;
 
     async function on_create_click(event: MouseEvent): Promise<void> {
         let workspace_configuration: ICreateWorkspacePromptEvent;
@@ -63,7 +63,7 @@
                     <Tile.Section>
                         <Tile.Header>{workspace.name}</Tile.Header>
                         <Text is="small">
-                            {$translations("ui-view-dashboard-last_accessed_workspace", {
+                            {$translate("ui-view-dashboard-last_accessed_workspace", {
                                 timestamp: workspace.format_accessed(),
                             })}
                         </Text>
@@ -77,7 +77,7 @@
                             palette="accent"
                             sizing="nano"
                         >
-                            {$translations("ui-view-dashboard-open_workspace")}
+                            {$translate("ui-view-dashboard-open_workspace")}
                         </Button>
                     </Tile.Footer>
                 </Tile.Container>
@@ -85,7 +85,7 @@
         </Stack.Container>
 
         <Button palette="affirmative" on:click={on_create_click}>
-            {$translations("ui-view-dashboard-create_workspace")}
+            {$translate("ui-view-dashboard-create_workspace")}
         </Button>
     {:else}
         <Hero.Container class="sim--app-dashboard">
@@ -97,12 +97,12 @@
             </Hero.Header>
 
             <Hero.Section>
-                {$translations("ui-view-dashboard-no_available_workspaces")}
+                {$translate("ui-view-dashboard-no_available_workspaces")}
             </Hero.Section>
 
             <Hero.Footer>
                 <Button palette="affirmative" on:click={on_create_click}>
-                    {$translations("ui-view-dashboard-create_workspace")}
+                    {$translate("ui-view-dashboard-create_workspace")}
                 </Button>
             </Hero.Footer>
         </Hero.Container>

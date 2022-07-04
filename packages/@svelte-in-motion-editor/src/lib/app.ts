@@ -55,7 +55,7 @@ export interface IAppContext {
 
     prompts: IPromptsStore;
 
-    translations: ITranslationStore;
+    translate: ITranslationStore;
 
     workspace?: IWorkspaceContext;
 
@@ -119,7 +119,7 @@ export async function app(): Promise<IAppContext> {
     app.jobs = make_jobs_store(app);
 
     app.locale = make_locale_store(app);
-    app.translations = make_translations_store(app);
+    app.translate = make_translations_store(app);
 
     return app;
 }
