@@ -120,18 +120,21 @@ export function prompts(): IPromptsStore {
         prompt_about() {
             return prompt<void, void>({
                 Component: AboutPrompt,
+                dismissible: true,
             });
         },
 
         prompt_create_workspace() {
             return prompt<void, ICreateWorkspacePromptEvent>({
                 Component: CreateWorkspace,
+                dismissible: true,
             });
         },
 
         prompt_export_frames(props) {
             return prompt<IExportFramesPromptProps, IExportFramesPromptEvent>({
                 Component: ExportFramesPrompt,
+                dismissible: true,
                 props,
             });
         },
@@ -139,6 +142,7 @@ export function prompts(): IPromptsStore {
         prompt_export_video(props) {
             return prompt<IExportVideoPromptProps, IExportVideoPromptEvent>({
                 Component: ExportVideoPrompt,
+                dismissible: true,
                 props,
             });
         },

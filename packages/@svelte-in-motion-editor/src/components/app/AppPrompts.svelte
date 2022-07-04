@@ -7,10 +7,20 @@
 
     import type {IPromptRejectEvent, IPromptResolveEvent} from "../../lib/stores/prompts";
 
+    import {PromptDismissError} from "../../lib/util/errors";
+
     const {prompts} = CONTEXT_APP.get()!;
     const {EVENT_PROMPT} = prompts;
 
     let logic_state: boolean = false;
+
+    function on_dismiss(event: CustomEvent<void>): void {
+        prompts.EVENT_REJECT.dispatch({
+            error: PromptDismissError(),
+        });
+
+        logic_state = false;
+    }
 
     function on_reject(event: CustomEvent<IPromptRejectEvent>): void {
         prompts.EVENT_REJECT.dispatch(event.detail);
@@ -34,7 +44,13 @@
     $: if ($EVENT_PROMPT) logic_state = true;
 </script>
 
-<Overlay.Container class="app-prompts" logic_id="app-prompts" bind:logic_state>
+<Overlay.Container
+    class="app-prompts"
+    logic_id="app-prompts"
+    dismissible={$prompts?.dismissible ?? false}
+    {logic_state}
+    on:dismiss={on_dismiss}
+>
     <Overlay.Backdrop />
 
     <Overlay.Section on:transitionend={on_transition_end}>
