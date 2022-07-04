@@ -100,7 +100,7 @@ export async function app(): Promise<IAppContext> {
     const prompts = make_prompt_store();
 
     // @ts-expect-error - HACK: Not great passing context to dependent stores without having
-    // other properties fill. But they don't do anything on initialization /anyway/
+    // other properties filled. But they don't do anything on initialization /anyway/
     const app: IAppContext = {
         notifications,
         preferences,
