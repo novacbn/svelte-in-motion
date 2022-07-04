@@ -21,6 +21,8 @@ import type {IPromptsStore} from "./stores/prompts";
 import {prompts as make_prompt_store} from "./stores/prompts";
 import type {IRendersStore} from "./stores/renders";
 import {renders as make_renders_store} from "./stores/renders";
+import type {ITranslationStore} from "./stores/translations";
+import {translations as make_translations_store} from "./stores/translations";
 
 import {
     FILE_CONFIGURATION_PREFERENCES,
@@ -52,6 +54,8 @@ export interface IAppContext {
     preferences: IPreloadedConfigurationFileStore<PreferencesConfiguration>;
 
     prompts: IPromptsStore;
+
+    translations: ITranslationStore;
 
     workspace?: IWorkspaceContext;
 
@@ -115,6 +119,7 @@ export async function app(): Promise<IAppContext> {
     app.jobs = make_jobs_store(app);
 
     app.locale = make_locale_store(app);
+    app.translations = make_translations_store(app);
 
     return app;
 }

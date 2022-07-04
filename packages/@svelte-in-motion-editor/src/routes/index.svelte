@@ -25,7 +25,7 @@
 
     import {CONTEXT_APP} from "../lib/app";
 
-    const {prompts, workspaces} = CONTEXT_APP.get()!;
+    const {prompts, translations, workspaces} = CONTEXT_APP.get()!;
 
     async function on_create_click(event: MouseEvent): Promise<void> {
         let workspace_configuration: ICreateWorkspacePromptEvent;
@@ -82,7 +82,9 @@
             {/each}
         </Stack.Container>
 
-        <Button palette="affirmative" on:click={on_create_click}>Create Workspace</Button>
+        <Button palette="affirmative" on:click={on_create_click}>
+            {$translations("ui-actions-create_workspace")}
+        </Button>
     {:else}
         <Hero.Container class="sim--app-dashboard">
             <Hero.Header>
