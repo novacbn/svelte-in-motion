@@ -11,6 +11,8 @@ import type {IExtensionsStore} from "./stores/extensions";
 import {extensions as make_extensions_store} from "./stores/extensions";
 import type {IKeybindsStore} from "./stores/keybinds";
 import {keybinds as make_keybinds_store} from "./stores/keybinds";
+import type {ILocaleStore} from "./stores/locale";
+import {locale as make_locale_store} from "./stores/locale";
 import type {IJobsStore} from "./stores/jobs";
 import {jobs as make_jobs_store} from "./stores/jobs";
 import type {INotificationsStore} from "./stores/notifications";
@@ -40,6 +42,8 @@ export interface IAppContext {
     keybinds: IKeybindsStore;
 
     jobs: IJobsStore;
+
+    locale: ILocaleStore;
 
     notifications: INotificationsStore;
 
@@ -109,6 +113,8 @@ export async function app(): Promise<IAppContext> {
     app.encodes = make_encodes_store(app, agent);
     app.renders = make_renders_store(app, agent);
     app.jobs = make_jobs_store(app);
+
+    app.locale = make_locale_store(app);
 
     return app;
 }

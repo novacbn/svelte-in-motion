@@ -110,6 +110,8 @@ importers:
   packages/@svelte-in-motion-editor:
     specifiers:
       '@deepkit/type-compiler': ^1.0.1-alpha.71
+      '@fluent/bundle': ^0.17.1
+      '@fluent/langneg': ^0.6.2
       '@kahi-ui/framework': 0.6.4
       '@novacbn/svelte-codejar': ^0.1.2
       '@svelte-in-motion/agent': workspace:^
@@ -139,6 +141,8 @@ importers:
       urlpattern-polyfill: ^1.0.0-rc5
       vite: 2.9.12
     dependencies:
+      '@fluent/bundle': 0.17.1
+      '@fluent/langneg': 0.6.2
       '@kahi-ui/framework': 0.6.4
       '@novacbn/svelte-codejar': 0.1.2
       '@svelte-in-motion/agent': link:../@svelte-in-motion-agent
@@ -807,6 +811,16 @@ packages:
       resolve-url: 0.2.1
     transitivePeerDependencies:
       - encoding
+    dev: false
+
+  /@fluent/bundle/0.17.1:
+    resolution: {integrity: sha512-CRFNT9QcSFAeFDneTF59eyv3JXFGhIIN4boUO2y22YmsuuKLyDk+N1I/NQUYz9Ab63e6V7T6vItoZIG/2oOOuw==}
+    engines: {node: '>=12.0.0', npm: '>=7.0.0'}
+    dev: false
+
+  /@fluent/langneg/0.6.2:
+    resolution: {integrity: sha512-YF4gZ4sLYRQfctpUR2uhb5UyPUYY5n/bi3OaED/Q4awKjPjlaF8tInO3uja7pnLQcmLTURkZL7L9zxv2Z5NDwg==}
+    engines: {node: '>=12.0.0', npm: '>=7.0.0'}
     dev: false
 
   /@istanbuljs/load-nyc-config/1.1.0:

@@ -31,6 +31,8 @@
         "vite": "2.9.12"
     },
     "dependencies": {
+        "@fluent/bundle": "^0.17.1",
+        "@fluent/langneg": "^0.6.2",
         "@kahi-ui/framework": "0.6.4",
         "@novacbn/svelte-codejar": "^0.1.2",
         "@svelte-in-motion/agent": "workspace:^",

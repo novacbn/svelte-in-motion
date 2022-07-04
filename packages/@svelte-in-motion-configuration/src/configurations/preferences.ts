@@ -2,6 +2,16 @@ import {DataClass} from "@svelte-in-motion/type";
 
 import {Configuration} from "./configuration";
 
+export const DEFAULT_LOCALE = "en-US";
+
+export const SUPPORTED_LOCALES = ["en-US"] as const;
+
+export type ISupportedLocales = typeof SUPPORTED_LOCALES[number];
+
+export class PreferencesLocaleConfiguration extends DataClass {
+    preferred?: ISupportedLocales;
+}
+
 export class PreferencesUIEditorFileTreeConfiguration extends DataClass {
     enabled: boolean = true;
 }
@@ -54,5 +64,7 @@ export class PreferencesUIConfiguration extends DataClass {
 }
 
 export class PreferencesConfiguration extends Configuration {
+    locale: PreferencesLocaleConfiguration = new PreferencesLocaleConfiguration();
+
     ui: PreferencesUIConfiguration = new PreferencesUIConfiguration();
 }
