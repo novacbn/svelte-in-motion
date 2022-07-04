@@ -42,13 +42,14 @@
     </Stack.Container>
 </Card.Section>
 
-<Card.Footer>
+<Card.Footer alignment_x="stretch">
     <Button sizing="nano" variation="clear" palette="inverse" on:click={on_close_click}>
         Close
     </Button>
 
     <Button
         sizing="nano"
+        variation="clear"
         palette="affirmative"
         disabled={!workspace_name}
         on:click={on_create_click}

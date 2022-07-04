@@ -145,10 +145,12 @@
     </Stack.Container>
 </Card.Section>
 
-<Card.Footer>
+<Card.Footer alignment_x="stretch">
     <Button sizing="nano" variation="clear" palette="inverse" on:click={on_close_click}>
         Close
     </Button>
 
-    <Button sizing="nano" palette="affirmative" on:click={on_start_click}>Start Job</Button>
+    <Button sizing="nano" variation="clear" palette="affirmative" on:click={on_start_click}>
+        Start Job
+    </Button>
 </Card.Footer>

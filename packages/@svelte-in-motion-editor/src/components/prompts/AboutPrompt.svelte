@@ -41,6 +41,6 @@
     </Text>
 </Card.Section>
 
-<Card.Footer>
-    <Button sizing="nano" on:click={on_close_click}>Close</Button>
+<Card.Footer alignment_x="stretch">
+    <Button sizing="nano" variation="clear" on:click={on_close_click}>Close</Button>
 </Card.Footer>
