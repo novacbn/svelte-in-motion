@@ -1,10 +1,10 @@
 //import {X} from "lucide-svelte";
 import {get} from "svelte/store";
 
-import type {IExtension} from "../stores/extensions";
-import type {IKeybindEvent} from "../stores/keybinds";
+import type {IExtension} from "@svelte-in-motion/editor/src/lib/stores/extensions";
+import type {IKeybindEvent} from "@svelte-in-motion/editor/src/lib/stores/keybinds";
 
-import type {IAppContext} from "../app";
+import type {IAppContext} from "@svelte-in-motion/editor/src/lib/app";
 
 export const extension = {
     identifier: "dev.nbn.sim.preview",

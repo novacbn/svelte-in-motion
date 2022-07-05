@@ -14,9 +14,9 @@
         get_default_pixel_format,
     } from "@svelte-in-motion/encoding";
 
-    import type {IExportVideoPromptEvent, IPromptRejectEvent} from "../../lib/stores/prompts";
+    import {PromptDismissError} from "@svelte-in-motion/utilities";
 
-    import {PromptDismissError} from "../../lib/util/errors";
+    import type {IExportVideoPromptEvent, IPromptRejectEvent} from "../../lib/stores/prompts";
 
     type $$Events = {
         reject: CustomEvent<IPromptRejectEvent>;

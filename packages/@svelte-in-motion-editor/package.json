@@ -42,6 +42,7 @@
         "@svelte-in-motion/configuration": "workspace:^",
         "@svelte-in-motion/core": "workspace:^",
         "@svelte-in-motion/encoding": "workspace:^",
+        "@svelte-in-motion/extensions": "workspace:^",
         "@svelte-in-motion/rendering": "workspace:^",
         "@svelte-in-motion/screenshot": "workspace:^",
         "@svelte-in-motion/storage": "workspace:^",

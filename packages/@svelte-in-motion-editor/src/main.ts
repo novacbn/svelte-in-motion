@@ -5,14 +5,16 @@ import "@kahi-ui/framework/dist/kahi-ui.theme.default.min.css";
 
 import type {SvelteComponent} from "svelte";
 
+import {
+    EXTENSION_APPLICATION,
+    EXTENSION_EDITOR,
+    EXTENSION_EXPORT,
+    EXTENSION_PALETTE,
+    EXTENSION_PREVIEW,
+} from "@svelte-in-motion/extensions";
+
 import {CONTEXT_APP, app as make_app_context} from "./lib/app";
 import {app_router} from "./lib/router";
-
-import {EXTENSION_APPLICATION} from "./lib/extensions/application.type";
-import {EXTENSION_EDITOR} from "./lib/extensions/editor.type";
-import {EXTENSION_EXPORT} from "./lib/extensions/export.type";
-import {EXTENSION_PALETTE} from "./lib/extensions/palette.type";
-import {EXTENSION_PREVIEW} from "./lib/extensions/preview.type";
 
 import * as Index from "./routes/index.svelte";
 

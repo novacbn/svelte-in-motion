@@ -16,12 +16,11 @@
     //import {PackageX} from "lucide-svelte";
 
     import {WorkspacesItemConfiguration} from "@svelte-in-motion/configuration";
+    import {PromptDismissError} from "@svelte-in-motion/utilities";
 
     import AppLayout from "../components/app/AppLayout.svelte";
 
     import type {ICreateWorkspacePromptEvent} from "../lib/stores/prompts";
-
-    import {PromptDismissError} from "../lib/util/errors";
 
     import {CONTEXT_APP} from "../lib/app";
 

@@ -120,6 +120,7 @@ importers:
       '@svelte-in-motion/configuration': workspace:^
       '@svelte-in-motion/core': workspace:^
       '@svelte-in-motion/encoding': workspace:^
+      '@svelte-in-motion/extensions': workspace:^
       '@svelte-in-motion/rendering': workspace:^
       '@svelte-in-motion/screenshot': workspace:^
       '@svelte-in-motion/storage': workspace:^
@@ -153,6 +154,7 @@ importers:
       '@svelte-in-motion/configuration': link:../@svelte-in-motion-configuration
       '@svelte-in-motion/core': link:../@svelte-in-motion-core
       '@svelte-in-motion/encoding': link:../@svelte-in-motion-encoding
+      '@svelte-in-motion/extensions': link:../@svelte-in-motion-extensions
       '@svelte-in-motion/rendering': link:../@svelte-in-motion-rendering
       '@svelte-in-motion/screenshot': link:../@svelte-in-motion-screenshot
       '@svelte-in-motion/storage': link:../@svelte-in-motion-storage
@@ -195,6 +197,25 @@ importers:
     devDependencies:
       '@deepkit/type-compiler': 1.0.1-alpha.71_typescript@4.7.3
       prettier: 2.5.1
+      typescript: 4.7.3
+
+  packages/@svelte-in-motion-extensions:
+    specifiers:
+      '@deepkit/type-compiler': ^1.0.1-alpha.71
+      '@svelte-in-motion/editor': workspace:^
+      '@svelte-in-motion/storage': workspace:^
+      '@svelte-in-motion/type': workspace:^
+      '@svelte-in-motion/utilities': workspace:^
+      prettier: ^2.3.1
+      typescript: ^4.7.3
+    dependencies:
+      '@svelte-in-motion/storage': link:../@svelte-in-motion-storage
+      '@svelte-in-motion/type': link:../@svelte-in-motion-type
+      '@svelte-in-motion/utilities': link:../@svelte-in-motion-utilities
+    devDependencies:
+      '@deepkit/type-compiler': 1.0.1-alpha.71_typescript@4.7.3
+      '@svelte-in-motion/editor': link:../@svelte-in-motion-editor
+      prettier: 2.7.0
       typescript: 4.7.3
 
   packages/@svelte-in-motion-rendering:

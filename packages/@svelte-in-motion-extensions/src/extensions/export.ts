@@ -1,15 +1,17 @@
 import {get} from "svelte/store";
 
-import {download_blob, download_buffer} from "@svelte-in-motion/utilities";
+import type {IExtension} from "@svelte-in-motion/editor/src/lib/stores/extensions";
+import type {IKeybindEvent} from "@svelte-in-motion/editor/src/lib/stores/keybinds";
+import type {
+    IExportFramesPromptEvent,
+    IExportVideoPromptEvent,
+} from "@svelte-in-motion/editor/src/lib/stores/prompts";
 
-import type {IExtension} from "../stores/extensions";
-import type {IKeybindEvent} from "../stores/keybinds";
-import type {IExportFramesPromptEvent, IExportVideoPromptEvent} from "../stores/prompts";
+import type {IAppContext} from "@svelte-in-motion/editor/src/lib/app";
 
-import {PromptDismissError} from "../util/errors";
+import {PromptDismissError, download_blob, download_buffer} from "@svelte-in-motion/utilities";
+
 import {zip_frames} from "../util/io";
-
-import type {IAppContext} from "../app";
 
 export const extension = {
     identifier: "dev.nbn.sim.export",

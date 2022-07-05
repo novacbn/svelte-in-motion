@@ -13,6 +13,8 @@
 /packages/@svelte-in-motion-editor/vite.config.ts.js
 /packages/@svelte-in-motion-encoding/dist/
 /packages/@svelte-in-motion-encoding/node_modules/
+/packages/@svelte-in-motion-extensions/dist/
+/packages/@svelte-in-motion-extensions/node_modules/
 /packages/@svelte-in-motion-rendering/dist/
 /packages/@svelte-in-motion-rendering/node_modules/
 /packages/@svelte-in-motion-rpc/dist/

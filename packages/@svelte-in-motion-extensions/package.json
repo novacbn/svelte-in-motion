@@ -1,0 +1,36 @@
+{
+    "name": "@svelte-in-motion/extensions",
+    "author": "novacbn",
+    "version": "0.0.1",
+    "type": "module",
+    "main": "./dist/index.js",
+    "exports": {
+        ".": "./dist/index.js",
+        "./package.json": "./package.json"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/novacbn/svelte-in-motion/tree/main/packages/%40svelte-in-motion-extensions"
+    },
+    "scripts": {
+        "build:package": "tsc",
+        "dev:package": "tsc --watch",
+        "format": "npm run format:package",
+        "format:package": "prettier --config ../../.prettierrc --write ./src",
+        "lint": "npm run lint:format",
+        "lint:format": "prettier --config ../../.prettierrc --check ./src",
+        "test": "npm run test:types",
+        "test:types": "tsc --noEmit"
+    },
+    "devDependencies": {
+        "@deepkit/type-compiler": "^1.0.1-alpha.71",
+        "@svelte-in-motion/editor": "workspace:^",
+        "prettier": "^2.3.1",
+        "typescript": "^4.7.3"
+    },
+    "dependencies": {
+        "@svelte-in-motion/storage": "workspace:^",
+        "@svelte-in-motion/type": "workspace:^",
+        "@svelte-in-motion/utilities": "workspace:^"
+    }
+}

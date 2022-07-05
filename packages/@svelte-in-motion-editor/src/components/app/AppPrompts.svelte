@@ -1,13 +1,11 @@
 <script lang="ts">
     import {Card, Overlay} from "@kahi-ui/framework";
 
-    import {idle} from "@svelte-in-motion/utilities";
+    import {PromptDismissError, idle} from "@svelte-in-motion/utilities";
 
     import {CONTEXT_APP} from "../../lib/app";
 
     import type {IPromptRejectEvent, IPromptResolveEvent} from "../../lib/stores/prompts";
-
-    import {PromptDismissError} from "../../lib/util/errors";
 
     const {prompts} = CONTEXT_APP.get()!;
     const {EVENT_PROMPT} = prompts;

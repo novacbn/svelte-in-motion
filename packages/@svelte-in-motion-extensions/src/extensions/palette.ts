@@ -1,13 +1,13 @@
 import {get} from "svelte/store";
 
-import type {ICommand} from "../stores/commands";
-import type {IExtension} from "../stores/extensions";
-import type {IKeybind, IKeybindEvent} from "../stores/keybinds";
-import type {ISearchPromptPromptEvent} from "../stores/prompts";
+import type {ICommand} from "@svelte-in-motion/editor/src/lib/stores/commands";
+import type {IExtension} from "@svelte-in-motion/editor/src/lib/stores/extensions";
+import type {IKeybind, IKeybindEvent} from "@svelte-in-motion/editor/src/lib/stores/keybinds";
+import type {ISearchPromptPromptEvent} from "@svelte-in-motion/editor/src/lib/stores/prompts";
 
-import {PromptDismissError} from "../util/errors";
+import type {IAppContext} from "@svelte-in-motion/editor/src/lib/app";
 
-import type {IAppContext} from "../app";
+import {PromptDismissError} from "@svelte-in-motion/utilities";
 
 export const extension = {
     identifier: "dev.nbn.sim.palette",

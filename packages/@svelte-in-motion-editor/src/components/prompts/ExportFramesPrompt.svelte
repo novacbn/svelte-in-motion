@@ -2,9 +2,9 @@
     import {Button, Card, Form, NumberInput, Stack} from "@kahi-ui/framework";
     import {createEventDispatcher} from "svelte";
 
-    import type {IExportFramesPromptEvent, IPromptRejectEvent} from "../../lib/stores/prompts";
+    import {PromptDismissError} from "@svelte-in-motion/utilities";
 
-    import {PromptDismissError} from "../../lib/util/errors";
+    import type {IExportFramesPromptEvent, IPromptRejectEvent} from "../../lib/stores/prompts";
 
     type $$Events = {
         reject: CustomEvent<IPromptRejectEvent>;

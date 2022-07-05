@@ -11,6 +11,7 @@ import {errors as make_errors_store} from "./stores/errors";
 
 import {FILE_CONFIGURATION_WORKSPACE} from "./util/storage";
 
+// @ts-ignore
 import SAMPLE from "./templates/SAMPLE.svelte?raw";
 
 import type {IAppContext} from "./app";

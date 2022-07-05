@@ -8,6 +8,7 @@ export * from "./stores/map";
 export * from "./stores/types";
 
 export * from "./util/contexts";
+export * from "./util/errors";
 export * from "./util/eval";
 export * from "./util/environment";
 export * from "./util/math";
