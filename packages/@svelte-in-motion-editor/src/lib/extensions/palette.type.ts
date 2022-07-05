@@ -18,6 +18,7 @@ export const extension = {
 
         commands.push({
             identifier: "palette.prompt.commands",
+            is_visible: false,
             on_execute: this.command_prompt_commands.bind(this),
         });
 

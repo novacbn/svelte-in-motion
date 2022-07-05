@@ -20,6 +20,7 @@ export const extension = {
 
         commands.push({
             identifier: "export.prompt.frames",
+            is_visible: () => !!app.workspace?.preview,
             on_execute: this.command_prompt_frames.bind(this),
         });
 
@@ -31,6 +32,7 @@ export const extension = {
 
         commands.push({
             identifier: "export.prompt.video",
+            is_visible: () => !!app.workspace?.preview,
             on_execute: this.command_prompt_video.bind(this),
         });
 

@@ -12,6 +12,7 @@ export const extension = {
 
         commands.push({
             identifier: "editor.ui.file_tree.toggle",
+            is_visible: () => !!app.workspace,
             on_execute: this.command_ui_file_tree_toggle.bind(this),
         });
 
@@ -23,6 +24,7 @@ export const extension = {
 
         commands.push({
             identifier: "editor.ui.script.toggle",
+            is_visible: () => !!app.workspace?.editor,
             on_execute: this.command_ui_script_toggle.bind(this),
         });
 
