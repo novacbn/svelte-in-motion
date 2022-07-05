@@ -8,7 +8,6 @@ export function format_camel_case(text: string): string {
 export function format_dash_case(text: string): string {
     return text
         .replace(/([A-Z])/g, (match, character) => "-" + character.toLowerCase())
-        .replace(/([-]+)/g, "-")
         .replace(/(^-)/, "");
 }
 

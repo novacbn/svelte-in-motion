@@ -3,6 +3,7 @@ import type {Readable} from "svelte/store";
 import {writable} from "svelte/store";
 
 import type {ICodecNames, IPixelFormatNames} from "@svelte-in-motion/encoding";
+import type {ClassProperties, ReflectionClass} from "@svelte-in-motion/type";
 import type {IEvent} from "@svelte-in-motion/utilities";
 import {event} from "@svelte-in-motion/utilities";
 
@@ -10,7 +11,20 @@ import AboutPrompt from "../../components/prompts/AboutPrompt.svelte";
 import CreateWorkspace from "../../components/prompts/CreateWorkspace.svelte";
 import ExportFramesPrompt from "../../components/prompts/ExportFramesPrompt.svelte";
 import ExportVideoPrompt from "../../components/prompts/ExportVideoPrompt.svelte";
+import FormPrompt from "../../components/prompts/FormPrompt.svelte";
 import SearchPrompt from "../../components/prompts/SearchPrompt.svelte";
+
+export interface ICommonPromptProps {
+    is_dismissible?: boolean;
+}
+
+export interface IFormPromptProps<T> {
+    reflection: ReflectionClass<T>;
+}
+
+export interface IFormPromptEvent<T> {
+    result: ClassProperties<T>;
+}
 
 export interface ICreateWorkspacePromptEvent {
     name: string;
@@ -91,6 +105,8 @@ export interface IPromptsStore extends Readable<IPrompt<any> | null> {
 
     prompt_export_video(props: IExportVideoPromptProps): Promise<IExportVideoPromptEvent>;
 
+    prompt_form<T>(props: IFormPromptProps<T> & ICommonPromptProps): Promise<IFormPromptEvent<T>>;
+
     prompt_search(props: ISearchPromptProps): Promise<ISearchPromptPromptEvent>;
 }
 
@@ -160,6 +176,14 @@ export function prompts(): IPromptsStore {
             return prompt<IExportVideoPromptProps, IExportVideoPromptEvent>({
                 Component: ExportVideoPrompt,
                 dismissible: true,
+                props,
+            });
+        },
+
+        prompt_form<T>(props: IFormPromptProps<T> & ICommonPromptProps) {
+            return prompt<IFormPromptProps<T>, IFormPromptEvent<T>>({
+                Component: FormPrompt,
+                dismissible: props.is_dismissible,
                 props,
             });
         },

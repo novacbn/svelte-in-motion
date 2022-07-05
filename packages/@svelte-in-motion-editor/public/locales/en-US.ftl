@@ -29,3 +29,6 @@ ui-view-dashboard-create_workspace = Create Workspace
 ui-view-dashboard-last_accessed_workspace = Last Accessed: {$timestamp} 
 ui-view-dashboard-open_workspace = OPEN
 ui-view-dashboard-no_available_workspaces = No Available Workspaces
+
+ui-prompt-form-frames-export-end-label = Ending Frame
+ui-prompt-form-frames-export-start-label = Starting Frame

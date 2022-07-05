@@ -47,6 +47,7 @@
         "@svelte-in-motion/screenshot": "workspace:^",
         "@svelte-in-motion/storage": "workspace:^",
         "@svelte-in-motion/temporal": "workspace:^",
+        "@svelte-in-motion/type": "workspace:^",
         "@svelte-in-motion/utilities": "workspace:^",
         "buffer": "^6.0.3",
         "flexsearch": "^0.7.21",

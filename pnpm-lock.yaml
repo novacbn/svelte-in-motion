@@ -125,6 +125,7 @@ importers:
       '@svelte-in-motion/screenshot': workspace:^
       '@svelte-in-motion/storage': workspace:^
       '@svelte-in-motion/temporal': workspace:^
+      '@svelte-in-motion/type': workspace:^
       '@svelte-in-motion/utilities': workspace:^
       '@sveltejs/vite-plugin-svelte': 1.0.0-next.49
       '@tsconfig/svelte': ^2.0.1
@@ -159,6 +160,7 @@ importers:
       '@svelte-in-motion/screenshot': link:../@svelte-in-motion-screenshot
       '@svelte-in-motion/storage': link:../@svelte-in-motion-storage
       '@svelte-in-motion/temporal': link:../@svelte-in-motion-temporal
+      '@svelte-in-motion/type': link:../@svelte-in-motion-type
       '@svelte-in-motion/utilities': link:../@svelte-in-motion-utilities
       buffer: 6.0.3
       flexsearch: 0.7.21

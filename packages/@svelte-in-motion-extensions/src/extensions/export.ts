@@ -9,9 +9,16 @@ import type {
 
 import type {IAppContext} from "@svelte-in-motion/editor/src/lib/app";
 
+import {ReflectionClass} from "@svelte-in-motion/type";
 import {PromptDismissError, download_blob, download_buffer} from "@svelte-in-motion/utilities";
 
 import {zip_frames} from "../util/io";
+
+class FramesExport {
+    start: number = 0;
+
+    end: number = 0;
+}
 
 export const extension = {
     identifier: "dev.nbn.sim.export",
@@ -42,6 +49,12 @@ export const extension = {
             identifier: "export.prompt.video",
             binds: [["control", "shift", "v"]],
             on_bind: this.keybind_prompt_video.bind(this),
+        });
+
+        keybinds.push({
+            identifier: "export.prompt.test",
+            binds: [["control", "shift", "s"]],
+            on_bind: this.keybind_prompt_test.bind(this),
         });
     },
 
@@ -219,6 +232,17 @@ export const extension = {
 
     keybind_prompt_video(app: IAppContext, event: IKeybindEvent) {
         if (event.active && app.workspace?.preview) this.command_prompt_video(app);
+    },
+
+    keybind_prompt_test(app: IAppContext, event: IKeybindEvent) {
+        if (event.active) {
+            const {prompts} = app;
+
+            prompts.prompt_form<FramesExport>({
+                is_dismissible: true,
+                reflection: ReflectionClass.from(FramesExport),
+            });
+        }
     },
 };
 
