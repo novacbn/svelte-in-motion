@@ -21,7 +21,7 @@
 
     import type {ICreateWorkspacePromptEvent} from "../lib/stores/prompts";
 
-    import {is_prompt_dismiss_error} from "../lib/util/errors";
+    import {PromptDismissError} from "../lib/util/errors";
 
     import {CONTEXT_APP} from "../lib/app";
 
@@ -32,7 +32,7 @@
         try {
             workspace_configuration = await prompts.prompt_create_workspace();
         } catch (err) {
-            if (!is_prompt_dismiss_error(err)) return;
+            if (err instanceof PromptDismissError) return;
             throw err;
         }
 

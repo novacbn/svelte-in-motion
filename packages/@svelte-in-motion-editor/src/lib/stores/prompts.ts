@@ -12,8 +12,6 @@ import ExportFramesPrompt from "../../components/prompts/ExportFramesPrompt.svel
 import ExportVideoPrompt from "../../components/prompts/ExportVideoPrompt.svelte";
 import SearchPrompt from "../../components/prompts/SearchPrompt.svelte";
 
-import type {IError} from "../util/errors";
-
 export interface ICreateWorkspacePromptEvent {
     name: string;
 }
@@ -61,7 +59,7 @@ export interface IPromptResolveEvent<T> {
 }
 
 export interface IPromptRejectEvent {
-    error: IError;
+    error: Error;
 }
 
 export interface IPrompt<T extends Record<string, any>> {
@@ -111,7 +109,7 @@ export function prompts(): IPromptsStore {
                 destroy_reject();
                 destroy_resolve();
 
-                reject({error});
+                reject(error);
             });
 
             const destroy_resolve = EVENT_RESOLVE.subscribe(({result}) => {

@@ -16,7 +16,7 @@
 
     function on_dismiss(event: CustomEvent<void>): void {
         prompts.EVENT_REJECT.dispatch({
-            error: PromptDismissError(),
+            error: new PromptDismissError(),
         });
 
         logic_state = false;

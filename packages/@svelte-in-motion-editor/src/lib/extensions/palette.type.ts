@@ -5,7 +5,7 @@ import type {IExtension} from "../stores/extensions";
 import type {IKeybind, IKeybindEvent} from "../stores/keybinds";
 import type {} from "../stores/prompts";
 
-import {is_prompt_dismiss_error} from "../util/errors";
+import {PromptDismissError} from "../util/errors";
 
 import type {IAppContext} from "../app";
 

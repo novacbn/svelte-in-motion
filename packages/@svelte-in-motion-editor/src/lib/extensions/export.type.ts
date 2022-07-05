@@ -6,7 +6,7 @@ import type {IExtension} from "../stores/extensions";
 import type {IKeybindEvent} from "../stores/keybinds";
 import type {IExportFramesPromptEvent, IExportVideoPromptEvent} from "../stores/prompts";
 
-import {is_prompt_dismiss_error} from "../util/errors";
+import {PromptDismissError} from "../util/errors";
 import {zip_frames} from "../util/io";
 
 import type {IAppContext} from "../app";
@@ -84,7 +84,7 @@ export const extension = {
                 frame_max: maxframes,
             });
         } catch (err) {
-            if (!is_prompt_dismiss_error(err)) return;
+            if (err instanceof PromptDismissError) return;
             throw err;
         }
 
@@ -166,7 +166,7 @@ export const extension = {
                 frame_max: maxframes,
             });
         } catch (err) {
-            if (!is_prompt_dismiss_error(err)) return;
+            if (err instanceof PromptDismissError) return;
             throw err;
         }
 

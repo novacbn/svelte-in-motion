@@ -51,7 +51,7 @@
 
     function on_close_click(event: MouseEvent): void {
         dispatch("reject", {
-            error: PromptDismissError(),
+            error: new PromptDismissError(),
         });
     }
 
