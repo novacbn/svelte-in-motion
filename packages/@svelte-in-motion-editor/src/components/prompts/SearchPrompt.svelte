@@ -1,6 +1,7 @@
 <script lang="ts">
     import FlexSearch from "flexsearch";
     import type {IKeybindEvent} from "@kahi-ui/framework";
+    import {action_submit} from "@kahi-ui/framework";
     import {
         Card,
         Form,
@@ -11,8 +12,17 @@
         navigate_down,
         navigate_up,
     } from "@kahi-ui/framework";
+    import {createEventDispatcher} from "svelte";
 
     import {clamp} from "@svelte-in-motion/utilities";
+
+    import type {ISearchPromptPromptEvent} from "../../lib/stores/prompts";
+
+    type $$Events = {
+        resolve: CustomEvent<ISearchPromptPromptEvent>;
+    };
+
+    const dispatch = createEventDispatcher();
 
     export let identifier: string;
     export let index: string[];
@@ -51,7 +61,7 @@
 
     for (const document of documents) engine.add(document);
 
-    function on_arrow_change(event: IKeybindEvent, delta: number): void {
+    function on_result_arrow(delta: number, event: IKeybindEvent): void {
         event.preventDefault();
         if (!event.detail.active) return;
 
@@ -61,7 +71,28 @@
         element.scrollIntoView({behavior: "smooth", block: "nearest"});
     }
 
-    function on_result_enter(event: PointerEvent, index: number): void {
+    function on_result_click(event: MouseEvent, index: number): void {
+        event.preventDefault();
+
+        const document = results[index];
+
+        dispatch("resolve", {
+            identifier: document["identifier"],
+        });
+    }
+
+    function on_result_enter(event: IKeybindEvent): void {
+        event.preventDefault();
+        if (!event.detail.active) return;
+
+        const document = results[selected];
+
+        dispatch("resolve", {
+            identifier: document["identifier"],
+        });
+    }
+
+    function on_result_select(event: PointerEvent, index: number): void {
         selected = index;
     }
 
@@ -121,8 +152,9 @@
             sizing="nano"
             bind:value={query}
             actions={[
-                [navigate_up, {on_bind: (event) => on_arrow_change(event, -1)}],
-                [navigate_down, {on_bind: (event) => on_arrow_change(event, 1)}],
+                [navigate_up, {on_bind: on_result_arrow.bind(null, -1)}],
+                [navigate_down, {on_bind: on_result_arrow.bind(null, 1)}],
+                [action_submit, {on_bind: on_result_enter}],
             ]}
         />
     </Form.Control>
@@ -139,7 +171,8 @@
                     data-padding-x="tiny"
                     data-padding-y="nano"
                     style="cursor:pointer;"
-                    on:pointerenter={(event) => on_result_enter(event, index)}
+                    on:pointerenter={(event) => on_result_select(event, index)}
+                    on:click={(event) => on_result_click(event, index)}
                 >
                     <Text sizing="small">
                         {result[title]}

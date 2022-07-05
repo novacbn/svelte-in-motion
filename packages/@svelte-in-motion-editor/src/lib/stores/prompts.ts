@@ -38,6 +38,10 @@ export interface IExportVideoPromptEvent extends IExportFramesPromptEvent {
     pixel_format: IPixelFormatNames;
 }
 
+export interface ISearchPromptPromptEvent {
+    identifier: string;
+}
+
 export interface ISearchPromptProps {
     documents: Record<string, string>[];
 
@@ -87,7 +91,7 @@ export interface IPromptsStore extends Readable<IPrompt<any> | null> {
 
     prompt_export_video(props: IExportVideoPromptProps): Promise<IExportVideoPromptEvent>;
 
-    prompt_search(props: ISearchPromptProps): Promise<void>;
+    prompt_search(props: ISearchPromptProps): Promise<ISearchPromptPromptEvent>;
 }
 
 export function prompts(): IPromptsStore {
@@ -161,7 +165,7 @@ export function prompts(): IPromptsStore {
         },
 
         prompt_search(props) {
-            return prompt<ISearchPromptProps, void>({
+            return prompt<ISearchPromptProps, ISearchPromptPromptEvent>({
                 Component: SearchPrompt,
                 dismissible: true,
                 props,

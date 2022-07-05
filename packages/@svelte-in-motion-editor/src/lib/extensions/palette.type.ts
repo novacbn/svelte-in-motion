@@ -3,7 +3,7 @@ import {get} from "svelte/store";
 import type {ICommand} from "../stores/commands";
 import type {IExtension} from "../stores/extensions";
 import type {IKeybind, IKeybindEvent} from "../stores/keybinds";
-import type {} from "../stores/prompts";
+import type {ISearchPromptPromptEvent} from "../stores/prompts";
 
 import {PromptDismissError} from "../util/errors";
 
@@ -72,12 +72,21 @@ export const extension = {
             };
         });
 
-        prompts.prompt_search({
-            documents,
-            identifier: "identifier",
-            index: ["identifier", "title", "description"],
-            title: "title",
-        });
+        let selected_command: ISearchPromptPromptEvent;
+
+        try {
+            selected_command = await prompts.prompt_search({
+                documents,
+                identifier: "identifier",
+                index: ["identifier", "title", "description"],
+                title: "title",
+            });
+        } catch (err) {
+            if (err instanceof PromptDismissError) return;
+            throw err;
+        }
+
+        commands.execute(selected_command.identifier);
     },
 
     keybind_prompt_frames(app: IAppContext, event: IKeybindEvent) {
