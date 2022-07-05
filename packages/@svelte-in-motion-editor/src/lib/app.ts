@@ -108,6 +108,9 @@ export async function app(): Promise<IAppContext> {
         workspaces,
     };
 
+    app.locale = make_locale_store(app);
+    app.translate = make_translations_store(app);
+
     app.commands = make_commands_store(app);
     app.extensions = make_extensions_store(app);
     app.keybinds = make_keybinds_store(app);
@@ -117,9 +120,6 @@ export async function app(): Promise<IAppContext> {
     app.encodes = make_encodes_store(app, agent);
     app.renders = make_renders_store(app, agent);
     app.jobs = make_jobs_store(app);
-
-    app.locale = make_locale_store(app);
-    app.translate = make_translations_store(app);
 
     return app;
 }
