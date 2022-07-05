@@ -66,6 +66,12 @@
         </svelte:fragment>
 
         <Menu.Container sizing="nano">
+            <Menu.Button on:click={(event) => commands.execute("palette.prompt.commands")}>
+                Command Palette
+            </Menu.Button>
+
+            <Menu.Heading />
+
             <Menu.Button disabled={!in_workspace}>Errors</Menu.Button>
             <Menu.Button disabled={!in_workspace}>Jobs</Menu.Button>
 
