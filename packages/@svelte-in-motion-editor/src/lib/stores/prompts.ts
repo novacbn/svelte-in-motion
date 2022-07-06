@@ -3,7 +3,7 @@ import type {Readable} from "svelte/store";
 import {writable} from "svelte/store";
 
 import type {ICodecNames, IPixelFormatNames} from "@svelte-in-motion/encoding";
-import type {ClassProperties, ReflectionClass} from "@svelte-in-motion/type";
+import type {ClassProperties, Type} from "@svelte-in-motion/type";
 import type {IEvent} from "@svelte-in-motion/utilities";
 import {event} from "@svelte-in-motion/utilities";
 
@@ -19,7 +19,9 @@ export interface ICommonPromptProps {
 }
 
 export interface IFormPromptProps<T> {
-    reflection: ReflectionClass<T>;
+    model?: Partial<ClassProperties<T>>;
+
+    type: Type;
 }
 
 export interface IFormPromptEvent<T> {

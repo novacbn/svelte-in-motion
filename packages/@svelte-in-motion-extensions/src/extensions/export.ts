@@ -9,15 +9,24 @@ import type {
 
 import type {IAppContext} from "@svelte-in-motion/editor/src/lib/app";
 
-import {ReflectionClass} from "@svelte-in-motion/type";
+import {Default, Description, Label, Minimum} from "@svelte-in-motion/type";
+import {typeOf} from "@svelte-in-motion/type";
 import {PromptDismissError, download_blob, download_buffer} from "@svelte-in-motion/utilities";
 
 import {zip_frames} from "../util/io";
 
-class FramesExport {
-    start: number = 0;
+interface FramesExport {
+    start: number &
+        Default<0> &
+        Minimum<0> &
+        Label<"ui-prompt-form-frames-export-end-label"> &
+        Description<"ui-prompt-form-frames-export-end-description">;
 
-    end: number = 0;
+    end: number &
+        Default<0> &
+        Minimum<0> &
+        Label<"ui-prompt-form-frames-export-end-label"> &
+        Description<"ui-prompt-form-frames-export-end-description">;
 }
 
 export const extension = {
@@ -240,7 +249,10 @@ export const extension = {
 
             prompts.prompt_form<FramesExport>({
                 is_dismissible: true,
-                reflection: ReflectionClass.from(FramesExport),
+                model: {
+                    end: 270,
+                },
+                type: typeOf<FramesExport>(),
             });
         }
     },
