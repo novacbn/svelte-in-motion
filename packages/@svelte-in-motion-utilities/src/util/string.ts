@@ -23,3 +23,7 @@ export function hash_string(text: string): number {
 
     return stringHash(text);
 }
+
+export function replace_tokens(text: string, tokens: Record<string, any> = {}): string {
+    return text.replace(/\$\{([\w_\.]+)\}/g, (match, token) => tokens[token].toString());
+}

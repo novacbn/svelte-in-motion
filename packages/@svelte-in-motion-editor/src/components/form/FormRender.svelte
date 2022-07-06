@@ -1,11 +1,16 @@
 <script lang="ts" context="module">
+    import type {SvelteComponent} from "svelte";
+
+    import type {TypePropertySignature} from "@svelte-in-motion/type";
+
     import FormNumber from "./FormNumber.svelte";
     import FormString from "./FormString.svelte";
+    import FormUnion from "./FormUnion.svelte";
 
     // HACK: Have to redeclare here since build tools aren't picking up the constant
     // enum definitions from DeepKit
 
-    const ReflectionKind = {
+    export const ReflectionKind = {
         never: 0,
         any: 1,
         unknown: 2,
@@ -46,19 +51,29 @@
         infer: 34,
     };
 
-    const FIELD_KIND = {
-        [ReflectionKind.number]: FormNumber,
-        [ReflectionKind.string]: FormString,
-    };
+    function resolve_field_component(
+        signature: TypePropertySignature
+    ): typeof SvelteComponent | undefined {
+        switch (signature.type.kind) {
+            case ReflectionKind.number:
+                return FormNumber;
+
+            case ReflectionKind.string:
+                return FormString;
+
+            case ReflectionKind.union:
+                return FormUnion;
+        }
+
+        throw TypeError(
+            `bad argument #0 to 'resolve_field_component' (unsupported kind '${signature.kind}')`
+        );
+    }
 </script>
 
 <script lang="ts">
     import {format_dash_case} from "@svelte-in-motion/utilities";
-    import type {
-        TypeLiteral,
-        TypeObjectLiteral,
-        TypePropertySignature,
-    } from "@svelte-in-motion/type";
+    import type {TypeLiteral, TypeObjectLiteral} from "@svelte-in-motion/type";
     import {metaAnnotation} from "@svelte-in-motion/type";
 
     type IFormType = $$Generic<TypeObjectLiteral>;
@@ -100,7 +115,7 @@
 </script>
 
 {#each signatures as signature (signature.name)}
-    {@const Component = FIELD_KIND[signature.type.kind]}
+    {@const Component = resolve_field_component(signature)}
 
     {#if Component}
         <svelte:component

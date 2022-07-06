@@ -39,3 +39,9 @@ ui-prompt-form-frames-export-end-description = Enter the last frame you want to 
 ui-prompt-form-frames-export-end-label = Ending Frame
 ui-prompt-form-frames-export-start-description = Enter the first frame you want to export. 
 ui-prompt-form-frames-export-start-label = Starting Frame
+
+ui-prompt-form-video-export-title = Export Video
+ui-prompt-form-video-export-end-description = Enter the last frame you want to export. 
+ui-prompt-form-video-export-end-label = Ending Frame
+ui-prompt-form-video-export-start-description = Enter the first frame you want to export. 
+ui-prompt-form-video-export-start-label = Starting Frame
