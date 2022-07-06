@@ -19,8 +19,8 @@ interface FramesExport {
     start: number &
         Default<0> &
         Minimum<0> &
-        Label<"ui-prompt-form-frames-export-end-label"> &
-        Description<"ui-prompt-form-frames-export-end-description">;
+        Label<"ui-prompt-form-frames-export-start-label"> &
+        Description<"ui-prompt-form-frames-export-start-description">;
 
     end: number &
         Default<0> &
