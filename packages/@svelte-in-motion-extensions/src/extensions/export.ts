@@ -2,10 +2,7 @@ import {get} from "svelte/store";
 
 import type {IExtension} from "@svelte-in-motion/editor/src/lib/stores/extensions";
 import type {IKeybindEvent} from "@svelte-in-motion/editor/src/lib/stores/keybinds";
-import type {
-    IExportFramesPromptEvent,
-    IExportVideoPromptEvent,
-} from "@svelte-in-motion/editor/src/lib/stores/prompts";
+import type {IExportVideoPromptEvent} from "@svelte-in-motion/editor/src/lib/stores/prompts";
 
 import type {IAppContext} from "@svelte-in-motion/editor/src/lib/app";
 
@@ -15,7 +12,7 @@ import {PromptDismissError, download_blob, download_buffer} from "@svelte-in-mot
 
 import {zip_frames} from "../util/io";
 
-interface FramesExport {
+interface FramesExportConfiguration {
     start: number &
         Default<0> &
         Minimum<0> &
@@ -59,12 +56,6 @@ export const extension = {
             binds: [["control", "shift", "v"]],
             on_bind: this.keybind_prompt_video.bind(this),
         });
-
-        keybinds.push({
-            identifier: "export.prompt.test",
-            binds: [["control", "shift", "s"]],
-            on_bind: this.keybind_prompt_test.bind(this),
-        });
     },
 
     async command_prompt_frames(app: IAppContext) {
@@ -101,14 +92,22 @@ export const extension = {
             return;
         }
 
-        const {maxframes} = get(configuration);
+        // TODO: Make prompt configuration dynamic to support this:
+        // const {maxframes} = get(configuration);
 
-        let export_configuration: IExportFramesPromptEvent;
+        let export_configuration: FramesExportConfiguration;
         try {
-            export_configuration = await prompts.prompt_export_frames({
-                frame_min: 0,
-                frame_max: maxframes,
-            });
+            export_configuration = (
+                await prompts.prompt_form<FramesExportConfiguration>({
+                    is_dismissible: true,
+                    title: "ui-prompt-form-frames-export-title",
+
+                    type: typeOf<FramesExportConfiguration>(),
+                    model: {
+                        end: 270,
+                    },
+                })
+            ).model;
         } catch (err) {
             if (err instanceof PromptDismissError) return;
             throw err;
@@ -241,22 +240,6 @@ export const extension = {
 
     keybind_prompt_video(app: IAppContext, event: IKeybindEvent) {
         if (event.active && app.workspace?.preview) this.command_prompt_video(app);
-    },
-
-    keybind_prompt_test(app: IAppContext, event: IKeybindEvent) {
-        if (event.active) {
-            const {prompts} = app;
-
-            prompts.prompt_form<FramesExport>({
-                is_dismissible: true,
-                title: "ui-prompt-form-frames-export-title",
-
-                type: typeOf<FramesExport>(),
-                model: {
-                    end: 270,
-                },
-            });
-        }
     },
 };
 

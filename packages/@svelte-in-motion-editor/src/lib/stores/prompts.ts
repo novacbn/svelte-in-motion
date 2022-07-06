@@ -9,7 +9,6 @@ import {event} from "@svelte-in-motion/utilities";
 
 import AboutPrompt from "../../components/prompts/AboutPrompt.svelte";
 import CreateWorkspace from "../../components/prompts/CreateWorkspace.svelte";
-import ExportFramesPrompt from "../../components/prompts/ExportFramesPrompt.svelte";
 import ExportVideoPrompt from "../../components/prompts/ExportVideoPrompt.svelte";
 import FormPrompt from "../../components/prompts/FormPrompt.svelte";
 import SearchPrompt from "../../components/prompts/SearchPrompt.svelte";
@@ -34,26 +33,22 @@ export interface ICreateWorkspacePromptEvent {
     name: string;
 }
 
-export interface IExportFramesPromptProps {
-    frame_min: number;
-
-    frame_max: number;
-}
-
-export interface IExportVideoPromptProps extends IExportFramesPromptProps {}
-
-export interface IExportFramesPromptEvent {
+export interface IExportVideoPromptProps {
     end: number;
 
     start: number;
 }
 
-export interface IExportVideoPromptEvent extends IExportFramesPromptEvent {
+export interface IExportVideoPromptEvent {
     codec: ICodecNames;
 
     crf: number;
 
     pixel_format: IPixelFormatNames;
+
+    end: number;
+
+    start: number;
 }
 
 export interface ISearchPromptPromptEvent {
@@ -102,8 +97,6 @@ export interface IPromptsStore extends Readable<IPrompt<any> | null> {
     prompt_about(): Promise<void>;
 
     prompt_create_workspace(): Promise<ICreateWorkspacePromptEvent>;
-
-    prompt_export_frames(props: IExportFramesPromptProps): Promise<IExportFramesPromptEvent>;
 
     prompt_export_video(props: IExportVideoPromptProps): Promise<IExportVideoPromptEvent>;
 
@@ -165,14 +158,6 @@ export function prompts(): IPromptsStore {
             return prompt<void, ICreateWorkspacePromptEvent>({
                 Component: CreateWorkspace,
                 is_dismissible: true,
-            });
-        },
-
-        prompt_export_frames(props) {
-            return prompt<IExportFramesPromptProps, IExportFramesPromptEvent>({
-                Component: ExportFramesPrompt,
-                is_dismissible: true,
-                props,
             });
         },
 
