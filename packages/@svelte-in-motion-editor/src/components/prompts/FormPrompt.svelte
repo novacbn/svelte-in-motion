@@ -54,7 +54,7 @@
 <Card.Footer alignment_x="stretch">
     {#if $prompts?.is_dismissible}
         <Button sizing="nano" variation="clear" on:click={on_dismiss_click}>
-            {$translate("ui-prompt-dismiss-label")}
+            {$translate("ui-prompt-form-dismiss-label")}
         </Button>
     {/if}
 

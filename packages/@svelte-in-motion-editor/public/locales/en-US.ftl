@@ -30,8 +30,12 @@ ui-view-dashboard-last_accessed_workspace-label = Last Accessed: {$timestamp}
 ui-view-dashboard-open_workspace-label = OPEN
 ui-view-dashboard-no_available_workspaces-label = No Available Workspaces
 
-ui-prompt-dismiss-label = Dismiss
+ui-prompt-about-title = About Svelte-In-Motion
+ui-prompt-about-version-label = VERSION
+ui-prompt-about-source-label = SOURCE
+ui-prompt-about-dismiss-label = Dismiss
 
+ui-prompt-form-dismiss-label = Dismiss
 ui-prompt-form-submit-label = Submit
 
 ui-prompt-form-frames-export-title = Export Frames

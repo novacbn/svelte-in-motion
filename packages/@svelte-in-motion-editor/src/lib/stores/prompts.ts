@@ -129,6 +129,7 @@ export function prompts(): IPromptsStore {
             return prompt<void, void>({
                 Component: AboutPrompt,
                 is_dismissible: true,
+                title: "ui-prompt-about-title",
             });
         },
 
