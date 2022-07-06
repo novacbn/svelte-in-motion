@@ -2,7 +2,6 @@
 import type {Readable} from "svelte/store";
 import {get} from "svelte/store";
 
-import type {Agent} from "@svelte-in-motion/agent";
 import {RENDERING_EVENTS} from "@svelte-in-motion/agent";
 import type {ICollectionItem, IEvent} from "@svelte-in-motion/utilities";
 import {collection, event} from "@svelte-in-motion/utilities";
@@ -69,9 +68,9 @@ export interface IRendersStore extends Readable<IRender[]> {
     yield(identifier: string): Promise<Uint8Array[]>;
 }
 
-export function renders(app: IAppContext, agent: Agent): IRendersStore {
+export function renders(app: IAppContext): IRendersStore {
+    const {agent, notifications} = app;
     const {rendering} = agent;
-    const {notifications} = app;
 
     const {find, has, push, subscribe: subscribe_store, remove, update} = collection<IRender>();
 

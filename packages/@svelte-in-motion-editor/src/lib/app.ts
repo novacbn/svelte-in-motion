@@ -35,6 +35,8 @@ import type {IWorkspaceContext} from "./workspace";
 export const CONTEXT_APP = make_scoped_context<IAppContext>("app");
 
 export interface IAppContext {
+    agent: Agent;
+
     commands: ICommandsStore;
 
     encodes: IEncodesStore;
@@ -96,6 +98,8 @@ export async function app(): Promise<IAppContext> {
         }),
     ]);
 
+    const agent = await Agent.connect_to();
+
     const notifications = make_notifications_store();
     const prompts = make_prompt_store();
 
@@ -108,6 +112,8 @@ export async function app(): Promise<IAppContext> {
         workspaces,
     };
 
+    app.agent = agent;
+
     app.locale = make_locale_store(app);
     app.translate = make_translations_store(app);
 
@@ -115,10 +121,8 @@ export async function app(): Promise<IAppContext> {
     app.extensions = make_extensions_store(app);
     app.keybinds = make_keybinds_store(app);
 
-    const agent = await Agent.connect_to();
-
-    app.encodes = make_encodes_store(app, agent);
-    app.renders = make_renders_store(app, agent);
+    app.encodes = make_encodes_store(app);
+    app.renders = make_renders_store(app);
     app.jobs = make_jobs_store(app);
 
     return app;

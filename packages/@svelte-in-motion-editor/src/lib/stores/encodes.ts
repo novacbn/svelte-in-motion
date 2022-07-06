@@ -1,7 +1,7 @@
 //import {Check, Clock, Film} from "lucide-svelte";
 import type {Readable} from "svelte/store";
 
-import {ENCODING_EVENTS, Agent} from "@svelte-in-motion/agent";
+import {ENCODING_EVENTS} from "@svelte-in-motion/agent";
 import type {ICodecNames, IPixelFormatNames} from "@svelte-in-motion/encoding";
 import type {ICollectionItem, IEvent} from "@svelte-in-motion/utilities";
 import {collection, event} from "@svelte-in-motion/utilities";
@@ -69,9 +69,9 @@ export interface IEncodesStore extends Readable<IEncode[]> {
     yield(identifier: string): Promise<Uint8Array>;
 }
 
-export function encodes(app: IAppContext, agent: Agent): IEncodesStore {
+export function encodes(app: IAppContext): IEncodesStore {
+    const {agent, notifications} = app;
     const {encoding} = agent;
-    const {notifications} = app;
 
     const {find, has, push, subscribe, remove, update} = collection<IEncode>();
 
