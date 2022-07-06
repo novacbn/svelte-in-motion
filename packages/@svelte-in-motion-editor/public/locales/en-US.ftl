@@ -30,6 +30,10 @@ ui-view-dashboard-last_accessed_workspace = Last Accessed: {$timestamp}
 ui-view-dashboard-open_workspace = OPEN
 ui-view-dashboard-no_available_workspaces = No Available Workspaces
 
+ui-prompt-dismiss-label = Dismiss
+
+ui-prompt-form-submit-label = Submit
+
 ui-prompt-form-frames-export-title = Export Frames
 ui-prompt-form-frames-export-end-description = Enter the last frame you want to export. 
 ui-prompt-form-frames-export-end-label = Ending Frame

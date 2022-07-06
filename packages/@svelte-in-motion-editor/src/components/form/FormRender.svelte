@@ -46,7 +46,7 @@
         infer: 34,
     };
 
-    const COMPONENT_KIND = {
+    const FIELD_KIND = {
         [ReflectionKind.number]: FormNumber,
         [ReflectionKind.string]: FormString,
     };
@@ -65,14 +65,13 @@
 
     type IFormModel = Record<string, any>;
 
-    export let prefix: string = "";
     export let type: IFormType;
 
     if (type.kind !== ReflectionKind.objectLiteral) {
         throw new TypeError("bad attribute 'FormRender.type' (expected interface)");
     }
 
-    const class_identifier = prefix + format_dash_case(type.typeName!);
+    const class_identifier = format_dash_case(type.typeName!);
 
     const signatures = type.types.filter(
         (type) => type.kind === ReflectionKind.propertySignature
@@ -101,7 +100,7 @@
 </script>
 
 {#each signatures as signature (signature.name)}
-    {@const Component = COMPONENT_KIND[signature.type.kind]}
+    {@const Component = FIELD_KIND[signature.type.kind]}
 
     {#if Component}
         <svelte:component

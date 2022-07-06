@@ -27,7 +27,7 @@ export interface IFormPromptProps<T> {
 }
 
 export interface IFormPromptEvent<T> {
-    result: ClassProperties<T>;
+    model: ClassProperties<T>;
 }
 
 export interface ICreateWorkspacePromptEvent {
