@@ -16,6 +16,8 @@ import SearchPrompt from "../../components/prompts/SearchPrompt.svelte";
 
 export interface ICommonPromptProps {
     is_dismissible?: boolean;
+
+    title?: string;
 }
 
 export interface IFormPromptProps<T> {
@@ -65,9 +67,9 @@ export interface ISearchPromptProps {
 
     index: string[];
 
-    limit?: number;
+    label: string;
 
-    title: string;
+    limit?: number;
 }
 
 export interface IPromptEvent {
@@ -82,10 +84,8 @@ export interface IPromptRejectEvent {
     error: Error;
 }
 
-export interface IPrompt<T extends Record<string, any>> {
+export interface IPrompt<T extends Record<string, any>> extends ICommonPromptProps {
     Component: typeof SvelteComponent;
-
-    dismissible?: boolean;
 
     props?: T;
 }
@@ -157,21 +157,21 @@ export function prompts(): IPromptsStore {
         prompt_about() {
             return prompt<void, void>({
                 Component: AboutPrompt,
-                dismissible: true,
+                is_dismissible: true,
             });
         },
 
         prompt_create_workspace() {
             return prompt<void, ICreateWorkspacePromptEvent>({
                 Component: CreateWorkspace,
-                dismissible: true,
+                is_dismissible: true,
             });
         },
 
         prompt_export_frames(props) {
             return prompt<IExportFramesPromptProps, IExportFramesPromptEvent>({
                 Component: ExportFramesPrompt,
-                dismissible: true,
+                is_dismissible: true,
                 props,
             });
         },
@@ -179,7 +179,7 @@ export function prompts(): IPromptsStore {
         prompt_export_video(props) {
             return prompt<IExportVideoPromptProps, IExportVideoPromptEvent>({
                 Component: ExportVideoPrompt,
-                dismissible: true,
+                is_dismissible: true,
                 props,
             });
         },
@@ -187,7 +187,8 @@ export function prompts(): IPromptsStore {
         prompt_form<T>(props: IFormPromptProps<T> & ICommonPromptProps) {
             return prompt<IFormPromptProps<T>, IFormPromptEvent<T>>({
                 Component: FormPrompt,
-                dismissible: props.is_dismissible,
+                is_dismissible: props.is_dismissible,
+                title: props.title,
                 props,
             });
         },
@@ -195,7 +196,8 @@ export function prompts(): IPromptsStore {
         prompt_search(props: ISearchPromptProps & ICommonPromptProps) {
             return prompt<ISearchPromptProps, ISearchPromptPromptEvent>({
                 Component: SearchPrompt,
-                dismissible: props.is_dismissible,
+                is_dismissible: props.is_dismissible,
+                title: props.title,
                 props,
             });
         },

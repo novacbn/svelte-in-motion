@@ -26,7 +26,7 @@
 
     export let identifier: string;
     export let index: string[];
-    export let title: string;
+    export let label: string;
 
     export let documents: Record<string, string>[];
 
@@ -125,10 +125,10 @@
                           };
                       })
                       .sort((entry_a, entry_b) => {
-                          const title_a = entry_a.document[title].toLowerCase();
-                          const title_b = entry_b.document[title].toLowerCase();
+                          const label_a = entry_a.document[label].toLowerCase();
+                          const label_b = entry_b.document[label].toLowerCase();
 
-                          return title_a <= title_b ? -1 : 0;
+                          return label_a <= label_b ? -1 : 0;
                       })
                       .sort((entry_a, entry_b) => {
                           const weight_a = entry_a.weight;
@@ -138,10 +138,10 @@
                       })
                       .map((entry) => entry.document)
                 : documents.slice().sort((entry_a, entry_b) => {
-                      const title_a = entry_a[title].toLowerCase();
-                      const title_b = entry_b[title].toLowerCase();
+                      const label_a = entry_a[label].toLowerCase();
+                      const label_b = entry_b[label].toLowerCase();
 
-                      return title_a <= title_b ? -1 : 0;
+                      return label_a <= label_b ? -1 : 0;
                   });
     }
 </script>
@@ -175,7 +175,7 @@
                     on:click={(event) => on_result_click(event, index)}
                 >
                     <Text sizing="small">
-                        {result[title]}
+                        {result[label]}
                     </Text>
                 </div>
             {/each}

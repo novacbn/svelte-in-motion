@@ -64,12 +64,12 @@ export const extension = {
             const translation_identifier = command_identifier.replace(/\./g, "-");
 
             const description = $translate(`commands-${translation_identifier}-description`);
-            const title = $translate(`commands-${translation_identifier}-title`);
+            const label = $translate(`commands-${translation_identifier}-label`);
 
             return {
                 identifier: command_identifier,
                 description,
-                title,
+                label,
             };
         });
 
@@ -78,10 +78,12 @@ export const extension = {
         try {
             selected_command = await prompts.prompt_search({
                 is_dismissible: true,
-                documents,
+
                 identifier: "identifier",
-                index: ["identifier", "title", "description"],
-                title: "title",
+                label: "label",
+                index: ["identifier", "label", "description"],
+
+                documents,
             });
         } catch (err) {
             if (err instanceof PromptDismissError) return;

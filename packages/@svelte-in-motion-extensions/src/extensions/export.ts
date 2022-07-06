@@ -249,10 +249,12 @@ export const extension = {
 
             prompts.prompt_form<FramesExport>({
                 is_dismissible: true,
+                title: "ui-prompt-form-frames-export-title",
+
+                type: typeOf<FramesExport>(),
                 model: {
                     end: 270,
                 },
-                type: typeOf<FramesExport>(),
             });
         }
     },

@@ -7,7 +7,7 @@
 
     import type {IPromptRejectEvent, IPromptResolveEvent} from "../../lib/stores/prompts";
 
-    const {prompts} = CONTEXT_APP.get()!;
+    const {prompts, translate} = CONTEXT_APP.get()!;
     const {EVENT_PROMPT} = prompts;
 
     let logic_state: boolean = false;
@@ -45,7 +45,7 @@
 <Overlay.Container
     class="app-prompts"
     logic_id="app-prompts"
-    dismissible={$prompts?.dismissible ?? false}
+    dismissible={$prompts?.is_dismissible ?? false}
     {logic_state}
     on:dismiss={on_dismiss}
 >
@@ -54,6 +54,12 @@
     <Overlay.Section on:transitionend={on_transition_end}>
         {#if $prompts}
             <Card.Container sizing="nano" max_size="75">
+                {#if $prompts.title}
+                    <Card.Header>
+                        {$translate($prompts.title)}
+                    </Card.Header>
+                {/if}
+
                 <svelte:component
                     this={$prompts.Component}
                     {...$prompts.props ?? {}}
