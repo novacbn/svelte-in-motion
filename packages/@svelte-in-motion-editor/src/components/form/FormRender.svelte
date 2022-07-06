@@ -3,6 +3,7 @@
 
     import type {TypePropertySignature} from "@svelte-in-motion/type";
 
+    import FormBoolean from "./FormBoolean.svelte";
     import FormNumber from "./FormNumber.svelte";
     import FormString from "./FormString.svelte";
     import FormUnion from "./FormUnion.svelte";
@@ -55,6 +56,9 @@
         signature: TypePropertySignature
     ): typeof SvelteComponent | undefined {
         switch (signature.type.kind) {
+            case ReflectionKind.boolean:
+                return FormBoolean;
+
             case ReflectionKind.number:
                 return FormNumber;
 
