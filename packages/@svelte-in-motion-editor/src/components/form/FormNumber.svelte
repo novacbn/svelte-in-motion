@@ -14,7 +14,7 @@
 
     const {translate} = CONTEXT_APP.get()!;
 
-    export let identifier: string = "";
+    export let identifier: string;
     export let type: TypeNumber;
     export let signature: TypePropertySignature;
     export let value: number = 0;
@@ -31,8 +31,6 @@
     $: description = resolveMetaLiteral<string>(meta, "description");
     $: label = resolveMetaLiteral<string>(meta, "label");
     $: placeholder = resolveMetaLiteral<string>(meta, "placeholder");
-
-    console.log({signature});
 </script>
 
 <Form.Control logic_id={identifier}>

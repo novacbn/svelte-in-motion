@@ -48,7 +48,7 @@
 
     const COMPONENT_KIND = {
         [ReflectionKind.number]: FormNumber,
-        //[ReflectionKind.string]: FormString,
+        [ReflectionKind.string]: FormString,
     };
 </script>
 
