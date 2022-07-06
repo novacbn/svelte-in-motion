@@ -40,19 +40,16 @@ interface IVideoExportConfiguration {
         Description<"ui-prompt-form-video-export-end-description">;
 
     codec: ICodecNames &
-        Default<"vp9"> &
         Label<"ui-prompt-form-video-export-codec-label"> &
         Placeholder<"ui-prompt-form-video-export-codec-placeholder"> &
         Namespace<"ui-prompt-form-video-export-codec-${identifier}-label">;
 
     crf: number &
-        Default<31> &
         Minimum<0> &
         Label<"ui-prompt-form-video-export-crf-label"> &
         Description<"ui-prompt-form-video-export-crf-description">;
 
     pixel_format: IPixelFormatNames &
-        Default<"yuv420p"> &
         Label<"ui-prompt-form-video-export-pixel_format-label"> &
         Placeholder<"ui-prompt-form-video-export-pixel_format-placeholder"> &
         Namespace<"ui-prompt-form-video-export-pixel_format-${identifier}-label">;

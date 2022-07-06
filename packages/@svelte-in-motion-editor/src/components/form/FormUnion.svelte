@@ -54,6 +54,7 @@
 
     <DataSelect
         sizing="nano"
+        palette={validates(value, type) ? "affirmative" : "negative"}
         logic_name={identifier}
         placeholder={placeholder ? $translate(placeholder) : undefined}
         {items}
