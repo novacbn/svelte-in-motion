@@ -25,10 +25,10 @@ commands-preview-ui-timeline-toggle-label = Preview: Toggle Timeline UI
 commands-preview-ui-viewport-toggle-description = Toggles the Viewport UI from view.
 commands-preview-ui-viewport-toggle-label = Preview: Toggle Viewport UI
 
-ui-view-dashboard-create_workspace = Create Workspace
-ui-view-dashboard-last_accessed_workspace = Last Accessed: {$timestamp} 
-ui-view-dashboard-open_workspace = OPEN
-ui-view-dashboard-no_available_workspaces = No Available Workspaces
+ui-view-dashboard-create_workspace-label = Create Workspace
+ui-view-dashboard-last_accessed_workspace-label = Last Accessed: {$timestamp} 
+ui-view-dashboard-open_workspace-label = OPEN
+ui-view-dashboard-no_available_workspaces-label = No Available Workspaces
 
 ui-prompt-dismiss-label = Dismiss
 
