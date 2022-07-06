@@ -109,7 +109,9 @@ export interface IPromptsStore extends Readable<IPrompt<any> | null> {
 
     prompt_form<T>(props: IFormPromptProps<T> & ICommonPromptProps): Promise<IFormPromptEvent<T>>;
 
-    prompt_search(props: ISearchPromptProps): Promise<ISearchPromptPromptEvent>;
+    prompt_search(
+        props: ISearchPromptProps & ICommonPromptProps
+    ): Promise<ISearchPromptPromptEvent>;
 }
 
 export function prompts(): IPromptsStore {
@@ -190,10 +192,10 @@ export function prompts(): IPromptsStore {
             });
         },
 
-        prompt_search(props) {
+        prompt_search(props: ISearchPromptProps & ICommonPromptProps) {
             return prompt<ISearchPromptProps, ISearchPromptPromptEvent>({
                 Component: SearchPrompt,
-                dismissible: true,
+                dismissible: props.is_dismissible,
                 props,
             });
         },

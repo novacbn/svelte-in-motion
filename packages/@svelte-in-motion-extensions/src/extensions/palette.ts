@@ -77,6 +77,7 @@ export const extension = {
 
         try {
             selected_command = await prompts.prompt_search({
+                is_dismissible: true,
                 documents,
                 identifier: "identifier",
                 index: ["identifier", "title", "description"],
