@@ -2,17 +2,17 @@ import {get} from "svelte/store";
 
 import type {IExtension} from "@svelte-in-motion/editor/src/lib/stores/extensions";
 import type {IKeybindEvent} from "@svelte-in-motion/editor/src/lib/stores/keybinds";
-import type {IExportVideoPromptEvent} from "@svelte-in-motion/editor/src/lib/stores/prompts";
 
 import type {IAppContext} from "@svelte-in-motion/editor/src/lib/app";
 
-import {Default, Description, Label, Minimum} from "@svelte-in-motion/type";
+import {ICodecNames, IPixelFormatNames} from "@svelte-in-motion/encoding";
+import {Default, Description, Label, Minimum, Namespace, Placeholder} from "@svelte-in-motion/type";
 import {typeOf} from "@svelte-in-motion/type";
 import {PromptDismissError, download_blob, download_buffer} from "@svelte-in-motion/utilities";
 
 import {zip_frames} from "../util/io";
 
-interface FramesExportConfiguration {
+interface IFramesExportConfiguration {
     start: number &
         Default<0> &
         Minimum<0> &
@@ -24,6 +24,38 @@ interface FramesExportConfiguration {
         Minimum<0> &
         Label<"ui-prompt-form-frames-export-end-label"> &
         Description<"ui-prompt-form-frames-export-end-description">;
+}
+
+interface IVideoExportConfiguration {
+    start: number &
+        Default<0> &
+        Minimum<0> &
+        Label<"ui-prompt-form-video-export-start-label"> &
+        Description<"ui-prompt-form-video-export-start-description">;
+
+    end: number &
+        Default<0> &
+        Minimum<0> &
+        Label<"ui-prompt-form-video-export-end-label"> &
+        Description<"ui-prompt-form-video-export-end-description">;
+
+    codec: ICodecNames &
+        Default<"vp9"> &
+        Label<"ui-prompt-form-video-export-codec-label"> &
+        Placeholder<"ui-prompt-form-video-export-codec-placeholder"> &
+        Namespace<"ui-prompt-form-video-export-codec-${identifier}-label">;
+
+    crf: number &
+        Default<31> &
+        Minimum<0> &
+        Label<"ui-prompt-form-video-export-crf-label"> &
+        Description<"ui-prompt-form-video-export-crf-description">;
+
+    pixel_format: IPixelFormatNames &
+        Default<"yuv420p"> &
+        Label<"ui-prompt-form-video-export-pixel_format-label"> &
+        Placeholder<"ui-prompt-form-video-export-pixel_format-placeholder"> &
+        Namespace<"ui-prompt-form-video-export-pixel_format-${identifier}-label">;
 }
 
 export const extension = {
@@ -92,19 +124,19 @@ export const extension = {
             return;
         }
 
-        // TODO: Make prompt configuration dynamic to support this:
-        // const {maxframes} = get(configuration);
+        const {maxframes} = get(configuration);
 
-        let export_configuration: FramesExportConfiguration;
+        let export_configuration: IFramesExportConfiguration;
         try {
             export_configuration = (
-                await prompts.prompt_form<FramesExportConfiguration>({
+                await prompts.prompt_form<IFramesExportConfiguration>({
                     is_dismissible: true,
                     title: "ui-prompt-form-frames-export-title",
 
-                    type: typeOf<FramesExportConfiguration>(),
+                    type: typeOf<IFramesExportConfiguration>(),
                     model: {
-                        end: 270,
+                        // TODO: Make prompt configuration dynamic to support this as runtime validation
+                        end: maxframes as number,
                     },
                 })
             ).model;
@@ -148,7 +180,7 @@ export const extension = {
     },
 
     async command_prompt_video(app: IAppContext) {
-        const {jobs, notifications, prompts, workspace} = app;
+        const {agent, jobs, notifications, prompts, workspace} = app;
         if (!workspace) {
             notifications.push({
                 //icon: X,
@@ -184,12 +216,29 @@ export const extension = {
         const {file_path} = editor;
         const {framerate, height, maxframes, width} = get(configuration);
 
-        let export_configuration: IExportVideoPromptEvent;
+        const default_codec = await agent.encoding.get_default_codec();
+        const default_codec_configuration = await agent.encoding.get_default_codec_configuration(
+            default_codec
+        );
+
+        let export_configuration: IVideoExportConfiguration;
         try {
-            export_configuration = await prompts.prompt_export_video({
-                frame_min: 0,
-                frame_max: maxframes,
-            });
+            export_configuration = (
+                await prompts.prompt_form<IVideoExportConfiguration>({
+                    is_dismissible: true,
+                    title: "ui-prompt-form-video-export-title",
+
+                    type: typeOf<IVideoExportConfiguration>(),
+                    model: {
+                        // TODO: Make prompt configuration dynamic to support this as runtime validation
+                        end: maxframes as number,
+
+                        codec: default_codec,
+                        crf: default_codec_configuration.crf,
+                        pixel_format: default_codec_configuration.pixel_format,
+                    },
+                })
+            ).model;
         } catch (err) {
             if (err instanceof PromptDismissError) return;
             throw err;

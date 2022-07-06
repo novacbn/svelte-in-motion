@@ -35,13 +35,21 @@ ui-prompt-dismiss-label = Dismiss
 ui-prompt-form-submit-label = Submit
 
 ui-prompt-form-frames-export-title = Export Frames
-ui-prompt-form-frames-export-end-description = Enter the last frame you want to export. 
-ui-prompt-form-frames-export-end-label = Ending Frame
-ui-prompt-form-frames-export-start-description = Enter the first frame you want to export. 
 ui-prompt-form-frames-export-start-label = Starting Frame
+ui-prompt-form-frames-export-start-description = Enter the first frame you want to export. 
+ui-prompt-form-frames-export-end-label = Ending Frame
+ui-prompt-form-frames-export-end-description = Enter the last frame you want to export. 
 
 ui-prompt-form-video-export-title = Export Video
-ui-prompt-form-video-export-end-description = Enter the last frame you want to export. 
-ui-prompt-form-video-export-end-label = Ending Frame
-ui-prompt-form-video-export-start-description = Enter the first frame you want to export. 
 ui-prompt-form-video-export-start-label = Starting Frame
+ui-prompt-form-video-export-start-description = Enter the first frame you want to export. 
+ui-prompt-form-video-export-end-label = Ending Frame
+ui-prompt-form-video-export-end-description = Enter the last frame you want to export. 
+ui-prompt-form-video-export-codec-label = Codec
+ui-prompt-form-video-export-codec-placeholder = Select the video encoding.
+ui-prompt-form-video-export-codec-vp9-label = vp9 (.webm)
+ui-prompt-form-video-export-crf-label = CRF
+ui-prompt-form-video-export-crf-description = Enter constant rate factor you want to encode as.
+ui-prompt-form-video-export-pixel_format-label = Pixel Format
+ui-prompt-form-video-export-pixel_format-placeholder = Select the encoded pixel format.
+ui-prompt-form-video-export-pixel_format-yuv420p-label = yuv420p

@@ -205,6 +205,7 @@ importers:
     specifiers:
       '@deepkit/type-compiler': ^1.0.1-alpha.71
       '@svelte-in-motion/editor': workspace:^
+      '@svelte-in-motion/encoding': workspace:^
       '@svelte-in-motion/storage': workspace:^
       '@svelte-in-motion/type': workspace:^
       '@svelte-in-motion/utilities': workspace:^
@@ -217,6 +218,7 @@ importers:
     devDependencies:
       '@deepkit/type-compiler': 1.0.1-alpha.71_typescript@4.7.3
       '@svelte-in-motion/editor': link:../@svelte-in-motion-editor
+      '@svelte-in-motion/encoding': link:../@svelte-in-motion-encoding
       prettier: 2.7.0
       typescript: 4.7.3
 
