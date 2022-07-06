@@ -34,9 +34,8 @@ export interface ICreateWorkspacePromptEvent {
 }
 
 export interface IExportVideoPromptProps {
-    end: number;
-
-    start: number;
+    frame_min: number;
+    frame_max: number;
 }
 
 export interface IExportVideoPromptEvent {
