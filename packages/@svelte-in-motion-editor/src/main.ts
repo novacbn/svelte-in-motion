@@ -11,7 +11,7 @@ import {
     EXTENSION_EXPORT,
     EXTENSION_PALETTE,
     EXTENSION_PREVIEW,
-} from "@svelte-in-motion/extensions";
+} from "@svelte-in-motion/builtin-extensions";
 
 import {CONTEXT_APP, app as make_app_context} from "./lib/app";
 import {app_router} from "./lib/router";

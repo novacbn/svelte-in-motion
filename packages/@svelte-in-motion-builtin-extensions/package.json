@@ -1,5 +1,5 @@
 {
-    "name": "@svelte-in-motion/extensions",
+    "name": "@svelte-in-motion/builtin-extensions",
     "author": "novacbn",
     "version": "0.0.1",
     "type": "module",
@@ -10,7 +10,7 @@
     },
     "repository": {
         "type": "git",
-        "url": "https://github.com/novacbn/svelte-in-motion/tree/main/packages/%40svelte-in-motion-extensions"
+        "url": "https://github.com/novacbn/svelte-in-motion/tree/main/packages/%40svelte-in-motion-builtin-extensions"
     },
     "scripts": {
         "build:package": "tsc",
