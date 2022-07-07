@@ -18,7 +18,7 @@
 
     const dispatch = createEventDispatcher();
 
-    function on_close_click(event: MouseEvent): void {
+    function on_dismiss_click(event: MouseEvent): void {
         dispatch("reject", {
             error: new PromptDismissError(),
         });
@@ -51,7 +51,7 @@
 </Card.Section>
 
 <Card.Footer alignment_x="stretch">
-    <Button sizing="nano" variation="clear" on:click={on_close_click}>
+    <Button sizing="nano" variation="clear" on:click={on_dismiss_click}>
         {$translate("ui-prompt-about-dismiss-label")}
     </Button>
 </Card.Footer>
