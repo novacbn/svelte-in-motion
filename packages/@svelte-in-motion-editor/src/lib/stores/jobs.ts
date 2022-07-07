@@ -8,7 +8,7 @@ import type {IAppContext} from "../app";
 
 import type {IEncodeQueueOptions} from "./encodes";
 import type {IRenderQueueOptions} from "./renders";
-import type {INotification} from "./notifications";
+import type {INotificationItem} from "./notifications";
 
 export enum JOB_STATES {
     ended = "ended",
@@ -21,7 +21,7 @@ export enum JOB_STATES {
 }
 
 export interface IJobEvent {
-    job: IJob;
+    job: IJobItem;
 }
 
 export interface IJobEndEvent extends IJobEvent {
@@ -64,7 +64,7 @@ export interface IJobRendering extends IJobBase {
     render: string;
 }
 
-export type IJob = IJobBase | IJobEncoding | IJobRendering;
+export type IJobItem = IJobBase | IJobEncoding | IJobRendering;
 
 export type IJobQueueOptions = {
     workspace: string;
@@ -76,7 +76,7 @@ export type IJobQueueOptions = {
     render: Omit<IRenderQueueOptions, "file" | "workspace">;
 };
 
-export interface IJobsStore extends Readable<IJob[]> {
+export interface IJobsStore extends Readable<IJobItem[]> {
     EVENT_ENCODING: IEvent<IJobEncodingEvent>;
 
     EVENT_END: IEvent<IJobEndEvent>;
@@ -89,9 +89,9 @@ export interface IJobsStore extends Readable<IJob[]> {
 
     queue(options: IJobQueueOptions): Promise<string>;
 
-    remove(identifier: string): IJob;
+    remove(identifier: string): IJobItem;
 
-    track(identifier: string, on_remove?: INotification["on_remove"]): string;
+    track(identifier: string, on_remove?: INotificationItem["on_remove"]): string;
 
     yield(identifier: string): Promise<Uint8Array>;
 }
@@ -99,7 +99,7 @@ export interface IJobsStore extends Readable<IJob[]> {
 export function jobs(app: IAppContext): IJobsStore {
     const {encodes, notifications, renders} = app;
 
-    const {find, has, push, subscribe, remove, update} = collection<IJob>();
+    const {find, has, push, subscribe, remove, update} = collection<IJobItem>();
 
     const EVENT_END = event<IJobEndEvent>();
     const EVENT_START = event<IJobEvent>();

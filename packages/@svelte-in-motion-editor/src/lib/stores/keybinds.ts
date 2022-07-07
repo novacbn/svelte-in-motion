@@ -13,7 +13,7 @@ export interface IKeybindEvent {
     repeat: boolean;
 }
 
-export interface IKeybind extends ICollectionItem {
+export interface IKeybindItem extends ICollectionItem {
     binds: IKeybindBinds;
 
     identifier: string;
@@ -29,14 +29,14 @@ export interface IKeybind extends ICollectionItem {
     on_bind: (app: IAppContext, event: IKeybindEvent) => void;
 }
 
-export interface IKeybindsStore extends ICollectionStore<IKeybind> {
+export interface IKeybindsStore extends ICollectionStore<IKeybindItem> {
     execute: (event: KeyboardEvent, is_down: boolean) => void;
 }
 
 export function keybinds(app: IAppContext): IKeybindsStore {
     const {prompts} = app;
 
-    const store = collection<IKeybind>();
+    const store = collection<IKeybindItem>();
     const {find, has, push, subscribe, remove, update, watch} = store;
 
     const bind_lookup: Map<string, boolean> = new Map();

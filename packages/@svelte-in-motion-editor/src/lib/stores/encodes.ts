@@ -8,7 +8,7 @@ import {collection, event} from "@svelte-in-motion/utilities";
 
 import type {IAppContext} from "../app";
 
-import type {INotification} from "./notifications";
+import type {INotificationItem} from "./notifications";
 
 export enum ENCODE_STATES {
     ended = "ended",
@@ -21,14 +21,14 @@ export enum ENCODE_STATES {
 }
 
 export interface IEncodeEvent {
-    encode: IEncode;
+    encode: IEncodeItem;
 }
 
 export interface IEncodeEndEvent extends IEncodeEvent {
     video: Uint8Array;
 }
 
-export interface IEncode extends ICollectionItem {
+export interface IEncodeItem extends ICollectionItem {
     identifier: string;
 
     state: `${ENCODE_STATES}`;
@@ -53,7 +53,7 @@ export type IEncodeQueueOptions = {
     width: number;
 };
 
-export interface IEncodesStore extends Readable<IEncode[]> {
+export interface IEncodesStore extends Readable<IEncodeItem[]> {
     EVENT_END: IEvent<IEncodeEndEvent>;
 
     EVENT_START: IEvent<IEncodeEvent>;
@@ -62,9 +62,9 @@ export interface IEncodesStore extends Readable<IEncode[]> {
 
     queue(options: IEncodeQueueOptions): Promise<string>;
 
-    remove(identifier: string): IEncode;
+    remove(identifier: string): IEncodeItem;
 
-    track(identifier: string, on_remove?: INotification["on_remove"]): string;
+    track(identifier: string, on_remove?: INotificationItem["on_remove"]): string;
 
     yield(identifier: string): Promise<Uint8Array>;
 }
@@ -73,7 +73,7 @@ export function encodes(app: IAppContext): IEncodesStore {
     const {agent, notifications} = app;
     const {encoding} = agent;
 
-    const {find, has, push, subscribe, remove, update} = collection<IEncode>();
+    const {find, has, push, subscribe, remove, update} = collection<IEncodeItem>();
 
     const EVENT_END = event<IEncodeEndEvent>();
     const EVENT_START = event<IEncodeEvent>();

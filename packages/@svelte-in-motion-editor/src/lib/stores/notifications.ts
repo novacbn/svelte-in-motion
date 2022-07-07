@@ -4,7 +4,7 @@ import type {SvelteComponent} from "svelte";
 import type {ICollectionItem, ICollectionStore} from "@svelte-in-motion/utilities";
 import {collection, generate_uuid} from "@svelte-in-motion/utilities";
 
-export interface INotification extends ICollectionItem {
+export interface INotificationItem extends ICollectionItem {
     icon?: typeof SvelteComponent;
 
     identifier: string;
@@ -17,22 +17,22 @@ export interface INotification extends ICollectionItem {
 
     text?: string;
 
-    on_remove?: (notification: INotification) => void;
+    on_remove?: (notification: INotificationItem) => void;
 }
 
-export interface INotificationsStore extends ICollectionStore<INotification> {
-    push(item: Omit<INotification, "identifier">): INotification;
+export interface INotificationsStore extends ICollectionStore<INotificationItem> {
+    push(item: Omit<INotificationItem, "identifier">): INotificationItem;
 }
 
 export function notifications(): INotificationsStore {
-    const {find, has, push, subscribe, remove, update, watch} = collection<INotification>();
+    const {find, has, push, subscribe, remove, update, watch} = collection<INotificationItem>();
 
     return {
         find,
         has,
 
         push(item) {
-            return push({...item, identifier: generate_uuid()} as INotification);
+            return push({...item, identifier: generate_uuid()} as INotificationItem);
         },
 
         subscribe,

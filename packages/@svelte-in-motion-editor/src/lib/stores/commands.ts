@@ -5,7 +5,7 @@ import type {IAppContext} from "../app";
 
 export type ICommandArguments = Record<string, string | undefined>;
 
-export interface ICommand extends ICollectionItem {
+export interface ICommandItem extends ICollectionItem {
     identifier: string;
 
     is_disabled?: boolean | (() => boolean);
@@ -18,7 +18,7 @@ export interface ICommand extends ICollectionItem {
     ) => void | Promise<void>;
 }
 
-export interface ICommandsStore extends ICollectionStore<ICommand> {
+export interface ICommandsStore extends ICollectionStore<ICommandItem> {
     execute: <T extends ICommandArguments | undefined = undefined>(
         command: string,
         args?: T
@@ -26,7 +26,7 @@ export interface ICommandsStore extends ICollectionStore<ICommand> {
 }
 
 export function commands(app: IAppContext): ICommandsStore {
-    const {find, has, push, subscribe, remove, update, watch} = collection<ICommand>();
+    const {find, has, push, subscribe, remove, update, watch} = collection<ICommandItem>();
 
     return {
         execute<T extends ICommandArguments | undefined = undefined>(identifier: string, args: T) {

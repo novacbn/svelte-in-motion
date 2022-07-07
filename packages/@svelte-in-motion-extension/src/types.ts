@@ -4,21 +4,21 @@ export type {IPreviewContext} from "@svelte-in-motion/editor/src/lib/preview";
 export type {IWorkspaceContext} from "@svelte-in-motion/editor/src/lib/workspace";
 
 export type {
-    ICommand,
+    ICommandItem,
     ICommandArguments,
     ICommandsStore,
 } from "@svelte-in-motion/editor/src/lib/stores/commands";
 export type {
-    IEncode,
+    IEncodeItem,
     IEncodeEvent,
     IEncodeEndEvent,
     IEncodeQueueOptions,
     IEncodesStore,
 } from "@svelte-in-motion/editor/src/lib/stores/encodes";
-export type {IError, IErrorsStore} from "@svelte-in-motion/editor/src/lib/stores/errors";
+export type {IErrorItem, IErrorsStore} from "@svelte-in-motion/editor/src/lib/stores/errors";
 export type {IExtensionsStore} from "@svelte-in-motion/editor/src/lib/stores/extensions";
 export type {
-    IJob,
+    IJobItem,
     IJobBase,
     IJobEncoding,
     IJobEvent,
@@ -30,14 +30,14 @@ export type {
     IJobsStore,
 } from "@svelte-in-motion/editor/src/lib/stores/jobs";
 export type {
-    IKeybind,
+    IKeybindItem,
     IKeybindBinds,
     IKeybindEvent,
     IKeybindsStore,
 } from "@svelte-in-motion/editor/src/lib/stores/keybinds";
 export type {ILocaleStore} from "@svelte-in-motion/editor/src/lib/stores/locale";
 export type {
-    INotification,
+    INotificationItem,
     INotificationsStore,
 } from "@svelte-in-motion/editor/src/lib/stores/notifications";
 export type {
@@ -55,7 +55,7 @@ export type {
     IPromptsStore,
 } from "@svelte-in-motion/editor/src/lib/stores/prompts";
 export type {
-    IRender,
+    IRenderItem,
     IRenderEvent,
     IRenderEndEvent,
     IRenderQueueOptions,

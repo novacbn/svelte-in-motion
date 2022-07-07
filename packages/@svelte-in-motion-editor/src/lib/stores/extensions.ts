@@ -3,7 +3,7 @@ import {collection} from "@svelte-in-motion/utilities";
 
 import type {IAppContext} from "../app";
 
-export interface IExtension extends ICollectionItem {
+export interface IExtensionItem extends ICollectionItem {
     identifier: string;
 
     is_builtin?: boolean;
@@ -11,10 +11,10 @@ export interface IExtension extends ICollectionItem {
     on_activate?: (app: IAppContext) => void;
 }
 
-export interface IExtensionsStore extends ICollectionStore<IExtension> {}
+export interface IExtensionsStore extends ICollectionStore<IExtensionItem> {}
 
 export function extensions(app: IAppContext): IExtensionsStore {
-    const {find, has, push, subscribe, remove, update, watch} = collection<IExtension>();
+    const {find, has, push, subscribe, remove, update, watch} = collection<IExtensionItem>();
 
     return {
         find,

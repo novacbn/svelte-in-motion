@@ -9,7 +9,7 @@ import {collection, event} from "@svelte-in-motion/utilities";
 import type {IAppContext} from "../app";
 import {workspace as make_workspace_context} from "../workspace";
 
-import type {INotification} from "./notifications";
+import type {INotificationItem} from "./notifications";
 import {bundle} from "@svelte-in-motion/bundling";
 
 export enum RENDER_STATES {
@@ -23,14 +23,14 @@ export enum RENDER_STATES {
 }
 
 export interface IRenderEvent {
-    render: IRender;
+    render: IRenderItem;
 }
 
 export interface IRenderEndEvent extends IRenderEvent {
     frames: Uint8Array[];
 }
 
-export interface IRender extends ICollectionItem {
+export interface IRenderItem extends ICollectionItem {
     identifier: string;
 
     workspace: string;
@@ -52,7 +52,7 @@ export type IRenderQueueOptions = {
     start: number;
 };
 
-export interface IRendersStore extends Readable<IRender[]> {
+export interface IRendersStore extends Readable<IRenderItem[]> {
     EVENT_END: IEvent<IRenderEndEvent>;
 
     EVENT_START: IEvent<IRenderEvent>;
@@ -61,9 +61,9 @@ export interface IRendersStore extends Readable<IRender[]> {
 
     queue(options: IRenderQueueOptions): Promise<string>;
 
-    remove(identifier: string): IRender;
+    remove(identifier: string): IRenderItem;
 
-    track(identifier: string, on_remove?: INotification["on_remove"]): string;
+    track(identifier: string, on_remove?: INotificationItem["on_remove"]): string;
 
     yield(identifier: string): Promise<Uint8Array[]>;
 }
@@ -72,7 +72,7 @@ export function renders(app: IAppContext): IRendersStore {
     const {agent, notifications} = app;
     const {rendering} = agent;
 
-    const {find, has, push, subscribe: subscribe_store, remove, update} = collection<IRender>();
+    const {find, has, push, subscribe: subscribe_store, remove, update} = collection<IRenderItem>();
 
     const EVENT_END = event<IRenderEndEvent>();
     const EVENT_START = event<IRenderEvent>();

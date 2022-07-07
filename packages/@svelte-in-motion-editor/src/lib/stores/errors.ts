@@ -5,7 +5,7 @@ import {collection, generate_uuid} from "@svelte-in-motion/utilities";
 
 import type {INotificationsStore} from "./notifications";
 
-export interface IError extends ICollectionItem {
+export interface IErrorItem extends ICollectionItem {
     identifier: string;
 
     message: string;
@@ -15,12 +15,12 @@ export interface IError extends ICollectionItem {
     source: string;
 }
 
-export interface IErrorsStore extends ICollectionStore<IError> {
-    push(item: Omit<IError, "identifier">): IError;
+export interface IErrorsStore extends ICollectionStore<IErrorItem> {
+    push(item: Omit<IErrorItem, "identifier">): IErrorItem;
 }
 
 export function errors(notifications: INotificationsStore): IErrorsStore {
-    const {find, has, push, subscribe, remove, update, watch} = collection<IError>();
+    const {find, has, push, subscribe, remove, update, watch} = collection<IErrorItem>();
 
     return {
         find,
@@ -37,7 +37,7 @@ export function errors(notifications: INotificationsStore): IErrorsStore {
                 text: `${item.name}: ${item.message}`,
             });
 
-            return push({...item, identifier: generate_uuid()} as IError);
+            return push({...item, identifier: generate_uuid()} as IErrorItem);
         },
 
         subscribe,
