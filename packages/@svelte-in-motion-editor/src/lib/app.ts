@@ -1,6 +1,7 @@
 import {Agent} from "@svelte-in-motion/agent";
 import type {IPreloadedConfigurationFileStore} from "@svelte-in-motion/configuration";
 import {PreferencesConfiguration, WorkspacesConfiguration} from "@svelte-in-motion/configuration";
+import type {IDriver} from "@svelte-in-motion/storage";
 import {make_scoped_context} from "@svelte-in-motion/utilities";
 
 import type {ICommandsStore} from "./stores/commands";
@@ -56,6 +57,8 @@ export interface IAppContext {
     preferences: IPreloadedConfigurationFileStore<PreferencesConfiguration>;
 
     prompts: IPromptsStore;
+
+    storage: IDriver;
 
     translate: ITranslationsStore;
 
@@ -113,6 +116,7 @@ export async function app(): Promise<IAppContext> {
     };
 
     app.agent = agent;
+    app.storage = STORAGE_USER;
 
     app.locale = make_locale_store(app);
     app.translate = make_translations_store(app);
