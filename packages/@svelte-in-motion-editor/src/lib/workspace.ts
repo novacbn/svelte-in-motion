@@ -33,14 +33,16 @@ export interface IWorkspaceContext {
     storage: IDriver;
 }
 
-function is_workspace_prepared(driver: IDriver): Promise<boolean> {
-    return driver.exists(FILE_CONFIGURATION_WORKSPACE);
-}
+async function is_workspace_prepared(storage: IDriver): Promise<boolean> {
+    if (!(await storage.exists(FILE_CONFIGURATION_WORKSPACE))) return false;
 
-async function prepare_workspace(app: IAppContext, storage: IDriver): Promise<void> {
-    const {templates} = app;
+    try {
+        await WorkspaceConfiguration.read(storage, FILE_CONFIGURATION_WORKSPACE);
+    } catch (err) {
+        return false;
+    }
 
-    await templates.render(storage, "templates.simple", {});
+    return true;
 }
 
 export async function workspace(identifier: string, app: IAppContext): Promise<IWorkspaceContext> {
@@ -63,7 +65,11 @@ export async function workspace(identifier: string, app: IAppContext): Promise<I
     const $metadata = get(metadata);
     const storage = await $metadata.make_driver();
 
-    if (!(await is_workspace_prepared(storage))) await prepare_workspace(app, storage);
+    if (!(await is_workspace_prepared(storage))) {
+        throw new ReferenceError(
+            `bad argument #0 to 'workspace' (workspace '${identifier}' is not available to be opened)`
+        );
+    }
 
     const configuration = await WorkspaceConfiguration.preload(
         storage,

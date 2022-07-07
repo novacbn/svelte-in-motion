@@ -1,3 +1,5 @@
+import {get} from "svelte/store";
+
 import {WorkspacesItemConfiguration} from "@svelte-in-motion/configuration";
 import type {IAppContext, IKeybindEvent} from "@svelte-in-motion/extension";
 import {define_extension} from "@svelte-in-motion/extension";
@@ -36,7 +38,7 @@ export const EXTENSION_WORKSPACE = define_extension({
     },
 
     async command_prompt_new(app: IAppContext) {
-        const {prompts, workspaces} = app;
+        const {prompts, templates, workspaces} = app;
 
         let result: IWorkspaceNewConfiguration;
         try {
@@ -53,14 +55,16 @@ export const EXTENSION_WORKSPACE = define_extension({
             throw err;
         }
 
-        workspaces.update(($workspaces) => {
-            const workspace = WorkspacesItemConfiguration.from({
-                name: result.name,
-            });
-
-            $workspaces.workspaces.push(workspace);
-            return $workspaces;
+        const $workspaces = get(workspaces);
+        const workspace = WorkspacesItemConfiguration.from({
+            name: result.name,
         });
+
+        const storage = await workspace.make_driver();
+        await templates.render(storage, "templates.simple", {});
+
+        $workspaces.workspaces.push(workspace);
+        workspaces.set($workspaces);
     },
 
     keybind_prompt_new(app: IAppContext, event: IKeybindEvent) {
