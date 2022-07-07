@@ -73,44 +73,43 @@ export function keybinds(app: IAppContext): IKeybindsStore {
                     repeat_throttle = 0,
                 } = item;
 
-                const can_handle = !!binds.find((bind) => bind.includes(key));
-                if (can_handle) {
-                    const current_active = binds.some((binds) =>
-                        binds.every((key) => key_lookup.has(key))
-                    );
-                    const previous_active = bind_lookup.has(identifier);
+                if (!binds.find((bind) => bind.includes(key))) continue;
 
-                    if (current_active) {
-                        event.preventDefault();
-                        event.stopPropagation();
-                    } else if (can_repeat) timestamp_lookup.delete(identifier);
+                const current_active = binds.some((binds) =>
+                    binds.every((key) => key_lookup.has(key))
+                );
+                const previous_active = bind_lookup.has(identifier);
 
-                    const current_timestamp = Date.now();
-                    const is_repeating = repeat && can_repeat;
+                if (current_active) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                } else if (can_repeat) timestamp_lookup.delete(identifier);
 
-                    if (is_repeating) {
-                        const previous_timestamp = timestamp_lookup.get(identifier) ?? 0;
-                        if (current_timestamp - previous_timestamp < repeat_throttle) {
-                            break;
-                        }
+                const current_timestamp = Date.now();
+                const is_repeating = repeat && can_repeat;
+
+                if (is_repeating) {
+                    const previous_timestamp = timestamp_lookup.get(identifier) ?? 0;
+                    if (current_timestamp - previous_timestamp < repeat_throttle) {
+                        break;
                     }
-
-                    if (current_active !== previous_active || is_repeating) {
-                        if (!is_disabled || (typeof is_disabled === "function" && !is_disabled())) {
-                            item.on_bind(app, {
-                                active: current_active,
-                                repeat,
-                            });
-                        }
-
-                        if (is_repeating) timestamp_lookup.set(identifier, current_timestamp);
-                    }
-
-                    if (current_active) bind_lookup.set(identifier, true);
-                    else bind_lookup.delete(identifier);
-
-                    if (current_active || current_active !== previous_active) break;
                 }
+
+                if (current_active !== previous_active || is_repeating) {
+                    if (!is_disabled || (typeof is_disabled === "function" && !is_disabled())) {
+                        item.on_bind(app, {
+                            active: current_active,
+                            repeat,
+                        });
+                    }
+
+                    if (is_repeating) timestamp_lookup.set(identifier, current_timestamp);
+                }
+
+                if (current_active) bind_lookup.set(identifier, true);
+                else bind_lookup.delete(identifier);
+
+                if (current_active || current_active !== previous_active) break;
             }
         },
 
