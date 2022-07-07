@@ -1,7 +1,6 @@
 <script lang="ts">
     import FlexSearch from "flexsearch";
     import type {IKeybindEvent} from "@kahi-ui/framework";
-    import {action_submit} from "@kahi-ui/framework";
     import {
         Badge,
         Card,
@@ -11,6 +10,7 @@
         Stack,
         Text,
         TextInput,
+        action_submit,
         navigate_down,
         navigate_up,
     } from "@kahi-ui/framework";
@@ -18,10 +18,10 @@
 
     import {clamp} from "@svelte-in-motion/utilities";
 
-    import type {ISearchPromptPromptEvent} from "../../lib/stores/prompts";
+    import type {ISearchPromptEvent} from "../../lib/stores/prompts";
 
     type $$Events = {
-        resolve: CustomEvent<ISearchPromptPromptEvent>;
+        resolve: CustomEvent<ISearchPromptEvent>;
     };
 
     const dispatch = createEventDispatcher();
