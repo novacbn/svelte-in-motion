@@ -1,6 +1,7 @@
 import type {
     PROPERTY_ALIGNMENT_X_BREAKPOINT,
     PROPERTY_ALIGNMENT_Y_BREAKPOINT,
+    PROPERTY_SIZE_BREAKPOINT,
     PROPERTY_SPACING_BREAKPOINT,
 } from "@kahi-ui/framework";
 import type {SvelteComponent} from "svelte";
@@ -84,6 +85,9 @@ export interface IPrompt<T extends Record<string, any>> extends ICommonPromptPro
     margin_left?: PROPERTY_SPACING_BREAKPOINT;
     margin_right?: PROPERTY_SPACING_BREAKPOINT;
     margin_top?: PROPERTY_SPACING_BREAKPOINT;
+
+    height?: PROPERTY_SIZE_BREAKPOINT;
+    width?: PROPERTY_SIZE_BREAKPOINT;
 
     props?: T;
 }
@@ -202,6 +206,7 @@ export function prompts(): IPromptsStore {
                 Component: SearchPrompt,
                 alignment_y: "top",
                 margin_top: "large",
+                width: "prose",
 
                 is_dismissible: props.is_dismissible,
                 title: props.title,

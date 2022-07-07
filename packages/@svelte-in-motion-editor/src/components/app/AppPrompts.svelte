@@ -60,6 +60,8 @@
             <Card.Container
                 sizing="nano"
                 max_size="75"
+                width={$prompts.width}
+                height={$prompts.height}
                 margin_bottom={$prompts.margin_bottom}
                 margin_left={$prompts.margin_left}
                 margin_right={$prompts.margin_right}
