@@ -1,16 +1,13 @@
 import {get} from "svelte/store";
 
-import type {IExtension} from "@svelte-in-motion/editor/src/lib/stores/extensions";
-import type {IKeybindEvent} from "@svelte-in-motion/editor/src/lib/stores/keybinds";
-
-import type {IAppContext} from "@svelte-in-motion/editor/src/lib/app";
-
+import type {IAppContext, IKeybindEvent} from "@svelte-in-motion/extension";
 import {ICodecNames, IPixelFormatNames} from "@svelte-in-motion/encoding";
 import {Default, Description, Label, Minimum, Namespace, Placeholder} from "@svelte-in-motion/type";
 import {typeOf} from "@svelte-in-motion/type";
 import {PromptDismissError, download_blob, download_buffer} from "@svelte-in-motion/utilities";
 
 import {zip_frames} from "../util/io";
+import {define_extension} from "@svelte-in-motion/extension";
 
 interface IFramesExportConfiguration {
     start: number &
@@ -55,7 +52,7 @@ interface IVideoExportConfiguration {
         Namespace<"ui-prompt-form-video-export-pixel_format-${identifier}-label">;
 }
 
-export const extension = {
+export const EXTENSION_EXPORT = define_extension({
     identifier: "dev.nbn.sim.export",
     is_builtin: true,
 
@@ -123,9 +120,9 @@ export const extension = {
 
         const {maxframes} = get(configuration);
 
-        let export_configuration: IFramesExportConfiguration;
+        let result: IFramesExportConfiguration;
         try {
-            export_configuration = (
+            result = (
                 await prompts.prompt_form<IFramesExportConfiguration>({
                     is_dismissible: true,
                     title: "ui-prompt-form-frames-export-title",
@@ -147,8 +144,8 @@ export const extension = {
             workspace: workspace.identifier,
             file: file_path,
 
-            end: export_configuration.end,
-            start: export_configuration.start,
+            end: result.end,
+            start: result.start,
         });
 
         const notification_identifier = renders.track(render_identifier, () =>
@@ -172,7 +169,7 @@ export const extension = {
 
         download_blob(
             zip,
-            `svelte-in-motion.frames.${export_configuration.start}-${export_configuration.end}.${file_path}.zip`
+            `svelte-in-motion.frames.${result.start}-${result.end}.${file_path}.zip`
         );
     },
 
@@ -218,9 +215,9 @@ export const extension = {
             default_codec
         );
 
-        let export_configuration: IVideoExportConfiguration;
+        let result: IVideoExportConfiguration;
         try {
-            export_configuration = (
+            result = (
                 await prompts.prompt_form<IVideoExportConfiguration>({
                     is_dismissible: true,
                     title: "ui-prompt-form-video-export-title",
@@ -246,17 +243,17 @@ export const extension = {
             workspace: workspace.identifier,
 
             encode: {
-                codec: export_configuration.codec,
-                crf: export_configuration.crf,
+                codec: result.codec,
+                crf: result.crf,
                 framerate,
                 height,
-                pixel_format: export_configuration.pixel_format,
+                pixel_format: result.pixel_format,
                 width,
             },
 
             render: {
-                end: export_configuration.end,
-                start: export_configuration.start,
+                end: result.end,
+                start: result.start,
             },
         });
 
@@ -275,7 +272,7 @@ export const extension = {
 
         download_buffer(
             video,
-            `svelte-in-motion.video.${export_configuration.start}-${export_configuration.end}.${file_path}.webm`,
+            `svelte-in-motion.video.${result.start}-${result.end}.${file_path}.webm`,
             `video/webm`
         );
     },
@@ -287,6 +284,4 @@ export const extension = {
     keybind_prompt_video(app: IAppContext, event: IKeybindEvent) {
         if (event.active && app.workspace?.preview) this.command_prompt_video(app);
     },
-};
-
-export const EXTENSION_EXPORT: IExtension = extension;
+});

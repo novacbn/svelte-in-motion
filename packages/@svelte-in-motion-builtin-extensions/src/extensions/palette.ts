@@ -1,15 +1,16 @@
 import {get} from "svelte/store";
 
-import type {ICommand} from "@svelte-in-motion/editor/src/lib/stores/commands";
-import type {IExtension} from "@svelte-in-motion/editor/src/lib/stores/extensions";
-import type {IKeybind, IKeybindEvent} from "@svelte-in-motion/editor/src/lib/stores/keybinds";
-import type {ISearchPromptPromptEvent} from "@svelte-in-motion/editor/src/lib/stores/prompts";
-
-import type {IAppContext} from "@svelte-in-motion/editor/src/lib/app";
-
+import type {
+    IAppContext,
+    ICommand,
+    IKeybind,
+    IKeybindEvent,
+    ISearchPromptEvent,
+} from "@svelte-in-motion/extension";
+import {define_extension} from "@svelte-in-motion/extension";
 import {PromptDismissError} from "@svelte-in-motion/utilities";
 
-export const extension = {
+export const EXTENSION_PALETTE = define_extension({
     identifier: "dev.nbn.sim.palette",
     is_builtin: true,
 
@@ -76,10 +77,9 @@ export const extension = {
             };
         });
 
-        let selected_command: ISearchPromptPromptEvent;
-
+        let result: ISearchPromptEvent;
         try {
-            selected_command = await prompts.prompt_search({
+            result = await prompts.prompt_search({
                 is_dismissible: true,
 
                 badge: "bind",
@@ -95,12 +95,10 @@ export const extension = {
             throw err;
         }
 
-        commands.execute(selected_command.identifier);
+        commands.execute(result.identifier);
     },
 
     keybind_prompt_frames(app: IAppContext, event: IKeybindEvent) {
         if (event.active) this.command_prompt_commands(app);
     },
-};
-
-export const EXTENSION_PALETTE: IExtension = extension;
+});

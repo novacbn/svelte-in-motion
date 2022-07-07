@@ -1,9 +1,7 @@
-import type {IExtension} from "@svelte-in-motion/editor/src/lib/stores/extensions";
-import type {IKeybindEvent} from "@svelte-in-motion/editor/src/lib/stores/keybinds";
+import type {IAppContext, IKeybindEvent} from "@svelte-in-motion/extension";
+import {define_extension} from "@svelte-in-motion/extension";
 
-import type {IAppContext} from "@svelte-in-motion/editor/src/lib/app";
-
-export const extension = {
+export const EXTENSION_EDITOR = define_extension({
     identifier: "dev.nbn.sim.editor",
     is_builtin: true,
 
@@ -62,6 +60,4 @@ export const extension = {
     keybind_ui_script_toggle(app: IAppContext, event: IKeybindEvent) {
         if (event.active && app.workspace?.editor) this.command_ui_script_toggle(app);
     },
-};
-
-export const EXTENSION_EDITOR: IExtension = extension;
+});
