@@ -21,7 +21,7 @@ import type {IPromptsStore} from "./stores/prompts";
 import {prompts as make_prompt_store} from "./stores/prompts";
 import type {IRendersStore} from "./stores/renders";
 import {renders as make_renders_store} from "./stores/renders";
-import type {ITranslationStore} from "./stores/translations";
+import type {ITranslationsStore} from "./stores/translations";
 import {translations as make_translations_store} from "./stores/translations";
 
 import {
@@ -57,7 +57,7 @@ export interface IAppContext {
 
     prompts: IPromptsStore;
 
-    translate: ITranslationStore;
+    translate: ITranslationsStore;
 
     workspace?: IWorkspaceContext;
 

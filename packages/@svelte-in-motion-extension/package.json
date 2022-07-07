@@ -1,5 +1,5 @@
 {
-    "name": "@svelte-in-motion/builtin-extensions",
+    "name": "@svelte-in-motion/extension",
     "author": "novacbn",
     "version": "0.0.1",
     "type": "module",
@@ -10,7 +10,7 @@
     },
     "repository": {
         "type": "git",
-        "url": "https://github.com/novacbn/svelte-in-motion/tree/main/packages/%40svelte-in-motion-builtin-extensions"
+        "url": "https://github.com/novacbn/svelte-in-motion/tree/main/packages/%40svelte-in-motion-extension"
     },
     "scripts": {
         "build:package": "tsc",
@@ -24,14 +24,9 @@
     },
     "devDependencies": {
         "@deepkit/type-compiler": "^1.0.1-alpha.71",
-        "@svelte-in-motion/encoding": "workspace:^",
+        "@svelte-in-motion/editor": "workspace:^",
         "prettier": "^2.3.1",
         "typescript": "^4.7.3"
     },
-    "dependencies": {
-        "@svelte-in-motion/extension": "workspace:^",
-        "@svelte-in-motion/storage": "workspace:^",
-        "@svelte-in-motion/type": "workspace:^",
-        "@svelte-in-motion/utilities": "workspace:^"
-    }
+    "dependencies": {}
 }

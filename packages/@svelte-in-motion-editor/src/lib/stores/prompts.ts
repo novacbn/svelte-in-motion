@@ -47,7 +47,7 @@ export interface IFormPromptProps<T> extends ICommonPromptProps {
     type: Type;
 }
 
-export interface ISearchPromptPromptEvent {
+export interface ISearchPromptEvent {
     identifier: string;
 }
 
@@ -115,7 +115,7 @@ export interface IPromptsStore extends Readable<IPrompt<any> | null> {
 
     prompt_form<T>(props: IFormPromptProps<T>): Promise<IFormPromptEvent<T>>;
 
-    prompt_search(props: ISearchPromptProps): Promise<ISearchPromptPromptEvent>;
+    prompt_search(props: ISearchPromptProps): Promise<ISearchPromptEvent>;
 }
 
 export function prompts(): IPromptsStore {
@@ -206,7 +206,7 @@ export function prompts(): IPromptsStore {
         },
 
         prompt_search(props: ISearchPromptProps) {
-            return prompt<ISearchPromptProps, ISearchPromptPromptEvent>({
+            return prompt<ISearchPromptProps, ISearchPromptEvent>({
                 Component: SearchPrompt,
                 alignment_y: "top",
                 margin_top: "large",

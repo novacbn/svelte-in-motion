@@ -8,9 +8,9 @@ import type {IAppContext} from "../app";
 
 export type ITranslationFunction = (identifier: string, parameters?: Record<string, any>) => string;
 
-export type ITranslationStore = Readable<ITranslationFunction>;
+export type ITranslationsStore = Readable<ITranslationFunction>;
 
-export function translations(app: IAppContext): ITranslationStore {
+export function translations(app: IAppContext): ITranslationsStore {
     const {locale} = app;
 
     const on_update = debounce(
