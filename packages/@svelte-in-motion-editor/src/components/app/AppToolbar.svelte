@@ -11,7 +11,7 @@
     import {CONTEXT_PREVIEW} from "../../lib/preview";
     import {CONTEXT_WORKSPACE} from "../../lib/workspace";
 
-    const {commands} = CONTEXT_APP.get()!;
+    const {commands, translate} = CONTEXT_APP.get()!;
     const editor = CONTEXT_EDITOR.get();
     const preview = CONTEXT_PREVIEW.get();
     const workspace = CONTEXT_WORKSPACE.get();
@@ -24,23 +24,39 @@
 <Menu.Container orientation="horizontal" sizing="nano">
     <Dropdown variation="control">
         <svelte:fragment slot="activator">
-            <Menu.Button>File</Menu.Button>
+            <Menu.Button>
+                {$translate("ui-app-toolbar-menu-file-label")}
+            </Menu.Button>
         </svelte:fragment>
 
         <Menu.Container sizing="nano">
-            <Menu.Button disabled={!in_workspace}>New File</Menu.Button>
+            <Menu.Button disabled={!in_workspace}>
+                {$translate("ui-app-toolbar-option-new_file-label")}
+            </Menu.Button>
 
             <Menu.Heading />
 
-            <Menu.Button>New Workspace</Menu.Button>
-            <Menu.Button>New Workspace from Sample</Menu.Button>
-            <Menu.Button>Open Workspace</Menu.Button>
+            <Menu.Button>
+                {$translate("ui-app-toolbar-option-new_workspace-label")}
+            </Menu.Button>
+
+            <Menu.Button>
+                {$translate("ui-app-toolbar-option-new_workspace_from_template-label")}
+            </Menu.Button>
+
+            <Menu.Heading />
+
+            <Menu.Button>
+                {$translate("ui-app-toolbar-option-open_workspace-label")}
+            </Menu.Button>
         </Menu.Container>
     </Dropdown>
 
     <Dropdown variation="control">
         <svelte:fragment slot="activator">
-            <Menu.Button>Export</Menu.Button>
+            <Menu.Button>
+                {$translate("ui-app-toolbar-menu-export-label")}
+            </Menu.Button>
         </svelte:fragment>
 
         <Menu.Container sizing="nano">
@@ -48,32 +64,39 @@
                 disabled={!in_preview}
                 on:click={(event) => commands.execute("export.prompt.frames")}
             >
-                Export Frames
+                {$translate("ui-app-toolbar-option-export_frames-label")}
             </Menu.Button>
 
             <Menu.Button
                 disabled={!in_preview}
                 on:click={(event) => commands.execute("export.prompt.video")}
             >
-                Export Video
+                {$translate("ui-app-toolbar-option-export_video-label")}
             </Menu.Button>
         </Menu.Container>
     </Dropdown>
 
     <Dropdown variation="control">
         <svelte:fragment slot="activator">
-            <Menu.Button>View</Menu.Button>
+            <Menu.Button>
+                {$translate("ui-app-toolbar-menu-view-label")}
+            </Menu.Button>
         </svelte:fragment>
 
         <Menu.Container sizing="nano">
             <Menu.Button on:click={(event) => commands.execute("palette.prompt.commands")}>
-                Command Palette
+                {$translate("ui-app-toolbar-option-command-palette-label")}
             </Menu.Button>
 
             <Menu.Heading />
 
-            <Menu.Button disabled={!in_workspace}>Errors</Menu.Button>
-            <Menu.Button disabled={!in_workspace}>Jobs</Menu.Button>
+            <Menu.Button disabled={!in_workspace}>
+                {$translate("ui-app-toolbar-option-errors-label")}
+            </Menu.Button>
+
+            <Menu.Button disabled={!in_workspace}>
+                {$translate("ui-app-toolbar-option-jobs-label")}
+            </Menu.Button>
 
             <Menu.Heading />
 
@@ -81,14 +104,14 @@
                 disabled={!in_workspace}
                 on:click={(event) => commands.execute("editor.ui.file_tree.toggle")}
             >
-                Toggle File Tree
+                {$translate("ui-app-toolbar-option-toggle_file_tree-label")}
             </Menu.Button>
 
             <Menu.Button
                 disabled={!in_editor}
                 on:click={(event) => commands.execute("editor.ui.script.toggle")}
             >
-                Toggle Script Editor
+                {$translate("ui-app-toolbar-option-toggle_script_editor-label")}
             </Menu.Button>
 
             <Menu.Heading />
@@ -97,46 +120,48 @@
                 disabled={!in_preview}
                 on:click={(event) => commands.execute("preview.ui.checkerboard.toggle")}
             >
-                Toggle Checkerboard
+                {$translate("ui-app-toolbar-option-toggle_checkerboard-label")}
             </Menu.Button>
 
             <Menu.Button
                 disabled={!in_preview}
                 on:click={(event) => commands.execute("preview.ui.controls.toggle")}
             >
-                Toggle Controls
+                {$translate("ui-app-toolbar-option-toggle_controls-label")}
             </Menu.Button>
 
             <Menu.Button
                 disabled={!in_preview}
                 on:click={(event) => commands.execute("preview.ui.timeline.toggle")}
             >
-                Toggle Timeline
+                {$translate("ui-app-toolbar-option-toggle_timeline-label")}
             </Menu.Button>
 
             <Menu.Button
                 disabled={!in_preview}
                 on:click={(event) => commands.execute("preview.ui.viewport.toggle")}
             >
-                Toggle Viewport
+                {$translate("ui-app-toolbar-option-toggle_viewport-label")}
             </Menu.Button>
         </Menu.Container>
     </Dropdown>
 
     <Dropdown variation="control">
         <svelte:fragment slot="activator">
-            <Menu.Button>Help</Menu.Button>
+            <Menu.Button>
+                {$translate("ui-app-toolbar-menu-help-label")}
+            </Menu.Button>
         </svelte:fragment>
 
         <Menu.Container sizing="nano">
             <Menu.Anchor href={URL_DOCUMENTATION} target="_blank" rel="noopener noreferrer">
-                Documentation
+                {$translate("ui-app-toolbar-option-documentation-label")}
             </Menu.Anchor>
 
             <Menu.Heading />
 
             <Menu.Button on:click={(event) => commands.execute("application.prompt.about")}>
-                About
+                {$translate("ui-app-toolbar-option-about-label")}
             </Menu.Button>
         </Menu.Container>
     </Dropdown>
