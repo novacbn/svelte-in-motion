@@ -64,7 +64,7 @@ export const EXTENSION_WORKSPACE = define_extension({
         });
 
         const storage = await workspace.make_driver();
-        await templates.render(storage, "templates.simple", {});
+        await templates.render(storage, "templates.welcome", {});
 
         $workspaces.workspaces.push(workspace);
         workspaces.set($workspaces);

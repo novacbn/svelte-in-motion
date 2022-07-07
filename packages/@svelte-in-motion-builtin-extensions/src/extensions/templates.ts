@@ -1,7 +1,7 @@
 import type {IAppContext} from "@svelte-in-motion/extension";
 import {define_extension} from "@svelte-in-motion/extension";
 
-import {TEMPLATE_SIMPLE} from "../templates/simple";
+import {TEMPLATE_WELCOME} from "../templates/welcome";
 
 export const EXTENSION_TEMPLATES = define_extension({
     identifier: "dev.nbn.sim.templates",
@@ -10,6 +10,6 @@ export const EXTENSION_TEMPLATES = define_extension({
     on_activate(app: IAppContext) {
         const {templates} = app;
 
-        templates.push(TEMPLATE_SIMPLE);
+        templates.push(TEMPLATE_WELCOME);
     },
 });

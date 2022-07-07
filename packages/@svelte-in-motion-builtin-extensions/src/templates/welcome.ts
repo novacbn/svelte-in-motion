@@ -1,7 +1,7 @@
 import {define_template} from "@svelte-in-motion/extension";
 
-export const TEMPLATE_SIMPLE = define_template({
-    identifier: "templates.simple",
+export const TEMPLATE_WELCOME = define_template({
+    identifier: "templates.welcome",
 
     paths: {
         ".svelte-in-motion.json": `
