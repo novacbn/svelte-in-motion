@@ -2,8 +2,8 @@ import {get} from "svelte/store";
 
 import type {
     IAppContext,
-    ICommand,
-    IKeybind,
+    ICommandItem,
+    IKeybindItem,
     IKeybindEvent,
     ISearchPromptEvent,
 } from "@svelte-in-motion/extension";
@@ -56,7 +56,7 @@ export const EXTENSION_PALETTE = define_extension({
                 }
 
                 return command;
-            }) as (ICommand & {keybind?: IKeybind})[];
+            }) as (ICommandItem & {keybind?: IKeybindItem})[];
 
         const $translate = get(translate);
 
