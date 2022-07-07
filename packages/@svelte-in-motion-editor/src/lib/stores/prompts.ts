@@ -7,6 +7,7 @@ import type {IEvent} from "@svelte-in-motion/utilities";
 import {event} from "@svelte-in-motion/utilities";
 
 import AboutPrompt from "../../components/prompts/AboutPrompt.svelte";
+import AlertPrompt from "../../components/prompts/AlertPrompt.svelte";
 import CreateWorkspace from "../../components/prompts/CreateWorkspace.svelte";
 import FormPrompt from "../../components/prompts/FormPrompt.svelte";
 import SearchPrompt from "../../components/prompts/SearchPrompt.svelte";
@@ -17,25 +18,29 @@ export interface ICommonPromptProps {
     title?: string;
 }
 
-export interface ICreateWorkspacePromptEvent {
-    name: string;
+export interface IAlertPromptProps extends Omit<ICommonPromptProps, "is_dismissible"> {
+    text: string;
 }
 
-export interface IFormPromptProps<T> {
-    model?: Partial<ClassProperties<T>>;
-
-    type: Type;
+export interface ICreateWorkspacePromptEvent {
+    name: string;
 }
 
 export interface IFormPromptEvent<T> {
     model: ClassProperties<T>;
 }
 
+export interface IFormPromptProps<T> extends ICommonPromptProps {
+    model?: Partial<ClassProperties<T>>;
+
+    type: Type;
+}
+
 export interface ISearchPromptPromptEvent {
     identifier: string;
 }
 
-export interface ISearchPromptProps {
+export interface ISearchPromptProps extends ICommonPromptProps {
     documents: Record<string, string>[];
 
     identifier: string;
@@ -76,13 +81,13 @@ export interface IPromptsStore extends Readable<IPrompt<any> | null> {
 
     prompt_about(): Promise<void>;
 
+    prompt_alert(props: IAlertPromptProps): Promise<void>;
+
     prompt_create_workspace(): Promise<ICreateWorkspacePromptEvent>;
 
-    prompt_form<T>(props: IFormPromptProps<T> & ICommonPromptProps): Promise<IFormPromptEvent<T>>;
+    prompt_form<T>(props: IFormPromptProps<T>): Promise<IFormPromptEvent<T>>;
 
-    prompt_search(
-        props: ISearchPromptProps & ICommonPromptProps
-    ): Promise<ISearchPromptPromptEvent>;
+    prompt_search(props: ISearchPromptProps): Promise<ISearchPromptPromptEvent>;
 }
 
 export function prompts(): IPromptsStore {
@@ -133,6 +138,15 @@ export function prompts(): IPromptsStore {
             });
         },
 
+        prompt_alert(props) {
+            return prompt<IAlertPromptProps, void>({
+                Component: AlertPrompt,
+                is_dismissible: true,
+                title: props.title,
+                props,
+            });
+        },
+
         prompt_create_workspace() {
             return prompt<void, ICreateWorkspacePromptEvent>({
                 Component: CreateWorkspace,
@@ -140,7 +154,7 @@ export function prompts(): IPromptsStore {
             });
         },
 
-        prompt_form<T>(props: IFormPromptProps<T> & ICommonPromptProps) {
+        prompt_form<T>(props: IFormPromptProps<T>) {
             return prompt<IFormPromptProps<T>, IFormPromptEvent<T>>({
                 Component: FormPrompt,
                 is_dismissible: props.is_dismissible,
@@ -149,7 +163,7 @@ export function prompts(): IPromptsStore {
             });
         },
 
-        prompt_search(props: ISearchPromptProps & ICommonPromptProps) {
+        prompt_search(props: ISearchPromptProps) {
             return prompt<ISearchPromptProps, ISearchPromptPromptEvent>({
                 Component: SearchPrompt,
                 is_dismissible: props.is_dismissible,

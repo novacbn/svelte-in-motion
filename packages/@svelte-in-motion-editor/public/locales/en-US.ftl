@@ -35,6 +35,8 @@ ui-prompt-about-version-label = VERSION
 ui-prompt-about-source-label = SOURCE
 ui-prompt-about-dismiss-label = Dismiss
 
+ui-prompt-alert-dismiss-label = Dismiss
+
 ui-prompt-form-dismiss-label = Dismiss
 ui-prompt-form-submit-label = Submit
 
