@@ -22,6 +22,8 @@ import type {IPromptsStore} from "./stores/prompts";
 import {prompts as make_prompt_store} from "./stores/prompts";
 import type {IRendersStore} from "./stores/renders";
 import {renders as make_renders_store} from "./stores/renders";
+import type {ITemplatesStore} from "./stores/templates";
+import {templates as make_templates_store} from "./stores/templates";
 import type {ITranslationsStore} from "./stores/translations";
 import {translations as make_translations_store} from "./stores/translations";
 
@@ -59,6 +61,8 @@ export interface IAppContext {
     prompts: IPromptsStore;
 
     storage: IDriver;
+
+    templates: ITemplatesStore;
 
     translate: ITranslationsStore;
 
@@ -124,6 +128,7 @@ export async function app(): Promise<IAppContext> {
     app.commands = make_commands_store(app);
     app.extensions = make_extensions_store(app);
     app.keybinds = make_keybinds_store(app);
+    app.templates = make_templates_store();
 
     app.encodes = make_encodes_store(app);
     app.renders = make_renders_store(app);

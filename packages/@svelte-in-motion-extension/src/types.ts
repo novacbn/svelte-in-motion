@@ -62,6 +62,14 @@ export type {
     IRendersStore,
 } from "@svelte-in-motion/editor/src/lib/stores/renders";
 export type {
+    ITemplateFunction,
+    ITemplateItem,
+    ITemplatePaths,
+    ITemplateRender,
+    ITemplateTokens,
+    ITemplatesStore,
+} from "@svelte-in-motion/editor/src/lib/stores/templates";
+export type {
     ITranslationFunction,
     ITranslationsStore,
 } from "@svelte-in-motion/editor/src/lib/stores/translations";
