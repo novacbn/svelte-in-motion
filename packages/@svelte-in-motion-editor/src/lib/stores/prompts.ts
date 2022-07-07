@@ -16,6 +16,7 @@ import AboutPrompt from "../../components/prompts/AboutPrompt.svelte";
 import AlertPrompt from "../../components/prompts/AlertPrompt.svelte";
 import ConfirmPrompt from "../../components/prompts/ConfirmPrompt.svelte";
 import FormPrompt from "../../components/prompts/FormPrompt.svelte";
+import LoaderPrompt from "../../components/prompts/LoaderPrompt.svelte";
 import SearchPrompt from "../../components/prompts/SearchPrompt.svelte";
 
 export interface ICommonPromptProps {
@@ -40,6 +41,10 @@ export interface IFormPromptProps<T> extends ICommonPromptProps {
     model?: Partial<ClassProperties<T>>;
 
     type: Type;
+}
+
+export interface ILoaderPromptProps {
+    signal: AbortSignal;
 }
 
 export interface ISearchPromptEvent {
@@ -107,6 +112,8 @@ export interface IPromptsStore extends Readable<IPrompt<any> | null> {
     prompt_confirm(props: IConfirmPromptProps): Promise<void>;
 
     prompt_form<T>(props: IFormPromptProps<T>): Promise<IFormPromptEvent<T>>;
+
+    prompt_loader(props: ILoaderPromptProps): Promise<void>;
 
     prompt_search(props: ISearchPromptProps): Promise<ISearchPromptEvent>;
 }
@@ -186,6 +193,14 @@ export function prompts(): IPromptsStore {
 
                 is_dismissible: props.is_dismissible,
                 title: props.title,
+                props,
+            });
+        },
+
+        prompt_loader(props) {
+            return prompt<ILoaderPromptProps, void>({
+                Component: LoaderPrompt,
+
                 props,
             });
         },

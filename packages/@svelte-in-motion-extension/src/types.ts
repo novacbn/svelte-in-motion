@@ -44,6 +44,7 @@ export type {
     IAlertPromptProps,
     ICommonPromptProps,
     IConfirmPromptProps,
+    ILoaderPromptProps,
     IFormPromptEvent,
     IFormPromptProps,
     IPrompt,
