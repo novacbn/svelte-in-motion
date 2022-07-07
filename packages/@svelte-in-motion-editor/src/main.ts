@@ -11,6 +11,7 @@ import {
     EXTENSION_EXPORT,
     EXTENSION_PALETTE,
     EXTENSION_PREVIEW,
+    EXTENSION_TEMPLATES,
     EXTENSION_WORKSPACE,
 } from "@svelte-in-motion/builtin-extensions";
 
@@ -31,6 +32,7 @@ import * as WorkspaceFile from "./routes/workspace/file.svelte";
     app.extensions.push(EXTENSION_PALETTE);
     app.extensions.push(EXTENSION_PREVIEW);
     app.extensions.push(EXTENSION_WORKSPACE);
+    app.extensions.push(EXTENSION_TEMPLATES);
 
     const [_, router] = app_router({
         context: {
