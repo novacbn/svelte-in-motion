@@ -11,9 +11,6 @@ import {errors as make_errors_store} from "./stores/errors";
 
 import {FILE_CONFIGURATION_WORKSPACE} from "./util/storage";
 
-// @ts-ignore
-import SAMPLE from "./templates/SAMPLE.svelte?raw";
-
 import type {IAppContext} from "./app";
 import type {IEditorContext} from "./editor";
 import type {IPreviewContext} from "./preview";
@@ -40,21 +37,10 @@ function is_workspace_prepared(driver: IDriver): Promise<boolean> {
     return driver.exists(FILE_CONFIGURATION_WORKSPACE);
 }
 
-async function prepare_workspace(driver: IDriver): Promise<void> {
-    const configuration = new WorkspaceConfiguration();
+async function prepare_workspace(app: IAppContext, storage: IDriver): Promise<void> {
+    const {templates} = app;
 
-    // TODO: Replace these after templating system is worked out
-
-    configuration.framerate = 60;
-    configuration.maxframes = 270;
-
-    await Promise.all([
-        // TODO: replace with eventual templating system
-        await driver.write_file_text("Sample.svelte", SAMPLE),
-
-        // HACK: Validation happens via a JSONSchema, which will insert defaults for us
-        configuration.write(driver, FILE_CONFIGURATION_WORKSPACE, {is_formatted: true}),
-    ]);
+    await templates.render(storage, "templates.simple", {});
 }
 
 export async function workspace(identifier: string, app: IAppContext): Promise<IWorkspaceContext> {
@@ -77,7 +63,7 @@ export async function workspace(identifier: string, app: IAppContext): Promise<I
     const $metadata = get(metadata);
     const storage = await $metadata.make_driver();
 
-    if (!(await is_workspace_prepared(storage))) await prepare_workspace(storage);
+    if (!(await is_workspace_prepared(storage))) await prepare_workspace(app, storage);
 
     const configuration = await WorkspaceConfiguration.preload(
         storage,
