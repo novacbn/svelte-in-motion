@@ -24,8 +24,13 @@ commands-preview-ui-timeline-toggle-description = Toggles the Timeline UI from v
 commands-preview-ui-timeline-toggle-label = Preview: Toggle Timeline UI
 commands-preview-ui-viewport-toggle-description = Toggles the Viewport UI from view.
 commands-preview-ui-viewport-toggle-label = Preview: Toggle Viewport UI
+commands-workspace-prompt-new_from_template-description = Prompts for creating a new Workspace from a Template.
+commands-workspace-prompt-new_from_template-label = Workspaces: New from Template
 commands-workspace-prompt-new-description = Prompts for creating a new Workspace.
-commands-workspace-prompt-new-label = Workspaces: New Workspace
+commands-workspace-prompt-new-label = Workspaces: New
+
+templates-templates-welcome-label = Welcome to Svelte-In-Motion
+templates-templates-welcome-description = Simple welcome message template to introduce syntax and concepts.
 
 ui-view-dashboard-new_workspace-label = New Workspace
 ui-view-dashboard-last_accessed_workspace-label = Last Accessed: {$timestamp} 
