@@ -7,7 +7,7 @@
 
     import type {IPromptRejectEvent, IPromptResolveEvent} from "../../lib/stores/prompts";
 
-    const {prompts, translate} = CONTEXT_APP.get()!;
+    const {prompts, translations} = CONTEXT_APP.get()!;
     const {EVENT_PROMPT} = prompts;
 
     let logic_state: boolean = false;
@@ -69,7 +69,7 @@
             >
                 {#if $prompts.title}
                     <Card.Header>
-                        {$translate($prompts.title)}
+                        {$translations.format($prompts.title)}
                     </Card.Header>
                 {/if}
 

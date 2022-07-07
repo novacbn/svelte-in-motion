@@ -70,6 +70,7 @@ export type {
     ITemplatesStore,
 } from "@svelte-in-motion/editor/src/lib/stores/templates";
 export type {
-    ITranslationFunction,
+    ITranslationTokens,
+    ITranslationsHandle,
     ITranslationsStore,
 } from "@svelte-in-motion/editor/src/lib/stores/translations";

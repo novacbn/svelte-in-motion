@@ -12,7 +12,7 @@
 
     import FormRender from "../form/FormRender.svelte";
 
-    const {prompts, translate} = CONTEXT_APP.get()!;
+    const {prompts, translations} = CONTEXT_APP.get()!;
 
     type $$Events = {
         reject: CustomEvent<IPromptRejectEvent>;
@@ -54,7 +54,7 @@
 <Card.Footer alignment_x="stretch">
     {#if $prompts?.is_dismissible}
         <Button sizing="nano" variation="clear" on:click={on_dismiss_click}>
-            {$translate("ui-prompt-form-dismiss-label")}
+            {$translations.format("ui-prompt-form-dismiss-label")}
         </Button>
     {/if}
 
@@ -65,6 +65,6 @@
         disabled={!validates(model, type)}
         on:click={on_submit}
     >
-        {$translate("ui-prompt-form-submit-label")}
+        {$translations.format("ui-prompt-form-submit-label")}
     </Button>
 </Card.Footer>

@@ -64,7 +64,7 @@ export interface IAppContext {
 
     templates: ITemplatesStore;
 
-    translate: ITranslationsStore;
+    translations: ITranslationsStore;
 
     workspace?: IWorkspaceContext;
 
@@ -123,7 +123,7 @@ export async function app(): Promise<IAppContext> {
     app.storage = STORAGE_USER;
 
     app.locale = make_locale_store(app);
-    app.translate = make_translations_store(app);
+    app.translations = make_translations_store(app);
 
     app.commands = make_commands_store(app);
     app.extensions = make_extensions_store(app);

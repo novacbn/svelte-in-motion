@@ -12,7 +12,7 @@
         reject: CustomEvent<IPromptRejectEvent>;
     };
 
-    const {translate} = CONTEXT_APP.get()!;
+    const {translations} = CONTEXT_APP.get()!;
 
     const dispatch = createEventDispatcher();
 
@@ -27,12 +27,12 @@
 
 <Card.Section>
     <Text>
-        {$translate(text)}
+        {$translations.format(text)}
     </Text>
 </Card.Section>
 
 <Card.Footer alignment_x="stretch">
     <Button sizing="nano" variation="clear" on:click={on_dismiss_click}>
-        {$translate("ui-prompt-alert-dismiss-label")}
+        {$translations.format("ui-prompt-alert-dismiss-label")}
     </Button>
 </Card.Footer>

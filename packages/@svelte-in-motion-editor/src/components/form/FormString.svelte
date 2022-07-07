@@ -12,7 +12,7 @@
 
     import {CONTEXT_APP} from "../../lib/app";
 
-    const {translate} = CONTEXT_APP.get()!;
+    const {translations} = CONTEXT_APP.get()!;
 
     export let identifier: string;
     export let type: TypeString;
@@ -37,13 +37,13 @@
 
 <Form.Control logic_id={identifier}>
     {#if label}
-        <Form.Label>{$translate(label)}</Form.Label>
+        <Form.Label>{$translations.format(label)}</Form.Label>
     {/if}
 
     <TextInput
         sizing="nano"
         palette={is_valid ? "affirmative" : "negative"}
-        placeholder={placeholder ? $translate(placeholder) : undefined}
+        placeholder={placeholder ? $translations.format(placeholder) : undefined}
         bind:value
         {max}
         {min}
@@ -53,7 +53,7 @@
 
     {#if description}
         <Form.HelpText>
-            {$translate(description)}
+            {$translations.format(description)}
         </Form.HelpText>
     {/if}
 </Form.Control>

@@ -6,7 +6,7 @@
 
     import {CONTEXT_APP} from "../../lib/app";
 
-    const {translate} = CONTEXT_APP.get()!;
+    const {translations} = CONTEXT_APP.get()!;
 
     export let identifier: string;
     export let type: TypeBoolean;
@@ -24,12 +24,12 @@
         {#if description || label}
             <Stack.Container spacing="tiny">
                 {#if label}
-                    <Form.Label>{$translate(label)}</Form.Label>
+                    <Form.Label>{$translations.format(label)}</Form.Label>
                 {/if}
 
                 {#if description}
                     <Form.HelpText>
-                        {$translate(description)}
+                        {$translations.format(description)}
                     </Form.HelpText>
                 {/if}
             </Stack.Container>

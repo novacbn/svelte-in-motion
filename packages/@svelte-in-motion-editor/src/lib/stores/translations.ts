@@ -8,15 +8,24 @@ import type {IAppContext} from "../app";
 
 export type ITranslationTokens = Record<string, any>;
 
-export type ITranslationFunction = (identifier: string, tokens?: ITranslationTokens) => string;
+export interface ITranslationsHandle {
+    format(identifier: string, tokens?: ITranslationTokens): string;
 
-export type ITranslationsStore = Readable<ITranslationFunction>;
+    has(identifier: string): boolean;
+}
+
+export type ITranslationsStore = Readable<ITranslationsHandle>;
+
+const DEFAULT_HANDLE: ITranslationsHandle = {
+    format: (identifier) => identifier,
+    has: () => false,
+};
 
 export function translations(app: IAppContext): ITranslationsStore {
     const {locale} = app;
 
     const on_update = debounce(
-        async ($locale: string, set: (value: ITranslationFunction) => void) => {
+        async ($locale: string, set: (value: ITranslationsHandle) => void) => {
             const url = new URL(`/locales/${$locale}.ftl`, import.meta.url);
             const response = await fetch(url);
 
@@ -26,13 +35,19 @@ export function translations(app: IAppContext): ITranslationsStore {
             const bundle = new FluentBundle($locale);
             bundle.addResource(resource);
 
-            set((identifier, options) => {
-                const message = bundle.getMessage(identifier);
-                if (message && message.value) {
-                    return bundle.formatPattern(message.value, options);
-                }
+            set({
+                format: (identifier, tokens) => {
+                    const message = bundle.getMessage(identifier);
+                    if (message && message.value) {
+                        return bundle.formatPattern(message.value, tokens);
+                    }
 
-                return identifier;
+                    return identifier;
+                },
+
+                has: (identifier) => {
+                    return bundle.hasMessage(identifier);
+                },
             });
         }
     );
@@ -42,6 +57,6 @@ export function translations(app: IAppContext): ITranslationsStore {
         ([$locale], set) => {
             on_update($locale, set);
         },
-        (identifier) => identifier
+        DEFAULT_HANDLE
     );
 }

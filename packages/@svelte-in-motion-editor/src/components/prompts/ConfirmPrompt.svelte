@@ -14,7 +14,7 @@
         reject: CustomEvent<IPromptRejectEvent>;
     };
 
-    const {prompts, translate} = CONTEXT_APP.get()!;
+    const {prompts, translations} = CONTEXT_APP.get()!;
 
     const dispatch = createEventDispatcher();
 
@@ -33,18 +33,18 @@
 
 <Card.Section>
     <Text>
-        {$translate(text)}
+        {$translations.format(text)}
     </Text>
 </Card.Section>
 
 <Card.Footer alignment_x="stretch">
     {#if $prompts?.is_dismissible}
         <Button sizing="nano" variation="clear" on:click={on_dismiss_click}>
-            {$translate("ui-prompt-confirm-dismiss-label")}
+            {$translations.format("ui-prompt-confirm-dismiss-label")}
         </Button>
     {/if}
 
     <Button sizing="nano" variation="clear" palette="affirmative" on:click={on_submit_click}>
-        {$translate("ui-prompt-confirm-submit-label")}
+        {$translations.format("ui-prompt-confirm-submit-label")}
     </Button>
 </Card.Footer>

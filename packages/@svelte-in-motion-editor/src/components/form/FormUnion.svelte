@@ -10,7 +10,7 @@
 
     import {ReflectionKind} from "./FormRender.svelte";
 
-    const {translate} = CONTEXT_APP.get()!;
+    const {translations} = CONTEXT_APP.get()!;
 
     export let identifier: string;
     export let type: TypeUnion;
@@ -29,7 +29,7 @@
             const translation = replace_tokens(namespace, {identifier});
 
             return {
-                text: $translate(translation),
+                text: $translations.format(translation),
                 id: type.literal as string,
                 palette: "accent" as PROPERTY_PALETTE,
             };
@@ -51,21 +51,21 @@
 
 <Form.Control logic_id={identifier}>
     {#if label}
-        <Form.Label>{$translate(label)}</Form.Label>
+        <Form.Label>{$translations.format(label)}</Form.Label>
     {/if}
 
     <DataSelect
         sizing="nano"
         palette={is_valid ? "affirmative" : "negative"}
         logic_name={identifier}
-        placeholder={placeholder ? $translate(placeholder) : undefined}
+        placeholder={placeholder ? $translations.format(placeholder) : undefined}
         {items}
         bind:logic_state={value}
     />
 
     {#if description}
         <Form.HelpText>
-            {$translate(description)}
+            {$translations.format(description)}
         </Form.HelpText>
     {/if}
 </Form.Control>

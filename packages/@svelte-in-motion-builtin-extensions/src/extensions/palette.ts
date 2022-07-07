@@ -31,7 +31,7 @@ export const EXTENSION_PALETTE = define_extension({
     },
 
     async command_prompt_commands(app: IAppContext) {
-        const {commands, keybinds, prompts, translate} = app;
+        const {commands, keybinds, prompts, translations} = app;
 
         const $commands = get(commands)
             .filter((command) => {
@@ -58,7 +58,7 @@ export const EXTENSION_PALETTE = define_extension({
                 return command;
             }) as (ICommandItem & {keybind?: IKeybindItem})[];
 
-        const $translate = get(translate);
+        const $translations = get(translations);
 
         const documents = $commands.map((command) => {
             const {identifier: command_identifier, keybind} = command;
@@ -66,8 +66,10 @@ export const EXTENSION_PALETTE = define_extension({
             const translation_identifier = command_identifier.replace(/\./g, "-");
 
             const bind = keybind?.binds[0].join("+").replace(/\s/g, "SPACE").toUpperCase();
-            const description = $translate(`commands-${translation_identifier}-description`);
-            const label = $translate(`commands-${translation_identifier}-label`);
+            const description = $translations.format(
+                `commands-${translation_identifier}-description`
+            );
+            const label = $translations.format(`commands-${translation_identifier}-label`);
 
             return {
                 bind,

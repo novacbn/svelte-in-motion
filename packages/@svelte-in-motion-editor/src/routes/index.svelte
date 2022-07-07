@@ -19,7 +19,7 @@
 
     import {CONTEXT_APP} from "../lib/app";
 
-    const {commands, translate, workspaces} = CONTEXT_APP.get()!;
+    const {commands, translations, workspaces} = CONTEXT_APP.get()!;
 
     async function on_new_click(event: MouseEvent): Promise<void> {
         commands.execute("workspace.prompt.new");
@@ -43,9 +43,12 @@
                     <Tile.Section>
                         <Tile.Header>{workspace.name}</Tile.Header>
                         <Text is="small">
-                            {$translate("ui-view-dashboard-last_accessed_workspace-label", {
-                                timestamp: workspace.format_accessed(),
-                            })}
+                            {$translations.format(
+                                "ui-view-dashboard-last_accessed_workspace-label",
+                                {
+                                    timestamp: workspace.format_accessed(),
+                                }
+                            )}
                         </Text>
                     </Tile.Section>
 
@@ -57,7 +60,7 @@
                             palette="accent"
                             sizing="nano"
                         >
-                            {$translate("ui-view-dashboard-open_workspace-label")}
+                            {$translations.format("ui-view-dashboard-open_workspace-label")}
                         </Button>
                     </Tile.Footer>
                 </Tile.Container>
@@ -65,7 +68,7 @@
         </Stack.Container>
 
         <Button palette="affirmative" on:click={on_new_click}>
-            {$translate("ui-view-dashboard-new_workspace-label")}
+            {$translations.format("ui-view-dashboard-new_workspace-label")}
         </Button>
     {:else}
         <Hero.Container class="sim--app-dashboard">
@@ -77,12 +80,12 @@
             </Hero.Header>
 
             <Hero.Section>
-                {$translate("ui-view-dashboard-no_available_workspaces-label")}
+                {$translations.format("ui-view-dashboard-no_available_workspaces-label")}
             </Hero.Section>
 
             <Hero.Footer>
                 <Button palette="affirmative" on:click={on_new_click}>
-                    {$translate("ui-view-dashboard-new_workspace-label")}
+                    {$translations.format("ui-view-dashboard-new_workspace-label")}
                 </Button>
             </Hero.Footer>
         </Hero.Container>
