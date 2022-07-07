@@ -52,6 +52,10 @@ export interface ISearchPromptPromptEvent {
 }
 
 export interface ISearchPromptProps extends ICommonPromptProps {
+    badge?: string;
+
+    description?: string;
+
     documents: Record<string, string>[];
 
     identifier: string;

@@ -26,6 +26,8 @@
 
     export let identifier: string;
     export let index: string[];
+
+    export let description: string | undefined;
     export let label: string;
 
     export let documents: Record<string, string>[];
@@ -160,14 +162,16 @@
     </Form.Control>
 </Card.Section>
 
-<Card.Section width="large" margin_x="none" margin_top="small" margin_bottom="none">
+<Card.Section margin_x="none" margin_top="small" margin_bottom="none">
     <Scrollable max_height="medium">
         <Stack.Container spacing="tiny">
             {#each results as result, index (result[identifier])}
+                {@const is_selected = index === selected}
+
                 <div
                     bind:this={result_elements[index]}
                     class="box"
-                    data-palette={index === selected ? "accent" : "inherit"}
+                    data-palette={is_selected ? "accent" : "inherit"}
                     data-padding-x="tiny"
                     data-padding-y="nano"
                     style="cursor:pointer;"
@@ -176,6 +180,12 @@
                 >
                     <Text sizing="small">
                         {result[label]}
+                        {#if is_selected && description}
+                            -
+                            <Text is="small" variation="truncate">
+                                {result[description]}
+                            </Text>
+                        {/if}
                     </Text>
                 </div>
             {/each}
