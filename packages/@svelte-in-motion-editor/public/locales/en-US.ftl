@@ -37,6 +37,9 @@ ui-prompt-about-dismiss-label = Dismiss
 
 ui-prompt-alert-dismiss-label = Dismiss
 
+ui-prompt-confirm-dismiss-label = Cancel
+ui-prompt-confirm-submit-label = Yes
+
 ui-prompt-form-dismiss-label = Dismiss
 ui-prompt-form-submit-label = Submit
 

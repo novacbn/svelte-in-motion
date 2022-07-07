@@ -8,6 +8,7 @@ import {event} from "@svelte-in-motion/utilities";
 
 import AboutPrompt from "../../components/prompts/AboutPrompt.svelte";
 import AlertPrompt from "../../components/prompts/AlertPrompt.svelte";
+import ConfirmPrompt from "../../components/prompts/ConfirmPrompt.svelte";
 import CreateWorkspace from "../../components/prompts/CreateWorkspace.svelte";
 import FormPrompt from "../../components/prompts/FormPrompt.svelte";
 import SearchPrompt from "../../components/prompts/SearchPrompt.svelte";
@@ -24,6 +25,10 @@ export interface IAlertPromptProps extends Omit<ICommonPromptProps, "is_dismissi
 
 export interface ICreateWorkspacePromptEvent {
     name: string;
+}
+
+export interface IConfirmPromptProps extends ICommonPromptProps {
+    text: string;
 }
 
 export interface IFormPromptEvent<T> {
@@ -82,6 +87,8 @@ export interface IPromptsStore extends Readable<IPrompt<any> | null> {
     prompt_about(): Promise<void>;
 
     prompt_alert(props: IAlertPromptProps): Promise<void>;
+
+    prompt_confirm(props: IConfirmPromptProps): Promise<void>;
 
     prompt_create_workspace(): Promise<ICreateWorkspacePromptEvent>;
 
@@ -142,6 +149,15 @@ export function prompts(): IPromptsStore {
             return prompt<IAlertPromptProps, void>({
                 Component: AlertPrompt,
                 is_dismissible: true,
+                title: props.title,
+                props,
+            });
+        },
+
+        prompt_confirm(props) {
+            return prompt<IConfirmPromptProps, void>({
+                Component: ConfirmPrompt,
+                is_dismissible: props.is_dismissible,
                 title: props.title,
                 props,
             });
