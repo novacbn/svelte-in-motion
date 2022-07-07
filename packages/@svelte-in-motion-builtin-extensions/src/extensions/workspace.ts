@@ -55,6 +55,9 @@ export const EXTENSION_WORKSPACE = define_extension({
             throw err;
         }
 
+        const controller = new AbortController();
+        prompts.prompt_loader({signal: controller.signal});
+
         const $workspaces = get(workspaces);
         const workspace = WorkspacesItemConfiguration.from({
             name: result.name,
@@ -65,6 +68,8 @@ export const EXTENSION_WORKSPACE = define_extension({
 
         $workspaces.workspaces.push(workspace);
         workspaces.set($workspaces);
+
+        controller.abort();
     },
 
     keybind_prompt_new(app: IAppContext, event: IKeybindEvent) {
