@@ -26,10 +26,10 @@ export function translations(app: IAppContext): ITranslationsStore {
             const bundle = new FluentBundle($locale);
             bundle.addResource(resource);
 
-            set((identifier, parameters) => {
+            set((identifier, options) => {
                 const message = bundle.getMessage(identifier);
                 if (message && message.value) {
-                    return bundle.formatPattern(message.value, parameters);
+                    return bundle.formatPattern(message.value, options);
                 }
 
                 return identifier;
