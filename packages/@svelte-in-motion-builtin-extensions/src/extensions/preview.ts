@@ -20,6 +20,7 @@ export const EXTENSION_PREVIEW = define_extension({
         keybinds.push({
             identifier: "preview.playback.frame.next",
             binds: [["arrowright"]],
+            repeat: true,
             repeat_throttle: 50,
             on_bind: this.keybind_playback_frame_next.bind(this),
         });
