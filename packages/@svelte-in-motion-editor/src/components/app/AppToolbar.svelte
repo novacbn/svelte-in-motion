@@ -30,23 +30,23 @@
         </svelte:fragment>
 
         <Menu.Container sizing="nano">
-            <Menu.Button disabled={!in_workspace}>
+            <Menu.Button disabled>
                 {$translate("ui-app-toolbar-option-new_file-label")}
             </Menu.Button>
 
             <Menu.Heading />
 
-            <Menu.Button>
+            <Menu.Button disabled>
                 {$translate("ui-app-toolbar-option-new_workspace-label")}
             </Menu.Button>
 
-            <Menu.Button>
+            <Menu.Button disabled>
                 {$translate("ui-app-toolbar-option-new_workspace_from_template-label")}
             </Menu.Button>
 
             <Menu.Heading />
 
-            <Menu.Button>
+            <Menu.Button disabled>
                 {$translate("ui-app-toolbar-option-open_workspace-label")}
             </Menu.Button>
         </Menu.Container>
@@ -90,11 +90,11 @@
 
             <Menu.Heading />
 
-            <Menu.Button disabled={!in_workspace}>
+            <Menu.Button disabled>
                 {$translate("ui-app-toolbar-option-errors-label")}
             </Menu.Button>
 
-            <Menu.Button disabled={!in_workspace}>
+            <Menu.Button disabled>
                 {$translate("ui-app-toolbar-option-jobs-label")}
             </Menu.Button>
 
