@@ -7,7 +7,7 @@ import {Default, Description, Label, MinLength, Pattern} from "@svelte-in-motion
 import {typeOf} from "@svelte-in-motion/type";
 import {PromptDismissError} from "@svelte-in-motion/utilities";
 
-const EXPRESSION_NAME = /[\w ]+/g;
+const EXPRESSION_NAME = /^[\w ]+$/;
 
 interface IWorkspaceNewConfiguration {
     name: string &
