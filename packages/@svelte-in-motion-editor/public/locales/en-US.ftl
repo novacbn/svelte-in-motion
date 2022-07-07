@@ -24,8 +24,10 @@ commands-preview-ui-timeline-toggle-description = Toggles the Timeline UI from v
 commands-preview-ui-timeline-toggle-label = Preview: Toggle Timeline UI
 commands-preview-ui-viewport-toggle-description = Toggles the Viewport UI from view.
 commands-preview-ui-viewport-toggle-label = Preview: Toggle Viewport UI
+commands-workspace-prompt-new-description = Prompts for creating a new Workspace.
+commands-workspace-prompt-new-label = Workspaces: New Workspace
 
-ui-view-dashboard-create_workspace-label = Create Workspace
+ui-view-dashboard-new_workspace-label = New Workspace
 ui-view-dashboard-last_accessed_workspace-label = Last Accessed: {$timestamp} 
 ui-view-dashboard-open_workspace-label = OPEN
 ui-view-dashboard-no_available_workspaces-label = No Available Workspaces
@@ -84,3 +86,7 @@ ui-prompt-form-video-export-crf-description = Enter constant rate factor you wan
 ui-prompt-form-video-export-pixel_format-label = Pixel Format
 ui-prompt-form-video-export-pixel_format-placeholder = Select the encoded pixel format.
 ui-prompt-form-video-export-pixel_format-yuv420p-label = yuv420p
+
+ui-prompt-form-workspace-new-title = New Workspace
+ui-prompt-form-workspace-new-name-label = Name
+ui-prompt-form-workspace-new-name-description = Enter an alphanumeric name for the Workspace.

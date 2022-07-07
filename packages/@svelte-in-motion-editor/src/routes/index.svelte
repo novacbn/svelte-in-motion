@@ -15,33 +15,14 @@
     import {Button, Hero, Stack, Tile, Text} from "@kahi-ui/framework";
     //import {PackageX} from "lucide-svelte";
 
-    import {WorkspacesItemConfiguration} from "@svelte-in-motion/configuration";
-    import {PromptDismissError} from "@svelte-in-motion/utilities";
-
     import AppLayout from "../components/app/AppLayout.svelte";
-
-    import type {ICreateWorkspacePromptEvent} from "../lib/stores/prompts";
 
     import {CONTEXT_APP} from "../lib/app";
 
-    const {prompts, translate, workspaces} = CONTEXT_APP.get()!;
+    const {commands, translate, workspaces} = CONTEXT_APP.get()!;
 
-    async function on_create_click(event: MouseEvent): Promise<void> {
-        let workspace_configuration: ICreateWorkspacePromptEvent;
-        try {
-            workspace_configuration = await prompts.prompt_create_workspace();
-        } catch (err) {
-            if (err instanceof PromptDismissError) return;
-            throw err;
-        }
-
-        $workspaces.workspaces.push(
-            WorkspacesItemConfiguration.from({
-                name: workspace_configuration.name,
-            })
-        );
-
-        $workspaces = $workspaces;
+    async function on_new_click(event: MouseEvent): Promise<void> {
+        commands.execute("workspace.prompt.new");
     }
 
     $: recent_workspaces = $workspaces.workspaces.slice().sort((workspace_a, workspace_b) => {
@@ -83,8 +64,8 @@
             {/each}
         </Stack.Container>
 
-        <Button palette="affirmative" on:click={on_create_click}>
-            {$translate("ui-view-dashboard-create_workspace-label")}
+        <Button palette="affirmative" on:click={on_new_click}>
+            {$translate("ui-view-dashboard-new_workspace-label")}
         </Button>
     {:else}
         <Hero.Container class="sim--app-dashboard">
@@ -100,8 +81,8 @@
             </Hero.Section>
 
             <Hero.Footer>
-                <Button palette="affirmative" on:click={on_create_click}>
-                    {$translate("ui-view-dashboard-create_workspace-label")}
+                <Button palette="affirmative" on:click={on_new_click}>
+                    {$translate("ui-view-dashboard-new_workspace-label")}
                 </Button>
             </Hero.Footer>
         </Hero.Container>
