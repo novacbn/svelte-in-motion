@@ -1,10 +1,10 @@
 <script lang="ts">
-    import {Button, Card, Form, Stack} from "@kahi-ui/framework";
+    import {Button, Card, Stack} from "@kahi-ui/framework";
     import {createEventDispatcher} from "svelte";
 
-    import {PromptDismissError} from "@svelte-in-motion/utilities";
     import type {TypeObjectLiteral} from "@svelte-in-motion/type";
     import {validates} from "@svelte-in-motion/type";
+    import {PromptDismissError} from "@svelte-in-motion/utilities";
 
     import type {IFormPromptEvent, IPromptRejectEvent} from "../../lib/stores/prompts";
 
@@ -33,12 +33,14 @@
 
     function on_submit(event: MouseEvent | SubmitEvent): void {
         event.preventDefault();
-        if (!validates(model, type)) return;
+        if (!is_valid) return;
 
         dispatch("resolve", {
             model,
         });
     }
+
+    $: is_valid = validates(model, type);
 </script>
 
 <Card.Section>
@@ -62,7 +64,7 @@
         sizing="nano"
         variation="clear"
         palette="affirmative"
-        disabled={!validates(model, type)}
+        disabled={!is_valid}
         on:click={on_submit}
     >
         {$translations.format("ui-prompt-form-submit-label")}
