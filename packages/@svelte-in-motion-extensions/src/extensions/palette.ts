@@ -76,8 +76,6 @@ export const extension = {
             };
         });
 
-        console.log({documents});
-
         let selected_command: ISearchPromptPromptEvent;
 
         try {
