@@ -3,9 +3,11 @@
     import type {IKeybindEvent} from "@kahi-ui/framework";
     import {action_submit} from "@kahi-ui/framework";
     import {
+        Badge,
         Card,
         Form,
         Scrollable,
+        Spacer,
         Stack,
         Text,
         TextInput,
@@ -27,6 +29,7 @@
     export let identifier: string;
     export let index: string[];
 
+    export let badge: string | undefined;
     export let description: string | undefined;
     export let label: string;
 
@@ -178,17 +181,40 @@
                     on:pointerenter={(event) => on_result_select(event, index)}
                     on:click={(event) => on_result_click(event, index)}
                 >
-                    <Text sizing="small">
-                        {result[label]}
-                        {#if is_selected && description}
+                    <Stack.Container orientation="horizontal" spacing="tiny" alignment_y="center">
+                        <Text sizing="small">
+                            {result[label]}
+                        </Text>
+
+                        {#if is_selected && description && result[description]}
                             -
-                            <Text is="small" variation="truncate">
+                            <Text
+                                is="small"
+                                class="sim--prompts-search--badge"
+                                variation="truncate"
+                                sizing="small"
+                            >
                                 {result[description]}
                             </Text>
                         {/if}
-                    </Text>
+
+                        {#if badge && result[badge]}
+                            <Spacer />
+
+                            <Badge radius="tiny">
+                                {result[badge]}
+                            </Badge>
+                        {/if}
+                    </Stack.Container>
                 </div>
             {/each}
         </Stack.Container>
     </Scrollable>
 </Card.Section>
+
+<style>
+    :global(.sim--prompts-search--badge) {
+        display: inline-block;
+        max-width: 40ch;
+    }
+</style>

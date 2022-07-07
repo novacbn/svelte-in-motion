@@ -60,18 +60,23 @@ export const extension = {
         const $translate = get(translate);
 
         const documents = $commands.map((command) => {
-            const command_identifier = command.identifier;
+            const {identifier: command_identifier, keybind} = command;
+
             const translation_identifier = command_identifier.replace(/\./g, "-");
 
+            const bind = keybind?.binds[0].join("+").replace(/\s/g, "SPACE").toUpperCase();
             const description = $translate(`commands-${translation_identifier}-description`);
             const label = $translate(`commands-${translation_identifier}-label`);
 
             return {
+                bind,
                 identifier: command_identifier,
                 description,
                 label,
             };
         });
+
+        console.log({documents});
 
         let selected_command: ISearchPromptPromptEvent;
 
@@ -79,10 +84,11 @@ export const extension = {
             selected_command = await prompts.prompt_search({
                 is_dismissible: true,
 
+                badge: "bind",
                 description: "description",
                 identifier: "identifier",
                 label: "label",
-                index: ["identifier", "label", "description"],
+                index: ["identifier", "bind", "label", "description"],
 
                 documents,
             });

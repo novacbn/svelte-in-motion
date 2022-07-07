@@ -56,7 +56,7 @@ export interface ISearchPromptProps extends ICommonPromptProps {
 
     description?: string;
 
-    documents: Record<string, string>[];
+    documents: Record<string, string | undefined>[];
 
     identifier: string;
 
