@@ -25,8 +25,6 @@
     $: max = resolveValidationLiteral<number>(validations, "maxLength");
     $: min = resolveValidationLiteral<number>(validations, "minLength");
 
-    $: pattern = resolveValidationLiteral<RegExp>(validations, "pattern");
-
     $: required = !signature.optional;
     $: readonly = signature.readonly;
 
@@ -43,12 +41,10 @@
     <TextInput
         sizing="nano"
         palette={validates(value, type) ? "affirmative" : "negative"}
-        mask={!!pattern}
         placeholder={placeholder ? $translate(placeholder) : undefined}
         bind:value
         {max}
         {min}
-        {pattern}
         {readonly}
         {required}
     />
