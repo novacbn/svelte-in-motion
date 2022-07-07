@@ -51,9 +51,20 @@
 >
     <Overlay.Backdrop />
 
-    <Overlay.Section on:transitionend={on_transition_end}>
+    <Overlay.Section
+        alignment_x={$prompts?.alignment_x ?? "center"}
+        alignment_y={$prompts?.alignment_y ?? "center"}
+        on:transitionend={on_transition_end}
+    >
         {#if $prompts}
-            <Card.Container sizing="nano" max_size="75">
+            <Card.Container
+                sizing="nano"
+                max_size="75"
+                margin_bottom={$prompts.margin_bottom}
+                margin_left={$prompts.margin_left}
+                margin_right={$prompts.margin_right}
+                margin_top={$prompts.margin_top}
+            >
                 {#if $prompts.title}
                     <Card.Header>
                         {$translate($prompts.title)}

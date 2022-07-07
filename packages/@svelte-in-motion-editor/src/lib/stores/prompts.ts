@@ -1,3 +1,8 @@
+import type {
+    PROPERTY_ALIGNMENT_X_BREAKPOINT,
+    PROPERTY_ALIGNMENT_Y_BREAKPOINT,
+    PROPERTY_SPACING_BREAKPOINT,
+} from "@kahi-ui/framework";
 import type {SvelteComponent} from "svelte";
 import type {Readable} from "svelte/store";
 import {writable} from "svelte/store";
@@ -72,6 +77,14 @@ export interface IPromptRejectEvent {
 export interface IPrompt<T extends Record<string, any>> extends ICommonPromptProps {
     Component: typeof SvelteComponent;
 
+    alignment_x?: PROPERTY_ALIGNMENT_X_BREAKPOINT;
+    alignment_y?: PROPERTY_ALIGNMENT_Y_BREAKPOINT;
+
+    margin_bottom?: PROPERTY_SPACING_BREAKPOINT;
+    margin_left?: PROPERTY_SPACING_BREAKPOINT;
+    margin_right?: PROPERTY_SPACING_BREAKPOINT;
+    margin_top?: PROPERTY_SPACING_BREAKPOINT;
+
     props?: T;
 }
 
@@ -140,6 +153,7 @@ export function prompts(): IPromptsStore {
         prompt_about() {
             return prompt<void, void>({
                 Component: AboutPrompt,
+
                 is_dismissible: true,
                 title: "ui-prompt-about-title",
             });
@@ -148,6 +162,7 @@ export function prompts(): IPromptsStore {
         prompt_alert(props) {
             return prompt<IAlertPromptProps, void>({
                 Component: AlertPrompt,
+
                 is_dismissible: true,
                 title: props.title,
                 props,
@@ -157,6 +172,7 @@ export function prompts(): IPromptsStore {
         prompt_confirm(props) {
             return prompt<IConfirmPromptProps, void>({
                 Component: ConfirmPrompt,
+
                 is_dismissible: props.is_dismissible,
                 title: props.title,
                 props,
@@ -166,6 +182,7 @@ export function prompts(): IPromptsStore {
         prompt_create_workspace() {
             return prompt<void, ICreateWorkspacePromptEvent>({
                 Component: CreateWorkspace,
+
                 is_dismissible: true,
             });
         },
@@ -173,6 +190,7 @@ export function prompts(): IPromptsStore {
         prompt_form<T>(props: IFormPromptProps<T>) {
             return prompt<IFormPromptProps<T>, IFormPromptEvent<T>>({
                 Component: FormPrompt,
+
                 is_dismissible: props.is_dismissible,
                 title: props.title,
                 props,
@@ -182,6 +200,9 @@ export function prompts(): IPromptsStore {
         prompt_search(props: ISearchPromptProps) {
             return prompt<ISearchPromptProps, ISearchPromptPromptEvent>({
                 Component: SearchPrompt,
+                alignment_y: "top",
+                margin_top: "large",
+
                 is_dismissible: props.is_dismissible,
                 title: props.title,
                 props,
