@@ -6,7 +6,9 @@ import {debounce} from "@svelte-in-motion/utilities";
 
 import type {IAppContext} from "../app";
 
-export type ITranslationFunction = (identifier: string, parameters?: Record<string, any>) => string;
+export type ITranslationTokens = Record<string, any>;
+
+export type ITranslationFunction = (identifier: string, tokens?: ITranslationTokens) => string;
 
 export type ITranslationsStore = Readable<ITranslationFunction>;
 
