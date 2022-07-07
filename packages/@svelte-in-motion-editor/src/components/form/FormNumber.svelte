@@ -31,6 +31,9 @@
     $: description = resolveMetaLiteral<string>(meta, "description");
     $: label = resolveMetaLiteral<string>(meta, "label");
     $: placeholder = resolveMetaLiteral<string>(meta, "placeholder");
+
+
+        $: is_valid = validates(value, type);
 </script>
 
 <Form.Control logic_id={identifier}>
@@ -40,7 +43,7 @@
 
     <NumberInput
         sizing="nano"
-        palette={validates(value, type) ? "affirmative" : "negative"}
+        palette={is_valid ? "affirmative" : "negative"}
         placeholder={placeholder ? $translate(placeholder) : undefined}
         bind:value
         {max}
