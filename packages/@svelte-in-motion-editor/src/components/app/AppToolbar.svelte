@@ -129,7 +129,6 @@
         </svelte:fragment>
 
         <Menu.Container sizing="nano">
-            <Menu.Button>Keybinds</Menu.Button>
             <Menu.Anchor href={URL_DOCUMENTATION} target="_blank" rel="noopener noreferrer">
                 Documentation
             </Menu.Anchor>
