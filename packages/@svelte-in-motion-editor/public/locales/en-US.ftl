@@ -34,10 +34,13 @@ commands-workspace-prompt-open_recent-label = Workspaces: Open Recent
 templates-templates-welcome-label = Welcome to Svelte-In-Motion
 templates-templates-welcome-description = Simple welcome message template to introduce syntax and concepts.
 
+ui-view-dashboard-brand-label = Svelte-In-Motion
+ui-view-dashboard-start-label = Start
 ui-view-dashboard-new_workspace-label = New Workspace
-ui-view-dashboard-last_accessed_workspace-label = Last Accessed: {$timestamp} 
-ui-view-dashboard-open_workspace-label = OPEN
-ui-view-dashboard-no_available_workspaces-label = No Available Workspaces
+ui-view-dashboard-new_workspace_from_template-label = New Workspace from Template
+ui-view-dashboard-open_recent_workspace-label = Open Recent Workspace
+ui-view-dashboard-recent-label = Recent
+ui-view-dashboard-more-label = ...More
 
 ui-app-toolbar-menu-file-label = File
 ui-app-toolbar-option-new_file-label = New File

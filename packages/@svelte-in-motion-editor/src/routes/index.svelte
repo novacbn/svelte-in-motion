@@ -60,27 +60,35 @@
         alignment_y="center"
         padding_x="massive"
     >
-        <Heading>Svelte-In-Motion</Heading>
+        <Heading>
+            {$translations.format("ui-view-dashboard-brand-label")}
+        </Heading>
 
         <div>
-            <Heading is="h2" margin_bottom="medium">Start</Heading>
+            <Heading is="h2" margin_bottom="medium">
+                {$translations.format("ui-view-dashboard-start-label")}
+            </Heading>
 
             <Stack.Container alignment_x="left">
-                <Anchor href="#" palette="accent" on:click={on_new_click}>New Workspace</Anchor>
+                <Anchor href="#" palette="accent" on:click={on_new_click}>
+                    {$translations.format("ui-view-dashboard-new_workspace-label")}
+                </Anchor>
 
                 <Anchor href="#" palette="accent" on:click={on_template_click}>
-                    New Workspace from Template
+                    {$translations.format("ui-view-dashboard-new_workspace_from_template-label")}
                 </Anchor>
 
                 <Anchor href="#" palette="accent" on:click={on_recent_click}>
-                    Open Recent Workspace
+                    {$translations.format("ui-view-dashboard-open_recent_workspace-label")}
                 </Anchor>
             </Stack.Container>
         </div>
 
         {#if recent_workspaces.length > 0}
             <div>
-                <Heading is="h2" margin_bottom="medium">Recent</Heading>
+                <Heading is="h2" margin_bottom="medium">
+                    {$translations.format("ui-view-dashboard-recent-label")}
+                </Heading>
 
                 <Stack.Container max_width="content-max">
                     {#each recent_workspaces as workspace (workspace.identifier)}
@@ -110,7 +118,7 @@
                             max_width="content-max"
                             on:click={on_recent_click}
                         >
-                            ...More
+                            {$translations.format("ui-view-dashboard-more-label")}
                         </Anchor>
                     {/if}
                 </Stack.Container>
