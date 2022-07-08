@@ -179,7 +179,6 @@
                 on:pointerleave={on_resolution_exit}
             >
                 {_preview_width}x{_preview_height}
-                ({$configuration.width}x{$configuration.height})
             </Badge>
         </Position>
 

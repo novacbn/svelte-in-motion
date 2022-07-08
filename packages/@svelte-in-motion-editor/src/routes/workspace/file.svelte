@@ -39,6 +39,7 @@
     import EditorLayout from "../../components/editor/EditorLayout.svelte";
     import EditorFileTree from "../../components/editor/EditorFileTree.svelte";
     import EditorScript from "../../components/editor/EditorScript.svelte";
+    import EditorStatus from "../../components/editor/EditorStatus.svelte";
 
     import PreviewControls from "../../components/preview/PreviewControls.svelte";
     import PreviewTimeline from "../../components/preview/PreviewTimeline.svelte";
@@ -60,6 +61,7 @@
 <EditorLayout>
     <EditorScript />
     <EditorFileTree />
+    <EditorStatus />
 
     <PreviewViewport />
 

@@ -33,10 +33,11 @@
             "header header header"
             "sidebar script viewport"
             "sidebar script controls"
-            "timeline timeline timeline";
+            "timeline timeline timeline"
+            "status status status";
 
         grid-template-columns: max-content max-content 1fr;
-        grid-template-rows: max-content 1fr max-content max-content;
+        grid-template-rows: max-content 1fr max-content max-content max-content;
 
         width: min(100vw, 100%);
         height: min(100vh, 100%);

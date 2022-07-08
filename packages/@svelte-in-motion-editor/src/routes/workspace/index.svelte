@@ -28,6 +28,7 @@
 
     import EditorFileTree from "../../components/editor/EditorFileTree.svelte";
     import EditorLayout from "../../components/editor/EditorLayout.svelte";
+    import EditorStatus from "../../components/editor/EditorStatus.svelte";
 
     const {workspaces} = CONTEXT_APP.get()!;
     const {metadata} = CONTEXT_WORKSPACE.get()!;
@@ -42,4 +43,5 @@
 
 <EditorLayout>
     <EditorFileTree />
+    <EditorStatus />
 </EditorLayout>
