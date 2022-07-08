@@ -60,24 +60,31 @@ export const EXTENSION_PALETTE = define_extension({
 
         const $translations = get(translations);
 
-        const documents = $commands.map((command) => {
-            const {identifier: command_identifier, keybind} = command;
+        const documents = $commands
+            .map((command) => {
+                const {identifier: command_identifier, keybind} = command;
 
-            const translation_identifier = command_identifier.replace(/\./g, "-");
+                const translation_identifier = command_identifier.replace(/\./g, "-");
 
-            const bind = keybind?.binds[0].join("+").replace(/\s/g, "SPACE").toUpperCase();
-            const description = $translations.format(
-                `commands-${translation_identifier}-description`
-            );
-            const label = $translations.format(`commands-${translation_identifier}-label`);
+                const bind = keybind?.binds[0].join("+").replace(/\s/g, "SPACE").toUpperCase();
+                const description = $translations.format(
+                    `commands-${translation_identifier}-description`
+                );
+                const label = $translations.format(`commands-${translation_identifier}-label`);
 
-            return {
-                bind,
-                identifier: command_identifier,
-                description,
-                label,
-            };
-        });
+                return {
+                    bind,
+                    identifier: command_identifier,
+                    description,
+                    label,
+                };
+            })
+            .sort((document_a, document_b) => {
+                const label_a = document_a.label.toLowerCase();
+                const label_b = document_b.label.toLowerCase();
+
+                return label_a <= label_b ? -1 : 0;
+            });
 
         let result: ISearchPromptEvent;
         try {

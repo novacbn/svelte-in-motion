@@ -130,24 +130,13 @@
                           };
                       })
                       .sort((entry_a, entry_b) => {
-                          const label_a = entry_a.document[label].toLowerCase();
-                          const label_b = entry_b.document[label].toLowerCase();
-
-                          return label_a <= label_b ? -1 : 0;
-                      })
-                      .sort((entry_a, entry_b) => {
                           const weight_a = entry_a.weight;
                           const weight_b = entry_b.weight;
 
                           return weight_b - weight_a;
                       })
                       .map((entry) => entry.document)
-                : documents.slice().sort((entry_a, entry_b) => {
-                      const label_a = entry_a[label].toLowerCase();
-                      const label_b = entry_b[label].toLowerCase();
-
-                      return label_a <= label_b ? -1 : 0;
-                  });
+                : documents;
     }
 </script>
 
