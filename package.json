@@ -2,16 +2,16 @@
     "name": "svelte-in-motion",
     "type": "module",
     "scripts": {
-        "build:application": "pnpm run --filter \"*web\" build:application",
-        "build:packages": "pnpm -r build:package",
-        "dev:application": "pnpm run --filter \"*web\" dev:application",
-        "dev:packages": "pnpm -r dev:package",
-        "preview:application": "pnpm run --filter \"*web\" preview:application",
-        "format:content": "prettier --config ./content/.prettierrc --plugin-search-dir=. --write ./content",
-        "format:packages": "pnpm -r format",
-        "lint:content": "prettier --config ./content/.prettierrc --plugin-search-dir=. --check ./content",
-        "lint:packages": "pnpm -r lint",
-        "test:packages": "pnpm -r test"
+        "build:application": "pnpm run --filter \"*editor\" build:application",
+        "build:tauri": "pnpm run --filter \"*tauri\" build:application",
+        "build:packages": "pnpm run --recursive build:package",
+        "dev:application": "pnpm run --filter \"*editor\" dev:application",
+        "dev:packages": "pnpm run --recursive dev:package",
+        "install:all": "pnpm install --recursive",
+        "preview:application": "pnpm run --filter \"*editor\" preview:application",
+        "format:all": "pnpm run --recursive format",
+        "lint:all": "pnpm run --recursive lint",
+        "test:all": "pnpm run --recursive test"
     },
     "devDependencies": {
         "prettier": "^2.7.0",
