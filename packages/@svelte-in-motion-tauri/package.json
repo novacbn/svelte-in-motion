@@ -3,7 +3,7 @@
     "version": "0.0.1",
     "private": true,
     "scripts": {
-        "tauri": "tauri"
+        "build:application": "tauri build"
     },
     "devDependencies": {
         "@tauri-apps/cli": "1.0.0-rc.9"
