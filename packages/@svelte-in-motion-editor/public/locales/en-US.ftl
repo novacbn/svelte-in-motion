@@ -28,6 +28,8 @@ commands-workspace-prompt-new_from_template-description = Prompts for creating a
 commands-workspace-prompt-new_from_template-label = Workspaces: New from Template
 commands-workspace-prompt-new-description = Prompts for creating a new Workspace.
 commands-workspace-prompt-new-label = Workspaces: New
+commands-workspace-prompt-open_recent-description = Open a Workspace that was recently accessed.
+commands-workspace-prompt-open_recent-label = Workspaces: Open Recent
 
 templates-templates-welcome-label = Welcome to Svelte-In-Motion
 templates-templates-welcome-description = Simple welcome message template to introduce syntax and concepts.

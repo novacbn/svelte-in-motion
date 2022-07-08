@@ -66,6 +66,17 @@ export const EXTENSION_WORKSPACE = define_extension({
             binds: [["control", "shift", "m"]],
             on_bind: this.keybind_prompt_new_from_template.bind(this),
         });
+
+        commands.push({
+            identifier: "workspace.prompt.open_recent",
+            on_execute: this.command_prompt_open_recent.bind(this),
+        });
+
+        keybinds.push({
+            identifier: "workspace.prompt.open_recent",
+            binds: [["control", "shift", "c"]],
+            on_bind: this.keybind_prompt_open_recent.bind(this),
+        });
     },
 
     async command_prompt_new(app: IAppContext) {
@@ -147,11 +158,56 @@ export const EXTENSION_WORKSPACE = define_extension({
         render_template(app, form_result.name, search_result.identifier);
     },
 
+    async command_prompt_open_recent(app: IAppContext) {
+        const {prompts, workspaces} = app;
+
+        const $workspaces = get(workspaces);
+
+        const documents = $workspaces.workspaces
+            .sort((workspace_a, workspace_b) => {
+                const duration_a = workspace_a.get_accessed_duration();
+                const duration_b = workspace_b.get_accessed_duration();
+
+                return duration_a.total("second") <= duration_b.total("second") ? -1 : 0;
+            })
+            .map((workspace) => {
+                return {
+                    identifier: workspace.identifier,
+                    label: workspace.name,
+                    timestamp: workspace.format_accessed(),
+                };
+            });
+
+        let result: ISearchPromptEvent;
+        try {
+            result = await prompts.prompt_search({
+                is_dismissible: true,
+
+                badge: "timestamp",
+                identifier: "identifier",
+                label: "label",
+                index: ["identifier", "label", "timestamp"],
+
+                documents,
+            });
+        } catch (err) {
+            if (err instanceof PromptDismissError) return;
+            throw err;
+        }
+
+        if (!location.hash) location.hash = `#/workspace/${result.identifier}`;
+        else open(`#/workspace/${result.identifier}`, "_blank");
+    },
+
     keybind_prompt_new(app: IAppContext, event: IKeybindEvent) {
         if (event.active) this.command_prompt_new(app);
     },
 
     keybind_prompt_new_from_template(app: IAppContext, event: IKeybindEvent) {
         if (event.active) this.command_prompt_new_from_template(app);
+    },
+
+    keybind_prompt_open_recent(app: IAppContext, event: IKeybindEvent) {
+        if (event.active) this.command_prompt_open_recent(app);
     },
 });
