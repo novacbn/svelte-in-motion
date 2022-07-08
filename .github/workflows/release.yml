@@ -44,20 +44,20 @@ jobs:
               run: pnpm install
 
             - name: Cache Web Application Version
-              run: |
-                  cd ./packages/@svelte-in-motion-editor
-                  echo "APPLICATION_VERSION=$(node -p "require('./package.json').version")" >> $GITHUB_ENV
+              working-directory: ./packages/@svelte-in-motion-editor
+              run: echo "APPLICATION_VERSION=$(node -p "require('./package.json').version")" >> $GITHUB_ENV
 
             - name: Build Web Application
+              working-directory: ./packages/@svelte-in-motion-editor
               run: npm run build:application
 
             - name: Build Tauri Application
-              run: |
-                  cd ../@svelte-in-motion-tauri
-                  npm run build:application
+              working-directory: ./packages/@svelte-in-motion-tauri
+              run: npm run build:application
 
             - name: Upload Linux Artifacts
               if: ${{ matrix.platform == 'ubuntu-latest' }}
+              working-directory: ./packages/@svelte-in-motion-tauri
               uses: softprops/action-gh-release@v1
               with:
                   files: |
