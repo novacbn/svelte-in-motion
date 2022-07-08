@@ -59,9 +59,8 @@ jobs:
 
             - name: Upload Linux Artifacts
               if: ${{ matrix.platform == 'ubuntu-latest' }}
-              working-directory: ./packages/@svelte-in-motion-tauri
               uses: softprops/action-gh-release@v1
               with:
                   files: |
-                      ./src-tauri/target/release/bundle/appimage/svelte-in-motion_${{ env.APPLICATION_VERSION }}_amd64.AppImage
-                      ./src-tauri/target/release/bundle/deb/svelte-in-motion_${{ env.APPLICATION_VERSION }}_amd64.deb
+                      ./packages/@svelte-in-motion-tauri/src-tauri/target/release/bundle/appimage/svelte-in-motion_${{ env.APPLICATION_VERSION }}_amd64.AppImage
+                      ./packages/@svelte-in-motion-tauri/src-tauri/target/release/bundle/deb/svelte-in-motion_${{ env.APPLICATION_VERSION }}_amd64.deb
