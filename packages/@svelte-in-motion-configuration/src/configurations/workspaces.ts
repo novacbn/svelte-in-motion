@@ -45,9 +45,9 @@ export class WorkspacesItemConfiguration extends DataClass {
         const duration = this.get_accessed_duration();
         const relative = new Intl.RelativeTimeFormat();
 
-        if (duration.hours > 0) return relative.format(duration.hours, "hour");
-        else if (duration.minutes > 0) return relative.format(duration.minutes, "minutes");
-        return relative.format(duration.seconds, "seconds");
+        if (duration.hours > 0) return relative.format(-duration.hours, "hour");
+        else if (duration.minutes > 0) return relative.format(-duration.minutes, "minutes");
+        return relative.format(-duration.seconds, "seconds");
     }
 
     make_driver(): Promise<IDriver> {
