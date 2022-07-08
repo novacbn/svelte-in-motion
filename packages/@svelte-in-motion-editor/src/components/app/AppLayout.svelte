@@ -31,10 +31,11 @@
 
         grid-template-areas:
             "header"
-            "content";
+            "body"
+            "status";
 
         grid-template-columns: 1fr;
-        grid-template-rows: max-content 1fr;
+        grid-template-rows: max-content 1fr max-content;
 
         width: min(100vw, 100%);
         height: min(100vh, 100%);

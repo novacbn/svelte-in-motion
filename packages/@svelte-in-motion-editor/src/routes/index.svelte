@@ -16,6 +16,7 @@
     //import {PackageX} from "lucide-svelte";
 
     import AppLayout from "../components/app/AppLayout.svelte";
+    import AppStatus from "../components/app/AppStatus.svelte";
 
     import {CONTEXT_APP} from "../lib/app";
 
@@ -126,13 +127,11 @@
         {/if}
     </Stack.Container>
 
-    <!--
-        <AppStatus />
-    -->
+    <AppStatus />
 </AppLayout>
 
 <style>
     :global(.sim--app-dashboard) {
-        grid-area: content;
+        grid-area: body;
     }
 </style>
