@@ -31,11 +31,11 @@ jobs:
               with:
                   version: ${{ matrix.pnpm-version }}
 
-            - name: Lint Codebase
-              run: npm run lint:all
-
             - name: Install Dependencies
               run: npm run install:all
+
+            - name: Lint Codebase
+              run: npm run lint:all
 
             - name: Build Packages
               run: npm run build:packages
