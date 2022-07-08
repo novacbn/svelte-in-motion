@@ -36,6 +36,10 @@ jobs:
               with:
                   toolchain: ${{ matrix.rust-version }}
 
+            - name: Cache Web Application Version
+              working-directory: ./packages/@svelte-in-motion-editor
+              run: echo "APPLICATION_VERSION=$(node -p "require('./package.json').version")" >> $GITHUB_ENV
+
             - name: Install Ubuntu Dependencies
               if: ${{ matrix.platform == 'ubuntu-latest' }}
               run: |
@@ -48,17 +52,11 @@ jobs:
             - name: Build Packages
               run: npm run build:packages
 
-            - name: Cache Web Application Version
-              working-directory: ./packages/@svelte-in-motion-editor
-              run: echo "APPLICATION_VERSION=$(node -p "require('./package.json').version")" >> $GITHUB_ENV
-
             - name: Build Web Application
-              working-directory: ./packages/@svelte-in-motion-editor
               run: npm run build:application
 
             - name: Build Tauri Application
-              working-directory: ./packages/@svelte-in-motion-tauri
-              run: npm run build:application
+              run: npm run build:tauri
 
             - name: Upload Linux Artifacts
               if: ${{ matrix.platform == 'ubuntu-latest' }}
