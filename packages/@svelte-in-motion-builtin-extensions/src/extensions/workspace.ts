@@ -106,22 +106,29 @@ export const EXTENSION_WORKSPACE = define_extension({
         const $templates = get(templates);
         const $translations = get(translations);
 
-        const documents = $templates.map((template) => {
-            const {identifier: template_identifier} = template;
+        const documents = $templates
+            .map((template) => {
+                const {identifier: template_identifier} = template;
 
-            const translation_identifier = template_identifier.replace(/\./g, "-");
+                const translation_identifier = template_identifier.replace(/\./g, "-");
 
-            const description = $translations.format(
-                `templates-${translation_identifier}-description`
-            );
-            const label = $translations.format(`templates-${translation_identifier}-label`);
+                const description = $translations.format(
+                    `templates-${translation_identifier}-description`
+                );
+                const label = $translations.format(`templates-${translation_identifier}-label`);
 
-            return {
-                identifier: template_identifier,
-                description,
-                label,
-            };
-        });
+                return {
+                    identifier: template_identifier,
+                    description,
+                    label,
+                };
+            })
+            .sort((document_a, document_b) => {
+                const label_a = document_a.label.toLowerCase();
+                const label_b = document_b.label.toLowerCase();
+
+                return label_a <= label_b ? -1 : 0;
+            });
 
         let search_result: ISearchPromptEvent;
         try {
@@ -165,10 +172,12 @@ export const EXTENSION_WORKSPACE = define_extension({
 
         const documents = $workspaces.workspaces
             .sort((workspace_a, workspace_b) => {
-                const duration_a = workspace_a.get_accessed_duration();
-                const duration_b = workspace_b.get_accessed_duration();
+                const {seconds} = workspace_a.accessed_at.until(workspace_b.accessed_at, {
+                    largestUnit: "seconds",
+                    smallestUnit: "seconds",
+                });
 
-                return duration_a.total("second") <= duration_b.total("second") ? -1 : 0;
+                return seconds < 0 ? -1 : 0;
             })
             .map((workspace) => {
                 return {
