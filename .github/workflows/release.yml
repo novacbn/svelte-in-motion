@@ -15,7 +15,7 @@ jobs:
                 pnpm-version: [6.32]
                 rust-version: [stable]
 
-        runs-on: ${{ maxtrix.platform }}
+        runs-on: ${{ matrix.platform }}
 
         steps:
             - name: Checkout
