@@ -4,7 +4,7 @@
     "scripts": {
         "build:application": "pnpm run --filter \"*editor\" build:application",
         "build:tauri": "pnpm run --filter \"*tauri\" build:application",
-        "build:packages": "pnpm run --recursive build:package",
+        "build:packages": "pnpm run --filter \"*rpc\" build:package && pnpm run --filter \"*temporal\" build:package && pnpm run --filter \"*type\" build:package && pnpm run --filter \"*configuration\" build:package && pnpm run --filter \"*encoding\" build:package && pnpm run --filter \"*runtime\" build:package && pnpm run --filter \"*rendering\" build:package && pnpm run --filter \"*agent\" build:package && pnpm run --filter \"*n/extension\" build:package && pnpm run --filter \"*builtin-extensions\" build:package",
         "dev:application": "pnpm run --filter \"*editor\" dev:application",
         "dev:packages": "pnpm run --recursive dev:package",
         "install:all": "pnpm install --recursive",
