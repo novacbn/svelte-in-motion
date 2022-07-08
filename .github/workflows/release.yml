@@ -45,6 +45,9 @@ jobs:
             - name: Install Web Application Dependencies
               run: pnpm install --recursive
 
+            - name: Build Packages
+              run: npm run build:packages
+
             - name: Cache Web Application Version
               working-directory: ./packages/@svelte-in-motion-editor
               run: echo "APPLICATION_VERSION=$(node -p "require('./package.json').version")" >> $GITHUB_ENV
