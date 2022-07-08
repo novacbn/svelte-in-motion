@@ -7,13 +7,15 @@ on:
 
 jobs:
     build:
-        runs-on: ubuntu-latest
-
         strategy:
             matrix:
+                platform: [ubuntu-latest]
+
                 node-version: [16.x]
                 pnpm-version: [6.32]
                 rust-version: [stable]
+
+        runs-on: ${{ maxtrix.platform }}
 
         steps:
             - name: Checkout
