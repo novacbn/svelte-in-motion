@@ -4,11 +4,11 @@
 
     import {CONTEXT_APP} from "../../lib/app";
 
-    import type {INotification} from "../../lib/stores/notifications";
+    import type {INotificationItem} from "../../lib/stores/notifications";
 
     const {notifications} = CONTEXT_APP.get()!;
 
-    function on_dismiss_click(event: MouseEvent, notification: INotification): void {
+    function on_dismiss_click(event: MouseEvent, notification: INotificationItem): void {
         notifications.remove("identifier", notification.identifier);
     }
 </script>
