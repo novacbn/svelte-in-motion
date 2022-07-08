@@ -46,8 +46,8 @@
 
             <Menu.Heading />
 
-            <Menu.Button disabled>
-                {$translations.format("ui-app-toolbar-option-open_workspace-label")}
+            <Menu.Button on:click={(event) => commands.execute("workspace.prompt.open_recent")}>
+                {$translations.format("ui-app-toolbar-option-open_recent_workspace-label")}
             </Menu.Button>
         </Menu.Container>
     </Dropdown>
