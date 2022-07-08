@@ -9,8 +9,8 @@
 
     <!-- NOTE: This order is specific so they layer properly -->
 
-    <AppNotifications />
     <AppHeader />
+    <AppNotifications />
     <AppPrompts />
 </div>
 
