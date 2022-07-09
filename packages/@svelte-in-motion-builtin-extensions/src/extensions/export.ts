@@ -1,13 +1,18 @@
 import {get} from "svelte/store";
 
 import type {IAppContext, IKeybindEvent} from "@svelte-in-motion/extension";
+import {define_extension} from "@svelte-in-motion/extension";
 import {ICodecNames, IPixelFormatNames} from "@svelte-in-motion/encoding";
 import {Default, Description, Label, Minimum, Namespace, Placeholder} from "@svelte-in-motion/type";
 import {typeOf} from "@svelte-in-motion/type";
-import {PromptDismissError, download_blob, download_buffer} from "@svelte-in-motion/utilities";
+import {
+    PromptDismissError,
+    UserError,
+    download_blob,
+    download_buffer,
+} from "@svelte-in-motion/utilities";
 
 import {zip_frames} from "../util/io";
-import {define_extension} from "@svelte-in-motion/extension";
 
 interface IFramesExportConfiguration {
     start: number &
@@ -52,6 +57,22 @@ interface IVideoExportConfiguration {
         Namespace<"ui-prompt-form-video-export-pixel_format-${identifier}-label">;
 }
 
+class ExportUserError extends UserError {
+    name = ExportUserError.name;
+}
+
+class ExportNoEditorUserError extends ExportUserError {
+    name = ExportNoEditorUserError.name;
+}
+
+class ExportNoPreviewUserError extends ExportUserError {
+    name = ExportNoPreviewUserError.name;
+}
+
+class ExportNoWorkspaceUserError extends ExportUserError {
+    name = ExportNoWorkspaceUserError.name;
+}
+
 export const EXTENSION_EXPORT = define_extension({
     identifier: "dev.nbn.sim.export",
     is_builtin: true,
@@ -86,37 +107,13 @@ export const EXTENSION_EXPORT = define_extension({
 
     async command_prompt_frames(app: IAppContext) {
         const {notifications, prompts, renders, workspace} = app;
-        if (!workspace) {
-            notifications.push({
-                //icon: X,
-                header: "No workspace is currently loaded",
-                is_dismissible: true,
-            });
 
-            return;
-        }
+        if (!workspace) throw new ExportNoWorkspaceUserError();
 
         const {configuration, editor, preview} = workspace;
 
-        if (!editor) {
-            notifications.push({
-                //icon: X,
-                header: "No editor is currently loaded",
-                is_dismissible: true,
-            });
-
-            return;
-        }
-
-        if (!preview) {
-            notifications.push({
-                //icon: X,
-                header: "Opened file is not renderable",
-                is_dismissible: true,
-            });
-
-            return;
-        }
+        if (!editor) throw new ExportNoEditorUserError();
+        if (!preview) throw new ExportNoPreviewUserError();
 
         const {maxframes} = get(configuration);
 
@@ -177,37 +174,13 @@ export const EXTENSION_EXPORT = define_extension({
 
     async command_prompt_video(app: IAppContext) {
         const {agent, jobs, notifications, prompts, workspace} = app;
-        if (!workspace) {
-            notifications.push({
-                //icon: X,
-                header: "No workspace is currently loaded",
-                is_dismissible: true,
-            });
 
-            return;
-        }
+        if (!workspace) throw new ExportNoWorkspaceUserError();
 
         const {configuration, editor, preview} = workspace;
 
-        if (!editor) {
-            notifications.push({
-                //icon: X,
-                header: "No editor is currently loaded",
-                is_dismissible: true,
-            });
-
-            return;
-        }
-
-        if (!preview) {
-            notifications.push({
-                //icon: X,
-                header: "Opened file is not renderable",
-                is_dismissible: true,
-            });
-
-            return;
-        }
+        if (!editor) throw new ExportNoEditorUserError();
+        if (!preview) throw new ExportNoPreviewUserError();
 
         const {file_path} = editor;
         const $file_path = get(file_path);
