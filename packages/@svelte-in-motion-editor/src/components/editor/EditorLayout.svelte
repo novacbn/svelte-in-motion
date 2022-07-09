@@ -25,7 +25,7 @@
             "timeline timeline timeline"
             "status status status";
 
-        grid-template-columns: max-content 1fr max-content;
+        grid-template-columns: max-content 1fr minmax(1fr, max-content);
         grid-template-rows: max-content 1fr max-content max-content max-content;
 
         width: min(100vw, 100%);
