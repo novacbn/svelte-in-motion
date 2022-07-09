@@ -28,7 +28,7 @@ export const EXTENSION_EDITOR = define_extension({
 
         keybinds.push({
             identifier: "editor.ui.script.toggle",
-            binds: [["control", "shift", "s"]],
+            binds: [["control", "alt", "s"]],
             on_bind: this.keybind_ui_script_toggle.bind(this),
         });
     },
