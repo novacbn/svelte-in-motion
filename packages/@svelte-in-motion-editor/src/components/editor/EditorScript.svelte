@@ -36,10 +36,9 @@
     import Loader from "../Loader.svelte";
 
     let editor_element: HTMLDivElement | undefined;
-    let editor_view: EditorView | undefined;
 
     const {grammars, preferences} = CONTEXT_APP.get()!;
-    const {file_path, text} = CONTEXT_EDITOR.get()!;
+    const {file_path, text, view} = CONTEXT_EDITOR.get()!;
 
     const grammar = grammars.find((item) =>
         item.extensions.some((extension) => file_path.toLowerCase().endsWith(extension))
@@ -49,42 +48,39 @@
         if (update.docChanged) $text = update.state.doc.sliceString(0);
     });
 
-    const editor_state = EditorState.create({
-        doc: $text ?? "",
-        extensions: [
-            drawSelection(),
-            EditorState.allowMultipleSelections.of(true),
-            EditorState.tabSize.of(2),
-            foldGutter(),
-            highlightActiveLine(),
-            highlightActiveLineGutter(),
-            highlightSpecialChars(),
-            highlightSelectionMatches(),
-            history(),
-            indentOnInput(),
-            lineNumbers(),
-            rectangularSelection(),
-            syntaxHighlighting(defaultHighlightStyle, {fallback: true}),
-
-            keymap.of([...defaultKeymap, ...historyKeymap, indentWithTab]),
-
-            oneDark,
-            THEME_SIM,
-
-            ...(grammar ? [grammar.grammar] : []),
-
-            on_update,
-        ],
-    });
-
     onDestroy(() => {
-        editor_view?.destroy();
+        $view?.destroy();
     });
 
     $: if (editor_element) {
-        editor_view = new EditorView({
-            state: editor_state,
+        $view = new EditorView({
+            doc: $text ?? "",
             parent: editor_element,
+
+            extensions: [
+                drawSelection(),
+                EditorState.allowMultipleSelections.of(true),
+                EditorState.tabSize.of(2),
+                foldGutter(),
+                highlightActiveLine(),
+                highlightActiveLineGutter(),
+                highlightSpecialChars(),
+                highlightSelectionMatches(),
+                history(),
+                indentOnInput(),
+                lineNumbers(),
+                rectangularSelection(),
+                syntaxHighlighting(defaultHighlightStyle, {fallback: true}),
+
+                keymap.of([...defaultKeymap, ...historyKeymap, indentWithTab]),
+
+                oneDark,
+                THEME_SIM,
+
+                ...(grammar ? [grammar.grammar] : []),
+
+                on_update,
+            ],
         });
     }
 </script>
