@@ -6,6 +6,7 @@ export type {IWorkspaceContext} from "@svelte-in-motion/editor/src/lib/workspace
 export type {
     ICommandItem,
     ICommandTypedItem,
+    ICommandUntypedItem,
     ICommandsStore,
 } from "@svelte-in-motion/editor/src/lib/stores/commands";
 export type {IEditorViewStore} from "@svelte-in-motion/editor/src/lib/stores/editor";

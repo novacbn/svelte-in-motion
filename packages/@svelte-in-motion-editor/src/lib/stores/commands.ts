@@ -11,24 +11,32 @@ export interface ICommandItem extends ICollectionItem {
     is_disabled?: boolean | (() => boolean);
 
     is_visible?: boolean | (() => boolean);
-
-    type?: TypeObjectLiteral;
-
-    on_execute: <T>(app: IAppContext, args?: T) => void | Promise<void>;
 }
 
-export interface ICommandTypedItem extends ICommandItem {
+export interface ICommandTypedItem<T> extends ICommandItem {
     type: TypeObjectLiteral;
 
-    on_execute: <T>(app: IAppContext, args: T) => void | Promise<void>;
+    on_execute: (app: IAppContext, args: T) => void | Promise<void>;
 }
 
-export interface ICommandsStore extends ICollectionStore<ICommandItem | ICommandTypedItem> {
-    execute: <T>(command: string, args?: T) => void | Promise<void>;
+export interface ICommandUntypedItem extends ICommandItem {
+    on_execute: (app: IAppContext) => void | Promise<void>;
+}
+
+export interface ICommandsStore
+    extends ICollectionStore<ICommandTypedItem<unknown> | ICommandUntypedItem> {
+    execute:
+        | ((command: string) => void | Promise<void>)
+        | (<T>(command: string, args: T) => void | Promise<void>);
+
+    push: ((item: ICommandUntypedItem) => ICommandUntypedItem) &
+        (<T>(item: ICommandTypedItem<T>) => ICommandTypedItem<T>);
 }
 
 export function commands(app: IAppContext): ICommandsStore {
-    const {find, has, push, subscribe, remove, update, watch} = collection<ICommandItem>();
+    const {find, has, push, subscribe, remove, update, watch} = collection<
+        ICommandTypedItem<unknown> | ICommandUntypedItem
+    >();
 
     return {
         execute<T>(identifier: string, args: T) {
@@ -46,12 +54,13 @@ export function commands(app: IAppContext): ICommandsStore {
                 }
             }
 
-            item.on_execute<T>(app, args);
+            item.on_execute(app, args);
         },
 
         find,
         has,
 
+        // @ts-expect-error
         push,
         subscribe,
 
