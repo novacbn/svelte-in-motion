@@ -19,9 +19,7 @@ export class UserError<T = void> extends Error {
     tokens?: T;
 
     constructor(tokens?: T, icon?: typeof SvelteComponent) {
-        // @ts-expect-error - HACK: TypeScript just doesn't like that kind
-        // of thing, but we can access it
-        super(this.name);
+        super();
 
         this.icon = icon;
         this.tokens = tokens;
