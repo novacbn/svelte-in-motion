@@ -26,9 +26,8 @@ export interface ITemplateUntypedItem extends ITemplateItem {
 
 export interface ITemplatesStore
     extends ICollectionStore<ITemplateTypedItem<unknown> | ITemplateUntypedItem> {
-    render:
-        | ((storage: IDriver, identifier: string) => Promise<void>)
-        | (<T>(storage: IDriver, identifier: string, tokens: T) => Promise<void>);
+    render: ((storage: IDriver, identifier: string) => Promise<void>) &
+        (<T>(storage: IDriver, identifier: string, tokens: T) => Promise<void>);
 
     push: ((item: ITemplateUntypedItem) => ITemplateUntypedItem) &
         (<T>(item: ITemplateTypedItem<T>) => ITemplateTypedItem<T>);
@@ -45,6 +44,7 @@ export function templates(): ITemplatesStore {
         // @ts-expect-error
         push,
 
+        // @ts-expect-error
         async render<T>(storage: IDriver, identifier: string, tokens: T) {
             const item = find("identifier", identifier);
             if (!item) {

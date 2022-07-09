@@ -25,9 +25,8 @@ export interface ICommandUntypedItem extends ICommandItem {
 
 export interface ICommandsStore
     extends ICollectionStore<ICommandTypedItem<unknown> | ICommandUntypedItem> {
-    execute:
-        | ((command: string) => void | Promise<void>)
-        | (<T>(command: string, args: T) => void | Promise<void>);
+    execute: ((command: string) => void | Promise<void>) &
+        (<T>(command: string, args: T) => void | Promise<void>);
 
     push: ((item: ICommandUntypedItem) => ICommandUntypedItem) &
         (<T>(item: ICommandTypedItem<T>) => ICommandTypedItem<T>);
@@ -39,6 +38,7 @@ export function commands(app: IAppContext): ICommandsStore {
     >();
 
     return {
+        // @ts-expect-error
         execute<T>(identifier: string, args: T) {
             const item = find("identifier", identifier);
             if (!item) {
