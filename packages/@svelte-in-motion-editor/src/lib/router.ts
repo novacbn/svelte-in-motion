@@ -40,7 +40,7 @@ export interface IRouteDefinition {
 
     load?: ILoadCallback;
 
-    pattern: string;
+    pattern: string | string[];
 }
 
 export interface IRouterOutput {
@@ -89,11 +89,14 @@ export function app_router(options: IRouterOptions): [INavigatingStore, IRouterS
     const navigating = writable<boolean>(false);
     const router = make_router<IRouteDefinition>(
         Object.fromEntries(
-            routes.map((route) => {
-                const {pattern} = route;
+            routes
+                .map((route) => {
+                    const patterns =
+                        typeof route.pattern === "string" ? [route.pattern] : route.pattern;
 
-                return [normalize_pathname(pattern), route];
-            })
+                    return patterns.map((pattern) => [normalize_pathname(pattern), route]);
+                })
+                .flat()
         )
     );
 
