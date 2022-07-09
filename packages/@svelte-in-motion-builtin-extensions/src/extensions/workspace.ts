@@ -18,7 +18,12 @@ interface IWorkspaceNewConfiguration {
         Description<"ui-prompt-form-workspace-new-name-description">;
 }
 
-async function render_template(app: IAppContext, name: string, template: string): Promise<void> {
+async function render_template(
+    app: IAppContext,
+    name: string,
+    template: string,
+    tokens: any = {}
+): Promise<void> {
     const {prompts, templates, workspaces} = app;
 
     const controller = new AbortController();
@@ -30,7 +35,7 @@ async function render_template(app: IAppContext, name: string, template: string)
     });
 
     const storage = await workspace.make_driver();
-    await templates.render(storage, template, {});
+    await templates.render(storage, template, tokens);
 
     $workspaces.workspaces.push(workspace);
     workspaces.set($workspaces);
@@ -162,7 +167,26 @@ export const EXTENSION_WORKSPACE = define_extension({
             throw err;
         }
 
-        render_template(app, form_result.name, search_result.identifier);
+        const template = templates.find("identifier", search_result.identifier)!;
+
+        let tokens: any;
+        if ("type" in template) {
+            try {
+                tokens = (
+                    await prompts.prompt_form<any>({
+                        is_dismissible: true,
+                        title: `templates-${template.identifier}-label`,
+
+                        type: template.type,
+                    })
+                ).model;
+            } catch (err) {
+                if (err instanceof PromptDismissError) return;
+                throw err;
+            }
+        }
+
+        render_template(app, form_result.name, search_result.identifier, tokens);
     },
 
     async command_prompt_open_recent(app: IAppContext) {
