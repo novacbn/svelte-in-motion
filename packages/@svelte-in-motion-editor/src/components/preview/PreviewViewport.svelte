@@ -155,7 +155,7 @@
     bind:this={viewport_element}
     class="box sim--preview-viewport"
     data-padding="large"
-    style="display:{$preferences.ui.preview.viewport.enabled ? 'block' : 'none'}"
+    data-hidden={$preferences.ui.preview.viewport.enabled ? undefined : true}
     bind:clientWidth={_viewport_width}
     bind:clientHeight={_viewport_height}
 >
