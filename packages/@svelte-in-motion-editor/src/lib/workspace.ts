@@ -33,16 +33,8 @@ export interface IWorkspaceContext {
     storage: IDriver;
 }
 
-async function is_workspace_prepared(storage: IDriver): Promise<boolean> {
-    if (!(await storage.exists(FILE_CONFIGURATION_WORKSPACE))) return false;
-
-    try {
-        await WorkspaceConfiguration.read(storage, FILE_CONFIGURATION_WORKSPACE);
-    } catch (err) {
-        return false;
-    }
-
-    return true;
+function is_workspace_prepared(storage: IDriver): Promise<boolean> {
+    return storage.exists(FILE_CONFIGURATION_WORKSPACE);
 }
 
 export async function workspace(identifier: string, app: IAppContext): Promise<IWorkspaceContext> {

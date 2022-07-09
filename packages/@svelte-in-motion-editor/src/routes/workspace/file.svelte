@@ -1,33 +1,35 @@
 <script context="module" lang="ts">
     import type {IAppContext} from "../../lib/app";
-    import {CONTEXT_EDITOR, editor} from "../../lib/editor";
+    import {CONTEXT_EDITOR, editor as make_editor_context} from "../../lib/editor";
     import type {ILoadCallback} from "../../lib/router";
-    import {CONTEXT_PREVIEW, preview} from "../../lib/preview";
-    import {CONTEXT_WORKSPACE, workspace} from "../../lib/workspace";
+    import {CONTEXT_PREVIEW, preview as make_preview_context} from "../../lib/preview";
+    import {CONTEXT_WORKSPACE, workspace as make_workspace_context} from "../../lib/workspace";
 
-    export const pattern: string = "/workspace/:identifier/:file";
+    import {can_preview_file} from "../../lib/util/preview";
+
+    export const pattern: string = "/workspace/:identifier/:file_path";
 
     export const load: ILoadCallback<{app: IAppContext}> = async ({context, url}) => {
         const {app} = context;
-        const {identifier, file} = url.pathname.groups;
+        const {identifier, file_path} = url.pathname.groups;
 
-        const workspace_context = await workspace(identifier, app);
+        const workspace = await make_workspace_context(identifier, app);
 
-        const [editor_context, preview_context] = await Promise.all([
-            editor(workspace_context.storage, file),
-            preview(file),
+        const [editor, preview] = await Promise.all([
+            make_editor_context(workspace.storage, file_path),
+            can_preview_file(file_path) ? make_preview_context(file_path) : undefined,
         ]);
 
-        app.workspace = workspace_context;
+        app.workspace = workspace;
 
-        workspace_context.editor = editor_context;
-        workspace_context.preview = preview_context;
+        workspace.editor = editor;
+        workspace.preview = preview;
 
         return {
             context: {
-                [CONTEXT_EDITOR.key]: editor_context,
-                [CONTEXT_PREVIEW.key]: preview_context,
-                [CONTEXT_WORKSPACE.key]: workspace_context,
+                [CONTEXT_EDITOR.key]: editor,
+                [CONTEXT_PREVIEW.key]: preview,
+                [CONTEXT_WORKSPACE.key]: workspace,
             },
         };
     };
@@ -48,6 +50,7 @@
     import {CONTEXT_APP} from "../../lib/app";
 
     const {workspaces} = CONTEXT_APP.get()!;
+    const preview = CONTEXT_PREVIEW.get();
     const {metadata} = CONTEXT_WORKSPACE.get()!;
 
     $workspaces.workspaces = $workspaces.workspaces.map((workspace) => {
@@ -63,8 +66,10 @@
     <EditorFileTree />
     <EditorStatus />
 
-    <PreviewViewport />
+    {#if preview}
+        <PreviewViewport />
 
-    <PreviewControls />
-    <PreviewTimeline />
+        <PreviewControls />
+        <PreviewTimeline />
+    {/if}
 </EditorLayout>
