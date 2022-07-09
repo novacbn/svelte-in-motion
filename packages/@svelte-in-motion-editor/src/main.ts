@@ -17,10 +17,7 @@ import {
 import {CONTEXT_APP, app as make_app_context} from "./lib/app";
 import {app_router} from "./lib/router";
 
-import * as Index from "./routes/index.svelte";
-
-import * as WorkspaceIndex from "./routes/workspace/index.svelte";
-import * as WorkspaceFile from "./routes/workspace/file.svelte";
+import * as Workspace from "./routes/workspace.svelte";
 
 (async () => {
     const app = await make_app_context();
@@ -39,7 +36,7 @@ import * as WorkspaceFile from "./routes/workspace/file.svelte";
             [CONTEXT_APP.key]: app,
         },
 
-        routes: [Index, WorkspaceFile, WorkspaceIndex],
+        routes: [Index, Workspace],
     });
 
     let component: SvelteComponent | null = null;
