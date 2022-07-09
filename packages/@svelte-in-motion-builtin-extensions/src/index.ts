@@ -1,4 +1,4 @@
-export {EXTENSION_APPLICATION} from "./extensions/application";
+export {EXTENSION_ABOUT} from "./extensions/about";
 export {EXTENSION_COMMANDS} from "./extensions/commands";
 export {EXTENSION_EDITOR} from "./extensions/editor";
 export {EXTENSION_EXPORT} from "./extensions/export";

@@ -1,5 +1,7 @@
-commands-application-prompt-about-description = Prompts with metadata about the Svelte-In-Motion.
-commands-application-prompt-about-label = About Application
+commands-about-prompt-application-description = Prompts with metadata about the Svelte-In-Motion.
+commands-about-prompt-application-label = About: Application
+commands-about-prompt-documentation-description = Opens a new tab on the documentation website.
+commands-about-prompt-documentation-label = About: Documentation
 commands-export-prompt-frames-description = Prompts for exporting the currently loaded File as a series of PNG Frames.
 commands-export-prompt-frames-label = Export: Frames
 commands-export-prompt-video-description = Prompts for exporting the currently loaded File as a Video.

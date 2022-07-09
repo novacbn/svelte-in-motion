@@ -4,7 +4,7 @@ import "@kahi-ui/framework/dist/kahi-ui.theme.default.min.css";
 import type {SvelteComponent} from "svelte";
 
 import {
-    EXTENSION_APPLICATION,
+    EXTENSION_ABOUT,
     EXTENSION_COMMANDS,
     EXTENSION_EDITOR,
     EXTENSION_EXPORT,
@@ -25,7 +25,7 @@ import * as WorkspaceFile from "./routes/workspace/file.svelte";
 (async () => {
     const app = await make_app_context();
 
-    app.extensions.push(EXTENSION_APPLICATION);
+    app.extensions.push(EXTENSION_ABOUT);
     app.extensions.push(EXTENSION_COMMANDS);
     app.extensions.push(EXTENSION_EXPORT);
     app.extensions.push(EXTENSION_EDITOR);
