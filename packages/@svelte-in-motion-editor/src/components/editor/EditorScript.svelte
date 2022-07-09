@@ -1,21 +1,92 @@
 <script context="module" lang="ts">
-    import {Divider} from "@kahi-ui/framework";
+    import {EditorView} from "@codemirror/view";
 
-    import {highlight as code_highlight} from "../../lib/highlight";
-
-    const highlight = (text: string) => code_highlight(text, "svelte");
+    const THEME_SIM = EditorView.baseTheme({
+        "&": {height: "100%"},
+        ".cm-scroller": {overflow: "auto"},
+    });
 </script>
 
 <script lang="ts">
-    import {CodeJar} from "@novacbn/svelte-codejar";
+    import {defaultKeymap, history, historyKeymap, indentWithTab} from "@codemirror/commands";
+    import {
+        defaultHighlightStyle,
+        foldGutter,
+        indentOnInput,
+        syntaxHighlighting,
+    } from "@codemirror/language";
+    import {oneDark} from "@codemirror/theme-one-dark";
+    import {highlightSelectionMatches} from "@codemirror/search";
+    import {EditorState} from "@codemirror/state";
+    import {
+        drawSelection,
+        highlightActiveLine,
+        highlightActiveLineGutter,
+        highlightSpecialChars,
+        lineNumbers,
+        keymap,
+        rectangularSelection,
+    } from "@codemirror/view";
+    import {Divider} from "@kahi-ui/framework";
+    import {onDestroy} from "svelte";
 
     import {CONTEXT_APP} from "../../lib/app";
     import {CONTEXT_EDITOR} from "../../lib/editor";
 
     import Loader from "../Loader.svelte";
 
-    const {preferences} = CONTEXT_APP.get()!;
-    const {text} = CONTEXT_EDITOR.get()!;
+    let editor_element: HTMLDivElement | undefined;
+    let editor_view: EditorView | undefined;
+
+    const {grammars, preferences} = CONTEXT_APP.get()!;
+    const {file_path, text} = CONTEXT_EDITOR.get()!;
+
+    const grammar = grammars.find((item) =>
+        item.extensions.some((extension) => file_path.toLowerCase().endsWith(extension))
+    );
+
+    const on_update = EditorView.updateListener.of((update) => {
+        if (update.docChanged) $text = update.state.doc.sliceString(0);
+    });
+
+    const editor_state = EditorState.create({
+        doc: $text ?? "",
+        extensions: [
+            drawSelection(),
+            EditorState.allowMultipleSelections.of(true),
+            EditorState.tabSize.of(2),
+            foldGutter(),
+            highlightActiveLine(),
+            highlightActiveLineGutter(),
+            highlightSpecialChars(),
+            highlightSelectionMatches(),
+            history(),
+            indentOnInput(),
+            lineNumbers(),
+            rectangularSelection(),
+            syntaxHighlighting(defaultHighlightStyle, {fallback: true}),
+
+            keymap.of([...defaultKeymap, ...historyKeymap, indentWithTab]),
+
+            oneDark,
+            THEME_SIM,
+
+            ...(grammar ? [grammar.grammar] : []),
+
+            on_update,
+        ],
+    });
+
+    onDestroy(() => {
+        editor_view?.destroy();
+    });
+
+    $: if (editor_element) {
+        editor_view = new EditorView({
+            state: editor_state,
+            parent: editor_element,
+        });
+    }
 </script>
 
 <div
@@ -23,12 +94,7 @@
     style="display:{$preferences.ui.editor.script.enabled ? 'block' : 'none'}"
 >
     {#if $text !== null}
-        <CodeJar
-            class="sim--editor-script--editor"
-            syntax="svelte"
-            {highlight}
-            bind:value={$text}
-        />
+        <div bind:this={editor_element} class="sim--editor-script--view" />
     {/if}
 
     <Divider
@@ -50,16 +116,10 @@
         width: 65ch;
     }
 
-    :global(.sim--editor-script--editor) {
-        padding: calc(var(--spacings-block-small) * 1rem) calc(var(--spacings-block-medium) * 1rem) !important;
-        margin: 0 !important;
-
-        width: 100%;
+    :global(.sim--editor-script--view) {
         height: 100%;
 
-        font-size: calc(var(--fonts-sizes-inline-tiny) * 1rem) !important;
-
-        white-space: pre !important;
+        overflow: hidden;
     }
 
     :global(.sim--editor-script--divider) {

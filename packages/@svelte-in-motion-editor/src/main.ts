@@ -1,5 +1,3 @@
-import "prismjs/themes/prism-tomorrow.css";
-
 import "@kahi-ui/framework/dist/kahi-ui.framework.min.css";
 import "@kahi-ui/framework/dist/kahi-ui.theme.default.min.css";
 
@@ -9,6 +7,7 @@ import {
     EXTENSION_APPLICATION,
     EXTENSION_EDITOR,
     EXTENSION_EXPORT,
+    EXTENSION_GRAMMARS,
     EXTENSION_PALETTE,
     EXTENSION_PREVIEW,
     EXTENSION_TEMPLATES,
@@ -29,6 +28,7 @@ import * as WorkspaceFile from "./routes/workspace/file.svelte";
     app.extensions.push(EXTENSION_APPLICATION);
     app.extensions.push(EXTENSION_EXPORT);
     app.extensions.push(EXTENSION_EDITOR);
+    app.extensions.push(EXTENSION_GRAMMARS);
     app.extensions.push(EXTENSION_PALETTE);
     app.extensions.push(EXTENSION_PREVIEW);
     app.extensions.push(EXTENSION_WORKSPACE);

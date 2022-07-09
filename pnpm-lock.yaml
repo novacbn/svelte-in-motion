@@ -140,12 +140,16 @@ importers:
 
   packages/@svelte-in-motion-editor:
     specifiers:
+      '@codemirror/commands': ^6.0.1
       '@codemirror/language': ^6.2.0
+      '@codemirror/search': ^6.0.0
+      '@codemirror/state': ^6.1.0
+      '@codemirror/theme-one-dark': ^6.0.0
+      '@codemirror/view': ^6.0.3
       '@deepkit/type-compiler': ^1.0.1-alpha.71
       '@fluent/bundle': ^0.17.1
       '@fluent/langneg': ^0.6.2
       '@kahi-ui/framework': 0.6.4
-      '@novacbn/svelte-codejar': ^0.1.2
       '@svelte-in-motion/agent': workspace:^
       '@svelte-in-motion/animations': workspace:^
       '@svelte-in-motion/builtin-extensions': workspace:^
@@ -168,7 +172,6 @@ importers:
       flexsearch: ^0.7.21
       lucide-svelte: ^0.61.0
       prettier-plugin-svelte: ^2.7.0
-      prismjs: ^1.27.0
       svelte: ^3.44.0
       svelte-check: ^2.2.7
       svelte-preprocess: ^4.9.8
@@ -178,11 +181,15 @@ importers:
       urlpattern-polyfill: ^1.0.0-rc5
       vite: 2.9.12
     dependencies:
+      '@codemirror/commands': 6.0.1
       '@codemirror/language': 6.2.0
+      '@codemirror/search': 6.0.0
+      '@codemirror/state': 6.1.0
+      '@codemirror/theme-one-dark': 6.0.0
+      '@codemirror/view': 6.0.3
       '@fluent/bundle': 0.17.1
       '@fluent/langneg': 0.6.2
       '@kahi-ui/framework': 0.6.4
-      '@novacbn/svelte-codejar': 0.1.2
       '@svelte-in-motion/agent': link:../@svelte-in-motion-agent
       '@svelte-in-motion/animations': link:../@svelte-in-motion-animations
       '@svelte-in-motion/builtin-extensions': link:../@svelte-in-motion-builtin-extensions
@@ -200,7 +207,6 @@ importers:
       buffer: 6.0.3
       flexsearch: 0.7.21
       lucide-svelte: 0.61.0_svelte2tsx@0.5.10+svelte@3.46.4
-      prismjs: 1.27.0
       urlpattern-polyfill: 1.0.0-rc5
     devDependencies:
       '@deepkit/type-compiler': 1.0.1-alpha.71_typescript@4.7.3
@@ -208,7 +214,7 @@ importers:
       '@tsconfig/svelte': 2.0.1
       '@types/flexsearch': 0.7.3
       '@types/prismjs': 1.26.0
-      prettier-plugin-svelte: 2.7.0_prettier@2.7.0+svelte@3.46.4
+      prettier-plugin-svelte: 2.7.0_svelte@3.46.4
       svelte: 3.46.4
       svelte-check: 2.4.5_svelte@3.46.4
       svelte-preprocess: 4.10.4_svelte@3.46.4+typescript@4.7.3
@@ -761,6 +767,15 @@ packages:
       '@lezer/common': 1.0.0
     dev: false
 
+  /@codemirror/commands/6.0.1:
+    resolution: {integrity: sha512-iNHDByicYqQjs0Wo1MKGfqNbMYMyhS9WV6EwMVwsHXImlFemgEUC+c5X22bXKBStN3qnwg4fArNZM+gkv22baQ==}
+    dependencies:
+      '@codemirror/language': 6.2.0
+      '@codemirror/state': 6.1.0
+      '@codemirror/view': 6.0.3
+      '@lezer/common': 1.0.0
+    dev: false
+
   /@codemirror/lang-css/6.0.0:
     resolution: {integrity: sha512-jBqc+BTuwhNOTlrimFghLlSrN6iFuE44HULKWoR4qKYObhOIl9Lci1iYj6zMIte1XTQmZguNvjXMyr43LUKwSw==}
     dependencies:
@@ -834,8 +849,25 @@ packages:
       crelt: 1.0.5
     dev: false
 
+  /@codemirror/search/6.0.0:
+    resolution: {integrity: sha512-rL0rd3AhI0TAsaJPUaEwC63KHLO7KL0Z/dYozXj6E7L3wNHRyx7RfE0/j5HsIf912EE5n2PCb4Vg0rGYmDv4UQ==}
+    dependencies:
+      '@codemirror/state': 6.1.0
+      '@codemirror/view': 6.0.3
+      crelt: 1.0.5
+    dev: false
+
   /@codemirror/state/6.1.0:
     resolution: {integrity: sha512-qbUr94DZTe6/V1VS7LDLz11rM/1t/nJxR1El4I6UaxDEdc0aZZvq6JCLJWiRmUf95NRAnDH6fhXn+PWp9wGCIg==}
+    dev: false
+
+  /@codemirror/theme-one-dark/6.0.0:
+    resolution: {integrity: sha512-jTCfi1I8QT++3m21Ui6sU8qwu3F/hLv161KLxfvkV1cYWSBwyUanmQFs89ChobQjBHi2x7s2k71wF9WYvE8fdw==}
+    dependencies:
+      '@codemirror/language': 6.2.0
+      '@codemirror/state': 6.1.0
+      '@codemirror/view': 6.0.3
+      '@lezer/highlight': 1.0.0
     dev: false
 
   /@codemirror/view/6.0.3:
@@ -1325,13 +1357,6 @@ packages:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.13.0
     dev: true
-
-  /@novacbn/svelte-codejar/0.1.2:
-    resolution: {integrity: sha512-lZd6r+dbdU+zN8d4QW005QEmTT6WDKjpTXvbPIcqIWGSnbWBVoEMFPOwJ0C3PYM4hHAjb2GHF4DBywlWQogNLw==}
-    dependencies:
-      codejar: 3.5.0
-      svelte: 3.46.4
-    dev: false
 
   /@rollup/pluginutils/4.2.1:
     resolution: {integrity: sha512-iKnFXr7NkdZAIHiIWE+BX5ULi/ucVFYWD6TbAV+rZctiRTY2PL6tsIKhoIOaoskiWAkgu+VsbXgUVDNLHf+InQ==}
@@ -1877,10 +1902,6 @@ packages:
     resolution: {integrity: sha512-QVb0dM5HvG+uaxitm8wONl7jltx8dqhfU33DcqtOZcLSVIKSDDLDi7+0LbAKiyI8hD9u42m2YxXSkMGWThaecQ==}
     engines: {iojs: '>= 1.0.0', node: '>= 0.12.0'}
     dev: true
-
-  /codejar/3.5.0:
-    resolution: {integrity: sha512-uXrFZZ+yb23YY7+WtTux2Yyokt+Lty/kBnW/OhhEGp8IW8/lrJw5Gs1wwCyt2vpMfsVdudLmV5xAgYqsZY/49A==}
-    dev: false
 
   /collect-v8-coverage/1.0.1:
     resolution: {integrity: sha512-iBPtljfCNcTKNAto0KEtDfZ3qzjJvqE3aTGZsbhjSBlorqpXJlaWWtPO35D+ZImoC3KWejX64o+yPGxhWSTzfg==}
@@ -3367,16 +3388,6 @@ packages:
       source-map-js: 1.0.2
     dev: true
 
-  /prettier-plugin-svelte/2.7.0_prettier@2.7.0+svelte@3.46.4:
-    resolution: {integrity: sha512-fQhhZICprZot2IqEyoiUYLTRdumULGRvw0o4dzl5jt0jfzVWdGqeYW27QTWAeXhoupEZJULmNoH3ueJwUWFLIA==}
-    peerDependencies:
-      prettier: ^1.16.4 || ^2.0.0
-      svelte: ^3.2.0
-    dependencies:
-      prettier: 2.7.0
-      svelte: 3.46.4
-    dev: true
-
   /prettier-plugin-svelte/2.7.0_prettier@2.7.0+svelte@3.48.0:
     resolution: {integrity: sha512-fQhhZICprZot2IqEyoiUYLTRdumULGRvw0o4dzl5jt0jfzVWdGqeYW27QTWAeXhoupEZJULmNoH3ueJwUWFLIA==}
     peerDependencies:
@@ -3385,6 +3396,15 @@ packages:
     dependencies:
       prettier: 2.7.0
       svelte: 3.48.0
+    dev: true
+
+  /prettier-plugin-svelte/2.7.0_svelte@3.46.4:
+    resolution: {integrity: sha512-fQhhZICprZot2IqEyoiUYLTRdumULGRvw0o4dzl5jt0jfzVWdGqeYW27QTWAeXhoupEZJULmNoH3ueJwUWFLIA==}
+    peerDependencies:
+      prettier: ^1.16.4 || ^2.0.0
+      svelte: ^3.2.0
+    dependencies:
+      svelte: 3.46.4
     dev: true
 
   /prettier/2.5.1:
@@ -3414,11 +3434,6 @@ packages:
       ansi-styles: 5.2.0
       react-is: 18.2.0
     dev: true
-
-  /prismjs/1.27.0:
-    resolution: {integrity: sha512-t13BGPUlFDR7wRB5kQDG4jjl7XeuH6jbJGt11JHPL96qwsEHNX2+68tFXqc1/k+/jALsbSWJKUOT/hcYAZ5LkA==}
-    engines: {node: '>=6'}
-    dev: false
 
   /prompts/2.4.2:
     resolution: {integrity: sha512-NxNv/kLguCA7p3jE8oL2aEBsrJWgAakBpgmgK6lpPWV+WuOmY6r2/zbAVnP+T8bQlA0nzHXSJSJW0Hq7ylaD2Q==}

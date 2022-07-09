@@ -32,11 +32,15 @@
         "vite": "2.9.12"
     },
     "dependencies": {
+        "@codemirror/commands": "^6.0.1",
         "@codemirror/language": "^6.2.0",
+        "@codemirror/search": "^6.0.0",
+        "@codemirror/state": "^6.1.0",
+        "@codemirror/theme-one-dark": "^6.0.0",
+        "@codemirror/view": "^6.0.3",
         "@fluent/bundle": "^0.17.1",
         "@fluent/langneg": "^0.6.2",
         "@kahi-ui/framework": "0.6.4",
-        "@novacbn/svelte-codejar": "^0.1.2",
         "@svelte-in-motion/agent": "workspace:^",
         "@svelte-in-motion/animations": "workspace:^",
         "@svelte-in-motion/builtin-extensions": "workspace:^",
@@ -54,7 +58,6 @@
         "buffer": "^6.0.3",
         "flexsearch": "^0.7.21",
         "lucide-svelte": "^0.61.0",
-        "prismjs": "^1.27.0",
         "urlpattern-polyfill": "^1.0.0-rc5"
     }
 }
