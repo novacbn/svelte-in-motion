@@ -11,7 +11,7 @@ export function channel<T>(
 ): IChannelEvent<T> {
     channel = typeof channel === "string" ? new BroadcastChannel(channel) : channel;
 
-    const {subscribe} = event<T>((dispatch) => {
+    const {dispatch, subscribe} = event<T>((dispatch) => {
         function on_message(event: MessageEvent) {
             dispatch(event.data);
         }
@@ -37,6 +37,7 @@ export function channel<T>(
 
         dispatch(detail) {
             (channel as BroadcastChannel).postMessage(detail);
+            dispatch(detail);
         },
 
         subscribe,

@@ -1,7 +1,6 @@
 import type {UseStore} from "idb-keyval";
 import {createStore, del, keys, get, set} from "idb-keyval";
 
-import type {IEvent} from "@svelte-in-motion/utilities";
 import {
     append_pathname,
     dir_pathname,
@@ -17,6 +16,14 @@ import type {IDriver, IWatchEvent} from "./driver";
 import {WATCH_EVENT_TYPES} from "./driver";
 import {URLPattern} from "urlpattern-polyfill";
 
+interface IIndexedDBWatchEvent {
+    detail: IWatchEvent;
+
+    identifier: string;
+}
+
+const CHANNEL_WATCH = channel<IIndexedDBWatchEvent>("sim:storage:indexeddb");
+
 function create_store(identifier: string): UseStore {
     return createStore(identifier, identifier);
 }
@@ -25,8 +32,7 @@ export function indexeddb(
     identifier: string,
     base: string = "/",
     directory_store: UseStore = create_store(`sim:storage:directories:${identifier}`),
-    file_store: UseStore = create_store(`sim:storage:files:${identifier}`),
-    watch_channel: IEvent<IWatchEvent> = channel(`sim:storage:indexeddb:${identifier}`)
+    file_store: UseStore = create_store(`sim:storage:files:${identifier}`)
 ): IDriver {
     base = normalize_pathname(base);
 
@@ -61,14 +67,17 @@ export function indexeddb(
 
             set(path, true, directory_store);
 
-            watch_channel.dispatch({
-                path,
-                type: WATCH_EVENT_TYPES.create,
-                stats: {
-                    is_directory: true,
-                    is_file: false,
+            CHANNEL_WATCH.dispatch({
+                identifier,
+                detail: {
+                    path,
+                    type: WATCH_EVENT_TYPES.create,
+                    stats: {
+                        is_directory: true,
+                        is_file: false,
+                    },
                 },
-            } as IWatchEvent);
+            });
         },
 
         async create_file(path) {
@@ -101,14 +110,17 @@ export function indexeddb(
 
             set(path, "", file_store);
 
-            watch_channel.dispatch({
-                path,
-                type: WATCH_EVENT_TYPES.create,
-                stats: {
-                    is_directory: false,
-                    is_file: true,
+            CHANNEL_WATCH.dispatch({
+                identifier,
+                detail: {
+                    path,
+                    type: WATCH_EVENT_TYPES.create,
+                    stats: {
+                        is_directory: false,
+                        is_file: true,
+                    },
                 },
-            } as IWatchEvent);
+            });
         },
 
         async create_hotlink(path, options = {}) {
@@ -130,7 +142,7 @@ export function indexeddb(
         },
 
         create_view(path) {
-            return indexeddb(identifier, path, directory_store, file_store, watch_channel);
+            return indexeddb(identifier, path, directory_store, file_store);
         },
 
         async exists(path) {
@@ -336,18 +348,20 @@ export function indexeddb(
 
             const is_recursive = pattern ? pattern.includes("*") : false;
 
-            const destroy = watch_channel.subscribe((event) => {
+            const destroy = CHANNEL_WATCH.subscribe(({identifier: watch_identifier, detail}) => {
+                if (identifier !== watch_identifier) return;
+
                 if (
-                    (exclude_directories && event.stats.is_directory) ||
-                    (exclude_files && event.stats.is_file) ||
-                    !event.path.startsWith(path) ||
-                    (!is_recursive && dir_pathname(event.path) !== path)
+                    (exclude_directories && detail.stats.is_directory) ||
+                    (exclude_files && detail.stats.is_file) ||
+                    !detail.path.startsWith(path) ||
+                    (!is_recursive && dir_pathname(detail.path) !== path)
                 ) {
                     return;
                 }
 
-                if (!matcher || matcher.test(event.path)) on_watch(event);
-                if (event.path === path && event.type === WATCH_EVENT_TYPES.remove) destroy();
+                if (!matcher || matcher.test(detail.path)) on_watch(detail);
+                if (detail.path === path && detail.type === WATCH_EVENT_TYPES.remove) destroy();
             });
 
             return destroy;
@@ -370,11 +384,12 @@ export function indexeddb(
                 );
             }
 
-            const destroy = watch_channel.subscribe((event) => {
-                if (event.path !== path) return;
+            const destroy = CHANNEL_WATCH.subscribe(({identifier: watch_identifier, detail}) => {
+                if (identifier !== watch_identifier) return;
+                if (detail.path !== path) return;
 
-                callback(event);
-                if (event.type === WATCH_EVENT_TYPES.remove) destroy();
+                callback(detail);
+                if (detail.type === WATCH_EVENT_TYPES.remove) destroy();
             });
 
             return destroy;
@@ -406,14 +421,17 @@ export function indexeddb(
             buffer = compress(buffer);
             set(path, buffer, file_store);
 
-            watch_channel.dispatch({
-                path,
-                type: previously_existed ? WATCH_EVENT_TYPES.update : WATCH_EVENT_TYPES.create,
-                stats: {
-                    is_directory: false,
-                    is_file: true,
+            CHANNEL_WATCH.dispatch({
+                identifier,
+                detail: {
+                    path,
+                    type: previously_existed ? WATCH_EVENT_TYPES.update : WATCH_EVENT_TYPES.create,
+                    stats: {
+                        is_directory: false,
+                        is_file: true,
+                    },
                 },
-            } as IWatchEvent);
+            });
         },
 
         async write_file_text(path, text) {
