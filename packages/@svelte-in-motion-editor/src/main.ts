@@ -17,6 +17,7 @@ import {
 import {CONTEXT_APP, app as make_app_context} from "./lib/app";
 import {app_router} from "./lib/router";
 
+import * as Dashboard from "./routes/dashboard.svelte";
 import * as Workspace from "./routes/workspace.svelte";
 
 (async () => {
@@ -36,7 +37,7 @@ import * as Workspace from "./routes/workspace.svelte";
             [CONTEXT_APP.key]: app,
         },
 
-        routes: [Index, Workspace],
+        routes: [Dashboard, Workspace],
     });
 
     let component: SvelteComponent | null = null;
