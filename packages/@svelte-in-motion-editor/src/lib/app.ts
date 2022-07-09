@@ -134,7 +134,7 @@ export async function app(): Promise<IAppContext> {
     app.keybinds = make_keybinds_store(app);
 
     app.grammars = make_grammers_store();
-    app.templates = make_templates_store();
+    app.templates = make_templates_store(app);
 
     app.encodes = make_encodes_store(app);
     app.renders = make_renders_store(app);

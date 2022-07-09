@@ -4,6 +4,8 @@ import {validate} from "@svelte-in-motion/type";
 import type {ICollectionStore} from "@svelte-in-motion/utilities";
 import {collection} from "@svelte-in-motion/utilities";
 
+import type {IAppContext} from "../app";
+
 export type ITemplateRender = string | Uint8Array;
 
 export type ITemplateFunction<T> = (tokens: T) => ITemplateRender;
@@ -33,7 +35,7 @@ export interface ITemplatesStore
         (<T>(item: ITemplateTypedItem<T>) => ITemplateTypedItem<T>);
 }
 
-export function templates(): ITemplatesStore {
+export function templates(app: IAppContext): ITemplatesStore {
     const {find, has, push, subscribe, remove, update, watch} = collection<
         ITemplateTypedItem<unknown> | ITemplateUntypedItem
     >();
@@ -66,10 +68,11 @@ export function templates(): ITemplatesStore {
                 if (typeof render === "function") {
                     return [
                         file_path,
-                        // @ts-expect-error
+                        // @ts-expect-error - HACK: TypeScript can't properly infer our tokens type
                         render(tokens),
                     ];
                 }
+
                 return [file_path, render];
             });
 
