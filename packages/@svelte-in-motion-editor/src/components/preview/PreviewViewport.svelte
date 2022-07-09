@@ -167,7 +167,7 @@
         <iframe
             class="sim--preview-viewport--preview"
             bind:this={iframe_element}
-            src="/preview.html?workspace={identifier}&file={file_path}"
+            src="/preview.html?workspace={identifier}&file={$file_path}"
             data-checkerboard={$preferences.ui.preview.checkerboard.enabled}
         />
 

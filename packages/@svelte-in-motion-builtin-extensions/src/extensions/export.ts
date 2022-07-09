@@ -140,9 +140,11 @@ export const EXTENSION_EXPORT = define_extension({
         }
 
         const {file_path} = editor;
+        const $file_path = get(file_path);
+
         const render_identifier = await renders.queue({
             workspace: workspace.identifier,
-            file: file_path,
+            file: $file_path,
 
             end: result.end,
             start: result.start,
@@ -208,6 +210,8 @@ export const EXTENSION_EXPORT = define_extension({
         }
 
         const {file_path} = editor;
+        const $file_path = get(file_path);
+
         const {framerate, height, maxframes, width} = get(configuration);
 
         const default_codec = await agent.encoding.get_default_codec();
@@ -239,7 +243,7 @@ export const EXTENSION_EXPORT = define_extension({
         }
 
         const job_identifier = await jobs.queue({
-            file: file_path,
+            file: $file_path,
             workspace: workspace.identifier,
 
             encode: {

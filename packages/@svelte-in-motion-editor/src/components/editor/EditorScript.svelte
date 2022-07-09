@@ -41,7 +41,7 @@
     const {file_path, text, view} = CONTEXT_EDITOR.get()!;
 
     const grammar = grammars.find((item) =>
-        item.extensions.some((extension) => file_path.toLowerCase().endsWith(extension))
+        item.extensions.some((extension) => $file_path.toLowerCase().endsWith(extension))
     );
 
     const on_update = EditorView.updateListener.of((update) => {

@@ -30,6 +30,8 @@
 
         return () => destroy();
     });
+
+    $: file_path = editor?.file_path;
 </script>
 
 <Box
@@ -42,7 +44,7 @@
         {#each files as file}
             <Menu.Anchor
                 href="#/workspace/{identifier}{file}"
-                active={file.slice(1) === editor?.file_path}
+                active={file_path ? file.slice(1) === $file_path : false}
             >
                 <!--
                     <FileCode size="1em" />
