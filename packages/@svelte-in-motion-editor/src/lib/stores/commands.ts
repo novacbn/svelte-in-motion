@@ -63,18 +63,17 @@ export function commands(app: IAppContext): ICommandsStore {
             } catch (err) {
                 if (err instanceof UserError) {
                     const $translations = get(translations);
-
                     const translation_identifier = `errors-${format_snake_case(err.name)}`;
-
-                    const header_identifier = `${translation_identifier}-label`;
-                    const text_identifier = `${translation_identifier}-description`;
 
                     notifications.push({
                         icon: err.icon,
                         is_dismissible: true,
 
-                        header: $translations.format(header_identifier),
-                        text: $translations.format(text_identifier, err.tokens),
+                        header: $translations.format(`${translation_identifier}-label`, err.tokens),
+                        text: $translations.format(
+                            `${translation_identifier}-description`,
+                            err.tokens
+                        ),
                     });
 
                     return;
