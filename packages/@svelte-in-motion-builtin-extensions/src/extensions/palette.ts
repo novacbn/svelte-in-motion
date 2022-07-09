@@ -104,7 +104,26 @@ export const EXTENSION_PALETTE = define_extension({
             throw err;
         }
 
-        commands.execute(result.identifier);
+        const command = commands.find("identifier", result.identifier)!;
+
+        let args: any;
+        if (command.type) {
+            try {
+                args = (
+                    await prompts.prompt_form<any>({
+                        is_dismissible: true,
+                        title: `commands-${command.identifier}-label`,
+
+                        type: command.type,
+                    })
+                ).model;
+            } catch (err) {
+                if (err instanceof PromptDismissError) return;
+                throw err;
+            }
+        }
+
+        commands.execute(result.identifier, args);
     },
 
     keybind_prompt_frames(app: IAppContext, event: IKeybindEvent) {
