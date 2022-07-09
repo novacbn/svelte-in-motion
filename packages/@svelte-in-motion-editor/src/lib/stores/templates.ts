@@ -10,34 +10,42 @@ export type ITemplateFunction<T> = (tokens: T) => ITemplateRender;
 
 export type ITemplatePaths<T> = Record<string, ITemplateRender | ITemplateFunction<T>>;
 
-export interface ITemplateItem<T = void> {
+export interface ITemplateItem {
     identifier: string;
-
-    paths: ITemplatePaths<T>;
-
-    type?: TypeObjectLiteral;
 }
 
-export interface ITemplateTypedItem<T> extends ITemplateItem<T> {
+export interface ITemplateTypedItem<T> extends ITemplateItem {
+    paths: ITemplatePaths<T>;
+
     type: TypeObjectLiteral;
 }
 
+export interface ITemplateUntypedItem extends ITemplateItem {
+    paths: ITemplatePaths<void>;
+}
+
 export interface ITemplatesStore
-    extends ICollectionStore<ITemplateItem | ITemplateTypedItem<unknown>> {
-    render<T>(storage: IDriver, identifier: string, tokens?: T): Promise<void>;
+    extends ICollectionStore<ITemplateTypedItem<unknown> | ITemplateUntypedItem> {
+    render:
+        | ((storage: IDriver, identifier: string) => Promise<void>)
+        | (<T>(storage: IDriver, identifier: string, tokens: T) => Promise<void>);
+
+    push: ((item: ITemplateUntypedItem) => ITemplateUntypedItem) &
+        (<T>(item: ITemplateTypedItem<T>) => ITemplateTypedItem<T>);
 }
 
 export function templates(): ITemplatesStore {
     const {find, has, push, subscribe, remove, update, watch} = collection<
-        ITemplateItem | ITemplateTypedItem<unknown>
+        ITemplateTypedItem<unknown> | ITemplateUntypedItem
     >();
 
     return {
         find,
         has,
+        // @ts-expect-error
         push,
 
-        async render(storage, identifier, tokens) {
+        async render<T>(storage: IDriver, identifier: string, tokens: T) {
             const item = find("identifier", identifier);
             if (!item) {
                 throw new ReferenceError(
@@ -45,7 +53,7 @@ export function templates(): ITemplatesStore {
                 );
             }
 
-            if (item.type) {
+            if ("type" in item) {
                 const [first_error] = validate(tokens, item.type);
                 if (first_error) {
                     throw new Error(first_error.message);

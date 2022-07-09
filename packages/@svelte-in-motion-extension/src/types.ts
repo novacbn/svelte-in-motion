@@ -70,6 +70,7 @@ export type {
     ITemplateItem,
     ITemplatePaths,
     ITemplateTypedItem,
+    ITemplateUntypedItem,
     ITemplateRender,
     ITemplatesStore,
 } from "@svelte-in-motion/editor/src/lib/stores/templates";

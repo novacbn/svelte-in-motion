@@ -47,7 +47,7 @@ export function commands(app: IAppContext): ICommandsStore {
                 );
             }
 
-            if (item.type) {
+            if ("type" in item) {
                 const [first_error] = validate(args, item.type);
                 if (first_error) {
                     throw new Error(first_error.message);
