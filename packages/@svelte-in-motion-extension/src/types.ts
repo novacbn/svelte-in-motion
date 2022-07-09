@@ -5,9 +5,10 @@ export type {IWorkspaceContext} from "@svelte-in-motion/editor/src/lib/workspace
 
 export type {
     ICommandItem,
-    ICommandArguments,
+    ICommandTypedItem,
     ICommandsStore,
 } from "@svelte-in-motion/editor/src/lib/stores/commands";
+export type {IEditorViewStore} from "@svelte-in-motion/editor/src/lib/stores/editor";
 export type {
     IEncodeItem,
     IEncodeEvent,
@@ -67,8 +68,8 @@ export type {
     ITemplateFunction,
     ITemplateItem,
     ITemplatePaths,
+    ITemplateTypedItem,
     ITemplateRender,
-    ITemplateTokens,
     ITemplatesStore,
 } from "@svelte-in-motion/editor/src/lib/stores/templates";
 export type {

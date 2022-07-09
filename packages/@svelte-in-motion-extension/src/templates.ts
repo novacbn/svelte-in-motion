@@ -1,7 +1,7 @@
-import {ITemplateItem} from "./types";
+import {ITemplateItem, ITemplateTypedItem} from "./types";
 
-export function define_template<Tokens, Template extends ITemplateItem<Tokens>>(
-    template: Template
-): Template {
+type IDefinedTemplate<T = void> = T extends void ? ITemplateItem : ITemplateTypedItem<T>;
+
+export function define_template<T = void>(template: IDefinedTemplate<T>): IDefinedTemplate<T> {
     return template;
 }

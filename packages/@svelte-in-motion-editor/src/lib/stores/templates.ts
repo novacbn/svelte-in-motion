@@ -4,18 +4,13 @@ import {validate} from "@svelte-in-motion/type";
 import type {ICollectionStore} from "@svelte-in-motion/utilities";
 import {collection} from "@svelte-in-motion/utilities";
 
-export type ITemplateTokens = Record<string, any>;
-
 export type ITemplateRender = string | Uint8Array;
 
-export type ITemplateFunction<T extends ITemplateTokens> = (tokens: T) => ITemplateRender;
+export type ITemplateFunction<T> = (tokens: T) => ITemplateRender;
 
-export type ITemplatePaths<T extends ITemplateTokens> = Record<
-    string,
-    ITemplateRender | ITemplateFunction<T>
->;
+export type ITemplatePaths<T> = Record<string, ITemplateRender | ITemplateFunction<T>>;
 
-export interface ITemplateItem<T extends ITemplateTokens> {
+export interface ITemplateItem<T = void> {
     identifier: string;
 
     paths: ITemplatePaths<T>;
@@ -23,12 +18,19 @@ export interface ITemplateItem<T extends ITemplateTokens> {
     type?: TypeObjectLiteral;
 }
 
-export interface ITemplatesStore extends ICollectionStore<ITemplateItem<any>> {
-    render<T>(storage: IDriver, identifier: string, tokens: T): Promise<void>;
+export interface ITemplateTypedItem<T> extends ITemplateItem<T> {
+    type: TypeObjectLiteral;
+}
+
+export interface ITemplatesStore
+    extends ICollectionStore<ITemplateItem | ITemplateTypedItem<unknown>> {
+    render<T>(storage: IDriver, identifier: string, tokens?: T): Promise<void>;
 }
 
 export function templates(): ITemplatesStore {
-    const {find, has, push, subscribe, remove, update, watch} = collection<ITemplateItem<any>>();
+    const {find, has, push, subscribe, remove, update, watch} = collection<
+        ITemplateItem | ITemplateTypedItem<unknown>
+    >();
 
     return {
         find,
@@ -53,7 +55,13 @@ export function templates(): ITemplatesStore {
             const files = Object.entries(item.paths).map<[string, string | Uint8Array]>((file) => {
                 const [file_path, render] = file;
 
-                if (typeof render === "function") return [file_path, render(tokens)];
+                if (typeof render === "function") {
+                    return [
+                        file_path,
+                        // @ts-expect-error
+                        render(tokens),
+                    ];
+                }
                 return [file_path, render];
             });
 
