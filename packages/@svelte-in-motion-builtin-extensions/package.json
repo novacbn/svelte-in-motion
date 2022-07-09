@@ -29,6 +29,10 @@
         "typescript": "^4.7.3"
     },
     "dependencies": {
+        "@codemirror/lang-html": "^6.1.0",
+        "@codemirror/lang-javascript": "^6.0.1",
+        "@codemirror/lang-markdown": "^6.0.0",
+        "@codemirror/lang-xml": "^6.0.0",
         "@svelte-in-motion/configuration": "workspace:^",
         "@svelte-in-motion/extension": "workspace:^",
         "@svelte-in-motion/storage": "workspace:^",

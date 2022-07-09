@@ -32,6 +32,7 @@
         "vite": "2.9.12"
     },
     "dependencies": {
+        "@codemirror/language": "^6.2.0",
         "@fluent/bundle": "^0.17.1",
         "@fluent/langneg": "^0.6.2",
         "@kahi-ui/framework": "0.6.4",

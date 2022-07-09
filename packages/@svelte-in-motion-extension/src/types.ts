@@ -17,6 +17,7 @@ export type {
 } from "@svelte-in-motion/editor/src/lib/stores/encodes";
 export type {IErrorItem, IErrorsStore} from "@svelte-in-motion/editor/src/lib/stores/errors";
 export type {IExtensionsStore} from "@svelte-in-motion/editor/src/lib/stores/extensions";
+export type {IGrammarItem, IGrammarsStore} from "@svelte-in-motion/editor/src/lib/stores/grammars";
 export type {
     IJobItem,
     IJobBase,

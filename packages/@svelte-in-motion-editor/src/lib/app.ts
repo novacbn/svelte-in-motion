@@ -10,6 +10,8 @@ import type {IEncodesStore} from "./stores/encodes";
 import {encodes as make_encodes_store} from "./stores/encodes";
 import type {IExtensionsStore} from "./stores/extensions";
 import {extensions as make_extensions_store} from "./stores/extensions";
+import type {IGrammarsStore} from "./stores/grammars";
+import {grammars as make_grammers_store} from "./stores/grammars";
 import type {IKeybindsStore} from "./stores/keybinds";
 import {keybinds as make_keybinds_store} from "./stores/keybinds";
 import type {ILocaleStore} from "./stores/locale";
@@ -45,6 +47,8 @@ export interface IAppContext {
     encodes: IEncodesStore;
 
     extensions: IExtensionsStore;
+
+    grammars: IGrammarsStore;
 
     keybinds: IKeybindsStore;
 
@@ -128,6 +132,8 @@ export async function app(): Promise<IAppContext> {
     app.commands = make_commands_store(app);
     app.extensions = make_extensions_store(app);
     app.keybinds = make_keybinds_store(app);
+
+    app.grammars = make_grammers_store();
     app.templates = make_templates_store();
 
     app.encodes = make_encodes_store(app);
