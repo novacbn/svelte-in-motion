@@ -4,6 +4,8 @@ import {derived} from "svelte/store";
 
 import {debounce} from "@svelte-in-motion/utilities";
 
+import {APPLICATION_URL} from "../util/constants";
+
 import type {IAppContext} from "../app";
 
 export type ITranslationTokens = Record<string, any>;
@@ -26,7 +28,7 @@ export function translations(app: IAppContext): ITranslationsStore {
 
     const on_update = debounce(
         async ($locale: string, set: (value: ITranslationsHandle) => void) => {
-            const url = new URL(`/locales/${$locale}.ftl`, import.meta.url);
+            const url = new URL(`/assets/translations/${$locale}.ftl`, APPLICATION_URL);
             const response = await fetch(url);
 
             const text = await response.text();

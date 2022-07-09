@@ -1,5 +1,6 @@
 {
     "name": "svelte-in-motion",
+    "version": "0.0.1",
     "type": "module",
     "scripts": {
         "build:application": "pnpm run --filter \"*editor\" build:application",
