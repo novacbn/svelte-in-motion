@@ -8,7 +8,7 @@
     function on_palette_click(event: MouseEvent): void {
         event.preventDefault();
 
-        commands.execute("palette.prompt.commands");
+        commands.execute("commands.prompt.palette");
     }
 </script>
 

@@ -5,10 +5,10 @@ import type {SvelteComponent} from "svelte";
 
 import {
     EXTENSION_APPLICATION,
+    EXTENSION_COMMANDS,
     EXTENSION_EDITOR,
     EXTENSION_EXPORT,
     EXTENSION_GRAMMARS,
-    EXTENSION_PALETTE,
     EXTENSION_PREVIEW,
     EXTENSION_TEMPLATES,
     EXTENSION_WORKSPACE,
@@ -26,10 +26,10 @@ import * as WorkspaceFile from "./routes/workspace/file.svelte";
     const app = await make_app_context();
 
     app.extensions.push(EXTENSION_APPLICATION);
+    app.extensions.push(EXTENSION_COMMANDS);
     app.extensions.push(EXTENSION_EXPORT);
     app.extensions.push(EXTENSION_EDITOR);
     app.extensions.push(EXTENSION_GRAMMARS);
-    app.extensions.push(EXTENSION_PALETTE);
     app.extensions.push(EXTENSION_PREVIEW);
     app.extensions.push(EXTENSION_WORKSPACE);
     app.extensions.push(EXTENSION_TEMPLATES);

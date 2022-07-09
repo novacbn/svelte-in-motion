@@ -10,7 +10,7 @@ import type {
 import {define_extension} from "@svelte-in-motion/extension";
 import {PromptDismissError} from "@svelte-in-motion/utilities";
 
-export const EXTENSION_PALETTE = define_extension({
+export const EXTENSION_COMMANDS = define_extension({
     identifier: "dev.nbn.sim.palette",
     is_builtin: true,
 
@@ -18,13 +18,13 @@ export const EXTENSION_PALETTE = define_extension({
         const {commands, keybinds} = app;
 
         commands.push({
-            identifier: "palette.prompt.commands",
+            identifier: "commands.prompt.palette",
             is_visible: false,
             on_execute: this.command_prompt_commands.bind(this),
         });
 
         keybinds.push({
-            identifier: "palette.prompt.commands",
+            identifier: "commands.prompt.palette",
             binds: [["control", "shift", "p"]],
             on_bind: this.keybind_prompt_frames.bind(this),
         });
