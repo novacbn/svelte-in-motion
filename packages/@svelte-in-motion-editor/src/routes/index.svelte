@@ -78,10 +78,6 @@
                 <Anchor href="#" palette="accent" on:click={on_template_click}>
                     {$translations.format("ui-view-dashboard-new_workspace_from_template-label")}
                 </Anchor>
-
-                <Anchor href="#" palette="accent" on:click={on_recent_click}>
-                    {$translations.format("ui-view-dashboard-open_recent_workspace-label")}
-                </Anchor>
             </Stack.Container>
         </div>
 

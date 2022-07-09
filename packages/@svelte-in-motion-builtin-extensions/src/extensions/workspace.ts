@@ -48,7 +48,7 @@ export const EXTENSION_WORKSPACE = define_extension({
     is_builtin: true,
 
     on_activate(app: IAppContext) {
-        const {commands, keybinds} = app;
+        const {commands, keybinds, workspaces} = app;
 
         commands.push({
             identifier: "workspace.prompt.new",
@@ -74,12 +74,15 @@ export const EXTENSION_WORKSPACE = define_extension({
 
         commands.push({
             identifier: "workspace.prompt.open_recent",
+            is_visible: () => get(workspaces).workspaces.length > 0,
             on_execute: this.command_prompt_open_recent.bind(this),
         });
 
         keybinds.push({
             identifier: "workspace.prompt.open_recent",
             binds: [["control", "shift", "c"]],
+            is_disabled: () => get(workspaces).workspaces.length > 0,
+            is_visible: () => get(workspaces).workspaces.length > 0,
             on_bind: this.keybind_prompt_open_recent.bind(this),
         });
     },
