@@ -67,6 +67,7 @@ export async function workspace(identifier: string, app: IAppContext): Promise<I
         storage,
         FILE_CONFIGURATION_WORKSPACE,
         {
+            parse: {ignore_errors: true},
             stringify: {is_formatted: true},
         }
     );

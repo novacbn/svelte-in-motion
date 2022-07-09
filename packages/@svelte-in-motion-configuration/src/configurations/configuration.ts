@@ -10,10 +10,16 @@ export type IConfigurationFileStore<T extends Configuration> = Writable<T | null
 
 export type IPreloadedConfigurationFileStore<T extends Configuration> = Writable<T>;
 
-export interface IConfigurationFileStoreOptions {
-    parse?: IDataClassParseOptions;
+export interface IConfigurationFileStoreParseOptions extends IDataClassParseOptions {
+    ignore_errors?: boolean;
+}
 
-    stringify?: IDataClassStringifyOptions;
+export interface IConfigurationFileStoreStringifyOptions extends IDataClassStringifyOptions {}
+
+export interface IConfigurationFileStoreOptions {
+    parse?: IConfigurationFileStoreParseOptions;
+
+    stringify?: IConfigurationFileStoreStringifyOptions;
 }
 
 export class Configuration extends DataClass {
@@ -24,12 +30,21 @@ export class Configuration extends DataClass {
         initial_value: I | null = null,
         options: IConfigurationFileStoreOptions = {}
     ): IConfigurationFileStore<I> {
-        const {parse: parse_options, stringify: stringify_options} = options;
+        const {parse: parse_options = {}, stringify: stringify_options = {}} = options;
 
         const text_store = file_text(driver, file_path, null);
-        const parsed_store = derived(text_store, ($text_store) =>
-            $text_store ? this.parse($text_store, parse_options) : initial_value
-        ) as Readable<I | null>;
+
+        const parsed_store = derived(text_store, ($text_store) => {
+            if ($text_store) {
+                try {
+                    return this.parse($text_store, parse_options);
+                } catch (err) {
+                    if (!parse_options.ignore_errors) throw err;
+                }
+            }
+
+            return initial_value;
+        }) as Readable<I | null>;
 
         return {
             set: (value) => {
@@ -58,26 +73,23 @@ export class Configuration extends DataClass {
         file_path: string,
         options: IConfigurationFileStoreOptions = {}
     ): Promise<IPreloadedConfigurationFileStore<I>> {
+        const {parse: parse_options = {}} = options;
+
+        // HACK: For this to work, the configuration must /NOT/ have required members
+
+        let initial_value = new this();
         if (await driver.exists(file_path)) {
-            const configuration = await this.read(driver, file_path, options);
-
-            return this.file(
-                driver,
-                file_path,
-                configuration,
-                options
-            ) as IPreloadedConfigurationFileStore<I>;
+            try {
+                initial_value = await this.read(driver, file_path, options);
+            } catch (err) {
+                if (!parse_options.ignore_errors) throw err;
+            }
         }
-
-        // NOTE: For the below to work, the `Configuration` based class MUST NOT have a
-        // required property without a default
-
-        const configuration = new this();
 
         return this.file(
             driver,
             file_path,
-            configuration,
+            initial_value,
             options
         ) as IPreloadedConfigurationFileStore<I>;
     }
