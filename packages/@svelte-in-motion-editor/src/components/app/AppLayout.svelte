@@ -15,17 +15,6 @@
 </div>
 
 <style>
-    :global(html, body) {
-        width: 100%;
-        height: 100%;
-
-        overflow: hidden;
-    }
-
-    :global(body) {
-        margin: 0;
-    }
-
     :global(.sim--app-layout) {
         display: grid;
 
