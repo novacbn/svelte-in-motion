@@ -1,7 +1,7 @@
 <script context="module" lang="ts">
     import type {IAppContext} from "../../lib/app";
     import type {ILoadCallback} from "../../lib/router";
-    import {CONTEXT_WORKSPACE, workspace} from "../../lib/workspace";
+    import {CONTEXT_WORKSPACE, workspace as make_workspace_context} from "../../lib/workspace";
 
     export const pattern: string = "/workspace/:identifier";
 
@@ -9,13 +9,13 @@
         const {app} = context;
         const {identifier} = url.pathname.groups;
 
-        const workspace_context = await workspace(identifier, app);
+        const workspace = await make_workspace_context(identifier, app);
 
-        app.workspace = workspace_context;
+        app.workspace = workspace;
 
         return {
             context: {
-                [CONTEXT_WORKSPACE.key]: workspace_context,
+                [CONTEXT_WORKSPACE.key]: workspace,
             },
         };
     };
