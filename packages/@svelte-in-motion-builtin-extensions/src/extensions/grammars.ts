@@ -1,6 +1,6 @@
 import {html} from "@codemirror/lang-html";
 import {javascript} from "@codemirror/lang-javascript";
-import {markdown} from "@codemirror/lang-markdown";
+import {markdown, markdownLanguage} from "@codemirror/lang-markdown";
 import {xml} from "@codemirror/lang-xml";
 
 import type {IAppContext} from "@svelte-in-motion/extension";
@@ -22,14 +22,19 @@ export const EXTENSION_GRAMMARS = define_extension({
 
         grammars.push({
             identifier: "javascript",
-            extensions: [".js"],
-            grammar: javascript(),
+            extensions: [".js", ".jsx", ".ts", ".tsx"],
+            grammar: javascript({
+                jsx: true,
+                typescript: true,
+            }),
         });
 
         grammars.push({
             identifier: "markdown",
             extensions: [".md"],
-            grammar: markdown(),
+            grammar: markdown({
+                base: markdownLanguage,
+            }),
         });
 
         grammars.push({
