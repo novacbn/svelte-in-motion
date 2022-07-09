@@ -2,7 +2,7 @@
     import {EditorView} from "@codemirror/view";
 
     const THEME_SIM = EditorView.baseTheme({
-        "&": {height: "100%"},
+        "&": {fontSize: "14px", height: "100%"},
         ".cm-scroller": {overflow: "auto"},
     });
 </script>
