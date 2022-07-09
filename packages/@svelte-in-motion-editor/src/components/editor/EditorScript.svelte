@@ -87,7 +87,7 @@
 
 <div
     class="sim--editor-script"
-    style="display:{$preferences.ui.editor.script.enabled ? 'block' : 'none'}"
+    data-hidden={$preferences.ui.editor.script.enabled ? undefined : true}
 >
     {#if $text !== null}
         <div bind:this={editor_element} class="sim--editor-script--view" />
@@ -109,7 +109,7 @@
 
         grid-area: script;
 
-        width: 65ch;
+        min-width: 65ch;
     }
 
     :global(.sim--editor-script--view) {
