@@ -109,7 +109,7 @@
 
         grid-area: script;
 
-        min-width: 65ch;
+        overflow: hidden;
     }
 
     :global(.sim--editor-script--view) {
