@@ -76,7 +76,6 @@
 </script>
 
 <script lang="ts">
-    import {format_dash_case} from "@svelte-in-motion/utilities";
     import type {TypeLiteral, TypeObjectLiteral} from "@svelte-in-motion/type";
     import {metaAnnotation} from "@svelte-in-motion/type";
 
@@ -89,8 +88,6 @@
     if (type.kind !== ReflectionKind.objectLiteral) {
         throw new TypeError("bad attribute 'FormRender.type' (expected interface)");
     }
-
-    const class_identifier = format_dash_case(type.typeName!);
 
     const signatures = type.types.filter(
         (type) => type.kind === ReflectionKind.propertySignature
@@ -124,7 +121,6 @@
     {#if Component}
         <svelte:component
             this={Component}
-            identifier="{class_identifier}-{format_dash_case(signature.name.toString())}"
             type={signature.type}
             {signature}
             bind:value={model[signature.name.toString()]}
