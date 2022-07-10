@@ -163,7 +163,7 @@ export function prompts(): IPromptsStore {
                 Component: AboutPrompt,
 
                 is_dismissible: true,
-                title: "prompts-about-title",
+                title: "prompts-about-label",
             });
         },
 

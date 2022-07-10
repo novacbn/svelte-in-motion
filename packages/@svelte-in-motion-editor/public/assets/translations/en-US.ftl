@@ -47,7 +47,7 @@ errors-no_preview_user_error-description = No Preview is currently loaded.
 errors-no_workspace_user_error-label= Error
 errors-no_workspace_user_error-description = No Workspace is currently loaded.
 
-prompts-about-title = About Svelte-In-Motion
+prompts-about-label = About Svelte-In-Motion
 prompts-about-version-label = VERSION
 prompts-about-source-label = SOURCE
 prompts-about-dismiss-label = Dismiss
