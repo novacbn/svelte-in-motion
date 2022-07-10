@@ -45,7 +45,6 @@ export type {
 } from "@svelte-in-motion/editor/src/lib/stores/notifications";
 export type {
     IAlertPromptProps,
-    ICommonPromptProps,
     IConfirmPromptProps,
     ILoaderPromptProps,
     IFormPromptEvent,
