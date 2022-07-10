@@ -47,15 +47,15 @@ errors-no_preview_user_error-description = No Preview is currently loaded.
 errors-no_workspace_user_error-label= Error
 errors-no_workspace_user_error-description = No Workspace is currently loaded.
 
-ui-prompt-about-title = About Svelte-In-Motion
-ui-prompt-about-version-label = VERSION
-ui-prompt-about-source-label = SOURCE
-ui-prompt-about-dismiss-label = Dismiss
+prompts-about-title = About Svelte-In-Motion
+prompts-about-version-label = VERSION
+prompts-about-source-label = SOURCE
+prompts-about-dismiss-label = Dismiss
 
-ui-prompt-alert-dismiss-label = Dismiss
+prompts-alert-dismiss-label = Dismiss
 
-ui-prompt-confirm-dismiss-label = Cancel
-ui-prompt-confirm-submit-label = Yes
+prompts-confirm-dismiss-label = Cancel
+prompts-confirm-submit-label = Yes
 
 ui-prompt-form-dismiss-label = Dismiss
 ui-prompt-form-submit-label = Submit
