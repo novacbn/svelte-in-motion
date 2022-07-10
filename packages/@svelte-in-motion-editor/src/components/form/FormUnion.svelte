@@ -35,8 +35,6 @@
             type.literal as string
         )}-label`;
 
-        console.log({type_identifier});
-
         if ($translations.has(type_identifier)) {
             return {
                 text: $translations.format(type_identifier),
