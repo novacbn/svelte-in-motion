@@ -40,11 +40,11 @@ commands-workspace-prompt-open_recent-label = Workspaces: Open Recent
 templates-welcome-label = Welcome to Svelte-In-Motion
 templates-welcome-description = Simple welcome message template to introduce syntax and concepts.
 
-errors-no_editor_user_error-label= Error
+errors-no_editor_user_error-label = Error
 errors-no_editor_user_error-description = No File is currently loaded.
-errors-no_preview_user_error-label= Error
+errors-no_preview_user_error-label = Error
 errors-no_preview_user_error-description = No Preview is currently loaded.
-errors-no_workspace_user_error-label= Error
+errors-no_workspace_user_error-label = Error
 errors-no_workspace_user_error-description = No Workspace is currently loaded.
 
 prompts-about-label = About Svelte-In-Motion
@@ -56,9 +56,6 @@ prompts-alert-dismiss-label = Dismiss
 
 prompts-confirm-dismiss-label = Cancel
 prompts-confirm-submit-label = Yes
-
-ui-prompt-form-dismiss-label = Dismiss
-ui-prompt-form-submit-label = Submit
 
 prompts-frames_export-label = Export Frames
 prompts-frames_export-start-label = Starting Frame
