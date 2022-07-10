@@ -25,12 +25,12 @@ export interface ICommonPromptProps {
     title?: string;
 }
 
-export interface IAlertPromptProps extends Omit<ICommonPromptProps, "is_dismissible"> {
-    text: string;
+export interface IAlertPromptProps {
+    namespace: string;
 }
 
-export interface IConfirmPromptProps extends ICommonPromptProps {
-    text: string;
+export interface IConfirmPromptProps {
+    namespace: string;
 }
 
 export interface IFormPromptEvent<T> {
@@ -172,7 +172,7 @@ export function prompts(): IPromptsStore {
                 Component: AlertPrompt,
 
                 is_dismissible: true,
-                title: props.title,
+                title: `prompts-${props.namespace}-label`,
                 props,
             });
         },
@@ -181,8 +181,8 @@ export function prompts(): IPromptsStore {
             return prompt<IConfirmPromptProps, void>({
                 Component: ConfirmPrompt,
 
-                is_dismissible: props.is_dismissible,
-                title: props.title,
+                is_dismissible: true,
+                title: `prompts-${props.namespace}-label`,
                 props,
             });
         },

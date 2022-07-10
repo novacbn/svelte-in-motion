@@ -14,11 +14,11 @@
         reject: CustomEvent<IPromptRejectEvent>;
     };
 
-    const {prompts, translations} = CONTEXT_APP.get()!;
+    const {translations} = CONTEXT_APP.get()!;
 
     const dispatch = createEventDispatcher();
 
-    export let text: string;
+    export let namespace: string;
 
     function on_dismiss_click(event: MouseEvent): void {
         dispatch("reject", {
@@ -33,7 +33,7 @@
 
 <Card.Section>
     <Text>
-        {$translations.format(text)}
+        {$translations.format(`prompts-${namespace}-description`)}
     </Text>
 </Card.Section>
 
