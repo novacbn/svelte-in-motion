@@ -37,6 +37,8 @@ export interface IFormPromptProps<T> {
 
     model?: Partial<ClassProperties<T>>;
 
+    namespace: string;
+
     type: Type;
 }
 
