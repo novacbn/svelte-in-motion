@@ -62,21 +62,21 @@
         padding_x="massive"
     >
         <Heading>
-            {$translations.format("ui-view-dashboard-brand-label")}
+            {$translations.format("view-dashboard-brand-label")}
         </Heading>
 
         <div>
             <Heading is="h2" margin_bottom="medium">
-                {$translations.format("ui-view-dashboard-start-label")}
+                {$translations.format("view-dashboard-start-label")}
             </Heading>
 
             <Stack.Container alignment_x="left">
                 <Anchor href="#" palette="accent" on:click={on_new_click}>
-                    {$translations.format("ui-view-dashboard-new_workspace-label")}
+                    {$translations.format("view-dashboard-new_workspace-label")}
                 </Anchor>
 
                 <Anchor href="#" palette="accent" on:click={on_template_click}>
-                    {$translations.format("ui-view-dashboard-new_workspace_from_template-label")}
+                    {$translations.format("view-dashboard-new_workspace_from_template-label")}
                 </Anchor>
             </Stack.Container>
         </div>
@@ -84,7 +84,7 @@
         {#if recent_workspaces.length > 0}
             <div>
                 <Heading is="h2" margin_bottom="medium">
-                    {$translations.format("ui-view-dashboard-recent-label")}
+                    {$translations.format("view-dashboard-recent-label")}
                 </Heading>
 
                 <Stack.Container max_width="content-max">
@@ -115,7 +115,7 @@
                             max_width="content-max"
                             on:click={on_recent_click}
                         >
-                            {$translations.format("ui-view-dashboard-more-label")}
+                            {$translations.format("view-dashboard-more-label")}
                         </Anchor>
                     {/if}
                 </Stack.Container>

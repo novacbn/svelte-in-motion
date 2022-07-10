@@ -47,14 +47,6 @@ errors-no_preview_user_error-description = No Preview is currently loaded.
 errors-no_workspace_user_error-label= Error
 errors-no_workspace_user_error-description = No Workspace is currently loaded.
 
-ui-view-dashboard-brand-label = Svelte-In-Motion
-ui-view-dashboard-start-label = Start
-ui-view-dashboard-new_workspace-label = New Workspace
-ui-view-dashboard-new_workspace_from_template-label = New Workspace from Template
-ui-view-dashboard-open_recent_workspace-label = Open Recent Workspace
-ui-view-dashboard-recent-label = Recent
-ui-view-dashboard-more-label = ...More
-
 ui-prompt-about-title = About Svelte-In-Motion
 ui-prompt-about-version-label = VERSION
 ui-prompt-about-source-label = SOURCE
@@ -91,3 +83,11 @@ ui-prompt-form-video-export-pixel_format-yuv420p-label = yuv420p
 ui-prompt-form-workspace-new-title = New Workspace
 ui-prompt-form-workspace-new-name-label = Name
 ui-prompt-form-workspace-new-name-description = Enter an alphanumeric name for the Workspace.
+
+view-dashboard-brand-label = Svelte-In-Motion
+view-dashboard-start-label = Start
+view-dashboard-new_workspace-label = New Workspace
+view-dashboard-new_workspace_from_template-label = New Workspace from Template
+view-dashboard-open_recent_workspace-label = Open Recent Workspace
+view-dashboard-recent-label = Recent
+view-dashboard-more-label = ...More
