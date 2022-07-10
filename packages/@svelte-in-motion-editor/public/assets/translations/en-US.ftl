@@ -37,6 +37,8 @@ commands-workspace-prompt-new-label = Workspaces: New
 commands-workspace-prompt-open_recent-description = Open a Workspace that was recently accessed.
 commands-workspace-prompt-open_recent-label = Workspaces: Open Recent
 
+templates-samples-interpolation-label = Sample: Interpolation
+templates-samples-interpolation-description = Showcase of the Interpolation API
 templates-samples-transitions-label = Sample: Transitions
 templates-samples-transitions-description = Showcase of the Transitions Components
 templates-welcome-label = Welcome to Svelte-In-Motion

@@ -1,5 +1,51 @@
 import {define_template} from "@svelte-in-motion/extension";
 
+export const TEMPLATE_SAMPLE_INTERPOLATION = define_template({
+    identifier: "samples.interpolation",
+
+    paths: {
+        ".svelte-in-motion.json": `
+{
+    "framerate": 60,
+    "height": 1080,
+    "maxframes": 120,
+    "width": 1920
+}       
+`,
+
+        "Main.svelte": `
+<script>
+  import { CONTEXT_STATE } from "@svelte-in-motion/core";
+
+  const opacity = CONTEXT_STATE.get({
+    duration: 0.25,
+  
+    start: 0.65,
+    end: {
+      extrapolate: "wrap",
+      value: 1
+    },
+  });
+</script>
+
+<div style="--opacity:{$opacity};" />
+
+<style>
+  div {
+    display: grid;
+
+    background: skyblue;
+
+    width: 100vw;
+    height: 100vh;
+
+    opacity: var(--opacity);
+  }
+</style>
+`,
+    },
+});
+
 export const TEMPLATE_SAMPLE_TRANSITIONS = define_template({
     identifier: "samples.transitions",
 
