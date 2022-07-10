@@ -1,12 +1,20 @@
 import type {IAppContext, IKeybindEvent} from "@svelte-in-motion/extension";
 import {define_extension} from "@svelte-in-motion/extension";
 
+import {NoEditorUserError, NoWorkspaceUserError} from "../util/errors";
+
 export const EXTENSION_EDITOR = define_extension({
     identifier: "dev.nbn.sim.editor",
     is_builtin: true,
 
     on_activate(app: IAppContext) {
         const {commands, keybinds} = app;
+
+        commands.push({
+            identifier: "editor.close",
+            is_visible: () => !!app.workspace?.editor,
+            on_execute: this.command_close.bind(this),
+        });
 
         commands.push({
             identifier: "editor.ui.file_tree.toggle",
@@ -31,6 +39,16 @@ export const EXTENSION_EDITOR = define_extension({
             binds: [["control", "alt", "s"]],
             on_bind: this.keybind_ui_script_toggle.bind(this),
         });
+    },
+
+    command_close(app: IAppContext) {
+        const {workspace} = app;
+        if (!workspace) throw new NoWorkspaceUserError();
+
+        const {editor} = workspace;
+        if (!editor) throw new NoEditorUserError();
+
+        location.hash = `#/workspace/${workspace.identifier}`;
     },
 
     command_ui_file_tree_toggle(app: IAppContext) {
