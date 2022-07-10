@@ -3,7 +3,7 @@ import {get} from "svelte/store";
 import {WorkspacesItemConfiguration} from "@svelte-in-motion/configuration";
 import type {IAppContext, IKeybindEvent, ISearchPromptEvent} from "@svelte-in-motion/extension";
 import {define_extension} from "@svelte-in-motion/extension";
-import {Default, Description, Label, MinLength, Pattern} from "@svelte-in-motion/type";
+import {Default, MinLength, Pattern} from "@svelte-in-motion/type";
 import {typeOf} from "@svelte-in-motion/type";
 import {PromptDismissError} from "@svelte-in-motion/utilities";
 
@@ -11,13 +11,8 @@ import {NoWorkspaceUserError} from "../util/errors";
 
 const EXPRESSION_NAME = /^[\w ]+$/;
 
-interface IWorkspaceNewConfiguration {
-    name: string &
-        Default<""> &
-        MinLength<0> &
-        Pattern<typeof EXPRESSION_NAME> &
-        Label<"ui-prompt-form-workspace-new-name-label"> &
-        Description<"ui-prompt-form-workspace-new-name-description">;
+interface WorkspaceNew {
+    name: string & Default<""> & MinLength<0> & Pattern<typeof EXPRESSION_NAME>;
 }
 
 async function render_template(
@@ -105,14 +100,13 @@ export const EXTENSION_WORKSPACE = define_extension({
     async command_prompt_new(app: IAppContext) {
         const {prompts} = app;
 
-        let result: IWorkspaceNewConfiguration;
+        let result: WorkspaceNew;
         try {
             result = (
-                await prompts.prompt_form<IWorkspaceNewConfiguration>({
+                await prompts.prompt_form<WorkspaceNew>({
                     is_dismissible: true,
-                    title: "ui-prompt-form-workspace-new-title",
 
-                    type: typeOf<IWorkspaceNewConfiguration>(),
+                    type: typeOf<WorkspaceNew>(),
                 })
             ).model;
         } catch (err) {
@@ -170,14 +164,13 @@ export const EXTENSION_WORKSPACE = define_extension({
             throw err;
         }
 
-        let form_result: IWorkspaceNewConfiguration;
+        let form_result: WorkspaceNew;
         try {
             form_result = (
-                await prompts.prompt_form<IWorkspaceNewConfiguration>({
+                await prompts.prompt_form<WorkspaceNew>({
                     is_dismissible: true,
-                    title: "ui-prompt-form-workspace-new-title",
 
-                    type: typeOf<IWorkspaceNewConfiguration>(),
+                    type: typeOf<WorkspaceNew>(),
                 })
             ).model;
         } catch (err) {
@@ -193,7 +186,6 @@ export const EXTENSION_WORKSPACE = define_extension({
                 tokens = (
                     await prompts.prompt_form<any>({
                         is_dismissible: true,
-                        title: `templates-${template.identifier}-label`,
 
                         type: template.type,
                     })

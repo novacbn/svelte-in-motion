@@ -10,6 +10,7 @@ import {writable} from "svelte/store";
 
 import type {ClassProperties, Type} from "@svelte-in-motion/type";
 import type {IEvent} from "@svelte-in-motion/utilities";
+import {format_snake_case} from "@svelte-in-motion/utilities";
 import {event} from "@svelte-in-motion/utilities";
 
 import AboutPrompt from "../../components/prompts/AboutPrompt.svelte";
@@ -19,25 +20,21 @@ import FormPrompt from "../../components/prompts/FormPrompt.svelte";
 import LoaderPrompt from "../../components/prompts/LoaderPrompt.svelte";
 import SearchPrompt from "../../components/prompts/SearchPrompt.svelte";
 
-export interface ICommonPromptProps {
-    is_dismissible?: boolean;
-
-    title?: string;
+export interface IAlertPromptProps {
+    namespace: string;
 }
 
-export interface IAlertPromptProps extends Omit<ICommonPromptProps, "is_dismissible"> {
-    text: string;
-}
-
-export interface IConfirmPromptProps extends ICommonPromptProps {
-    text: string;
+export interface IConfirmPromptProps {
+    namespace: string;
 }
 
 export interface IFormPromptEvent<T> {
     model: ClassProperties<T>;
 }
 
-export interface IFormPromptProps<T> extends ICommonPromptProps {
+export interface IFormPromptProps<T> {
+    is_dismissible?: boolean;
+
     model?: Partial<ClassProperties<T>>;
 
     type: Type;
@@ -51,7 +48,7 @@ export interface ISearchPromptEvent {
     identifier: string;
 }
 
-export interface ISearchPromptProps extends ICommonPromptProps {
+export interface ISearchPromptProps {
     badge?: string;
 
     description?: string;
@@ -59,6 +56,8 @@ export interface ISearchPromptProps extends ICommonPromptProps {
     documents: Record<string, string | undefined>[];
 
     identifier: string;
+
+    is_dismissible?: boolean;
 
     index: string[];
 
@@ -79,7 +78,7 @@ export interface IPromptRejectEvent {
     error: Error;
 }
 
-export interface IPrompt<T extends Record<string, any>> extends ICommonPromptProps {
+export interface IPrompt<T extends Record<string, any>> {
     Component: typeof SvelteComponent;
 
     alignment_x?: PROPERTY_ALIGNMENT_X_BREAKPOINT;
@@ -92,6 +91,10 @@ export interface IPrompt<T extends Record<string, any>> extends ICommonPromptPro
 
     height?: PROPERTY_SIZE_BREAKPOINT;
     width?: PROPERTY_SIZE_BREAKPOINT;
+
+    is_dismissible?: boolean;
+
+    title?: string;
 
     props?: T;
 }
@@ -163,7 +166,7 @@ export function prompts(): IPromptsStore {
                 Component: AboutPrompt,
 
                 is_dismissible: true,
-                title: "ui-prompt-about-title",
+                title: "prompts-about-label",
             });
         },
 
@@ -172,7 +175,7 @@ export function prompts(): IPromptsStore {
                 Component: AlertPrompt,
 
                 is_dismissible: true,
-                title: props.title,
+                title: `prompts-${props.namespace}-label`,
                 props,
             });
         },
@@ -181,8 +184,8 @@ export function prompts(): IPromptsStore {
             return prompt<IConfirmPromptProps, void>({
                 Component: ConfirmPrompt,
 
-                is_dismissible: props.is_dismissible,
-                title: props.title,
+                is_dismissible: true,
+                title: `prompts-${props.namespace}-label`,
                 props,
             });
         },
@@ -192,7 +195,7 @@ export function prompts(): IPromptsStore {
                 Component: FormPrompt,
 
                 is_dismissible: props.is_dismissible,
-                title: props.title,
+                title: `prompts-${format_snake_case(props.type.typeName!)}-label`,
                 props,
             });
         },
@@ -213,7 +216,6 @@ export function prompts(): IPromptsStore {
                 width: "prose",
 
                 is_dismissible: props.is_dismissible,
-                title: props.title,
                 props,
             });
         },

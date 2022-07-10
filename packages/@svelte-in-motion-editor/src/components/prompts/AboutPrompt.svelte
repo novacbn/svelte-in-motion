@@ -28,7 +28,7 @@
 <Card.Section>
     <Text>
         <Text is="strong">
-            {$translations.format("ui-prompt-about-version-label")}
+            {$translations.format("prompts-about-version-label")}
         </Text>
 
         <Code>v{APPLICATION_VERSION}</Code>
@@ -36,7 +36,7 @@
 
     <Text>
         <Text is="strong">
-            {$translations.format("ui-prompt-about-source-label")}
+            {$translations.format("prompts-about-source-label")}
         </Text>
 
         <Anchor
@@ -52,6 +52,6 @@
 
 <Card.Footer alignment_x="stretch">
     <Button sizing="nano" variation="clear" on:click={on_dismiss_click}>
-        {$translations.format("ui-prompt-about-dismiss-label")}
+        {$translations.format("prompts-about-dismiss-label")}
     </Button>
 </Card.Footer>

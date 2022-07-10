@@ -14,11 +14,11 @@
         reject: CustomEvent<IPromptRejectEvent>;
     };
 
-    const {prompts, translations} = CONTEXT_APP.get()!;
+    const {translations} = CONTEXT_APP.get()!;
 
     const dispatch = createEventDispatcher();
 
-    export let text: string;
+    export let namespace: string;
 
     function on_dismiss_click(event: MouseEvent): void {
         dispatch("reject", {
@@ -33,18 +33,16 @@
 
 <Card.Section>
     <Text>
-        {$translations.format(text)}
+        {$translations.format(`prompts-${namespace}-description`)}
     </Text>
 </Card.Section>
 
 <Card.Footer alignment_x="stretch">
-    {#if $prompts?.is_dismissible}
-        <Button sizing="nano" variation="clear" on:click={on_dismiss_click}>
-            {$translations.format("ui-prompt-confirm-dismiss-label")}
-        </Button>
-    {/if}
+    <Button sizing="nano" variation="clear" on:click={on_dismiss_click}>
+        {$translations.format("prompts-confirm-dismiss-label")}
+    </Button>
 
     <Button sizing="nano" variation="clear" palette="affirmative" on:click={on_submit_click}>
-        {$translations.format("ui-prompt-confirm-submit-label")}
+        {$translations.format("prompts-confirm-submit-label")}
     </Button>
 </Card.Footer>

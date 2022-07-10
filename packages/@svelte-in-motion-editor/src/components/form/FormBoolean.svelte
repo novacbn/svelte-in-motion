@@ -2,32 +2,36 @@
     import {Form, Spacer, Stack, Switch} from "@kahi-ui/framework";
 
     import type {TypeBoolean, TypePropertySignature} from "@svelte-in-motion/type";
-    import {metaAnnotation, resolveMetaLiteral} from "@svelte-in-motion/type";
+    import {format_dash_case, format_snake_case} from "@svelte-in-motion/utilities";
 
     import {CONTEXT_APP} from "../../lib/app";
 
     const {translations} = CONTEXT_APP.get()!;
 
-    export let identifier: string;
     export let type: TypeBoolean;
     export let signature: TypePropertySignature;
     export let value: boolean = false;
 
-    $: meta = metaAnnotation.getAnnotations(type);
+    $: form_identifier = `prompts-${format_dash_case(
+        signature.parent.typeName!
+    )}-${format_dash_case(signature.name.toString())}`;
+    $: translation_identifier = `prompts-${format_snake_case(
+        signature.parent.typeName!
+    )}-${format_snake_case(signature.name.toString())}`;
 
-    $: description = resolveMetaLiteral<string>(meta, "description");
-    $: label = resolveMetaLiteral<string>(meta, "label");
+    $: description = `${translation_identifier}-description`;
+    $: label = `${translation_identifier}-label`;
 </script>
 
-<Form.Group logic_id={identifier}>
+<Form.Group logic_id={form_identifier}>
     <Stack.Container orientation="horizontal" alignment_y="center" spacing="small">
         {#if description || label}
             <Stack.Container spacing="tiny">
-                {#if label}
+                {#if $translations.has(label)}
                     <Form.Label>{$translations.format(label)}</Form.Label>
                 {/if}
 
-                {#if description}
+                {#if $translations.has(description)}
                     <Form.HelpText>
                         {$translations.format(description)}
                     </Form.HelpText>

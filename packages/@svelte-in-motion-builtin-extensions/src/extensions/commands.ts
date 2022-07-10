@@ -112,7 +112,6 @@ export const EXTENSION_COMMANDS = define_extension({
                 args = (
                     await prompts.prompt_form<any>({
                         is_dismissible: true,
-                        title: `commands-${command.identifier}-label`,
 
                         type: command.type,
                     })

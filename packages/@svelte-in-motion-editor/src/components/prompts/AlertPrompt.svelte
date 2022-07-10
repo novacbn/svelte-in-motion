@@ -16,7 +16,7 @@
 
     const dispatch = createEventDispatcher();
 
-    export let text: string;
+    export let namespace: string;
 
     function on_dismiss_click(event: MouseEvent): void {
         dispatch("reject", {
@@ -27,12 +27,12 @@
 
 <Card.Section>
     <Text>
-        {$translations.format(text)}
+        {$translations.format(`prompts-${namespace}-description`)}
     </Text>
 </Card.Section>
 
 <Card.Footer alignment_x="stretch">
     <Button sizing="nano" variation="clear" on:click={on_dismiss_click}>
-        {$translations.format("ui-prompt-alert-dismiss-label")}
+        {$translations.format("prompts-alert-dismiss-label")}
     </Button>
 </Card.Footer>

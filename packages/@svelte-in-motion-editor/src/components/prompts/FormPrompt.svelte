@@ -4,7 +4,7 @@
 
     import type {TypeObjectLiteral} from "@svelte-in-motion/type";
     import {validates} from "@svelte-in-motion/type";
-    import {PromptDismissError} from "@svelte-in-motion/utilities";
+    import {PromptDismissError, format_snake_case} from "@svelte-in-motion/utilities";
 
     import type {IFormPromptEvent, IPromptRejectEvent} from "../../lib/stores/prompts";
 
@@ -40,6 +40,8 @@
         });
     }
 
+    $: translation_identifier = `prompts-${format_snake_case(type.typeName!)}`;
+
     $: is_valid = validates(model, type);
 </script>
 
@@ -56,7 +58,7 @@
 <Card.Footer alignment_x="stretch">
     {#if $prompts?.is_dismissible}
         <Button sizing="nano" variation="clear" on:click={on_dismiss_click}>
-            {$translations.format("ui-prompt-form-dismiss-label")}
+            {$translations.format(`${translation_identifier}-dismiss-label`)}
         </Button>
     {/if}
 
@@ -67,6 +69,6 @@
         disabled={!is_valid}
         on:click={on_submit}
     >
-        {$translations.format("ui-prompt-form-submit-label")}
+        {$translations.format(`${translation_identifier}-submit-label`)}
     </Button>
 </Card.Footer>
