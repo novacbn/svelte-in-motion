@@ -41,7 +41,7 @@
         });
     }
 
-    $: translation_identifier = `prompts-${format_snake_case(type.typeName!)}`;
+    $: translation_identifier = `prompts-${format_snake_case(namespace)}`;
 
     $: is_valid = validates(model, type);
 </script>
