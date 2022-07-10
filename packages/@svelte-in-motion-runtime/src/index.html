@@ -34,6 +34,7 @@
             import * as sim_animations from "@svelte-in-motion/animations";
             import * as sim_core from "@svelte-in-motion/core";
             import * as sim_screenshot from "@svelte-in-motion/screenshot";
+            import * as sim_utilities from "@svelte-in-motion/utilities";
 
             window.module = {};
             window.module.exports = {};
@@ -61,6 +62,8 @@
                         return sim_core;
                     case "@svelte-in-motion/screenshot":
                         return sim_screenshot;
+                    case "@svelte-in-motion/utilities":
+                        return sim_utilities;
                 }
 
                 throw new ReferenceError(
