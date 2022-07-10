@@ -3,54 +3,29 @@ import {get} from "svelte/store";
 import type {IAppContext, IKeybindEvent} from "@svelte-in-motion/extension";
 import {define_extension} from "@svelte-in-motion/extension";
 import {ICodecNames, IPixelFormatNames} from "@svelte-in-motion/encoding";
-import {Default, Description, Label, Minimum, Namespace, Placeholder} from "@svelte-in-motion/type";
+import {Default, Minimum} from "@svelte-in-motion/type";
 import {typeOf} from "@svelte-in-motion/type";
 import {PromptDismissError, download_blob, download_buffer} from "@svelte-in-motion/utilities";
 
 import {NoEditorUserError, NoPreviewUserError, NoWorkspaceUserError} from "../util/errors";
 import {zip_frames} from "../util/io";
 
-interface IFramesExportConfiguration {
-    start: number &
-        Default<0> &
-        Minimum<0> &
-        Label<"ui-prompt-form-frames-export-start-label"> &
-        Description<"ui-prompt-form-frames-export-start-description">;
+interface FramesExport {
+    start: number & Default<0> & Minimum<0>;
 
-    end: number &
-        Default<0> &
-        Minimum<0> &
-        Label<"ui-prompt-form-frames-export-end-label"> &
-        Description<"ui-prompt-form-frames-export-end-description">;
+    end: number & Default<0> & Minimum<0>;
 }
 
-interface IVideoExportConfiguration {
-    start: number &
-        Default<0> &
-        Minimum<0> &
-        Label<"ui-prompt-form-video-export-start-label"> &
-        Description<"ui-prompt-form-video-export-start-description">;
+interface VideoExport {
+    start: number & Default<0> & Minimum<0>;
 
-    end: number &
-        Default<0> &
-        Minimum<0> &
-        Label<"ui-prompt-form-video-export-end-label"> &
-        Description<"ui-prompt-form-video-export-end-description">;
+    end: number & Default<0> & Minimum<0>;
 
-    codec: ICodecNames &
-        Label<"ui-prompt-form-video-export-codec-label"> &
-        Placeholder<"ui-prompt-form-video-export-codec-placeholder"> &
-        Namespace<"ui-prompt-form-video-export-codec-${identifier}-label">;
+    codec: ICodecNames;
 
-    crf: number &
-        Minimum<0> &
-        Label<"ui-prompt-form-video-export-crf-label"> &
-        Description<"ui-prompt-form-video-export-crf-description">;
+    crf: number & Minimum<0>;
 
-    pixel_format: IPixelFormatNames &
-        Label<"ui-prompt-form-video-export-pixel_format-label"> &
-        Placeholder<"ui-prompt-form-video-export-pixel_format-placeholder"> &
-        Namespace<"ui-prompt-form-video-export-pixel_format-${identifier}-label">;
+    pixel_format: IPixelFormatNames;
 }
 
 export const EXTENSION_EXPORT = define_extension({
@@ -97,14 +72,13 @@ export const EXTENSION_EXPORT = define_extension({
 
         const {maxframes} = get(configuration);
 
-        let result: IFramesExportConfiguration;
+        let result: FramesExport;
         try {
             result = (
-                await prompts.prompt_form<IFramesExportConfiguration>({
+                await prompts.prompt_form<FramesExport>({
                     is_dismissible: true,
-                    title: "ui-prompt-form-frames-export-title",
 
-                    type: typeOf<IFramesExportConfiguration>(),
+                    type: typeOf<FramesExport>(),
                     model: {
                         // TODO: Make prompt configuration dynamic to support this as runtime validation
                         end: maxframes as number,
@@ -172,14 +146,13 @@ export const EXTENSION_EXPORT = define_extension({
             default_codec
         );
 
-        let result: IVideoExportConfiguration;
+        let result: VideoExport;
         try {
             result = (
-                await prompts.prompt_form<IVideoExportConfiguration>({
+                await prompts.prompt_form<VideoExport>({
                     is_dismissible: true,
-                    title: "ui-prompt-form-video-export-title",
 
-                    type: typeOf<IVideoExportConfiguration>(),
+                    type: typeOf<VideoExport>(),
                     model: {
                         // TODO: Make prompt configuration dynamic to support this as runtime validation
                         end: maxframes as number,
