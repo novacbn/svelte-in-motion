@@ -5,7 +5,12 @@ import {define_extension} from "@svelte-in-motion/extension";
 import {ICodecNames, IPixelFormatNames} from "@svelte-in-motion/encoding";
 import {Default, Minimum} from "@svelte-in-motion/type";
 import {typeOf} from "@svelte-in-motion/type";
-import {PromptDismissError, download_blob, download_buffer} from "@svelte-in-motion/utilities";
+import {
+    PromptDismissError,
+    download_blob,
+    download_buffer,
+    format_slug,
+} from "@svelte-in-motion/utilities";
 
 import {NoEditorUserError, NoPreviewUserError, NoWorkspaceUserError} from "../util/errors";
 import {zip_frames} from "../util/io";
@@ -65,7 +70,7 @@ export const EXTENSION_EXPORT = define_extension({
 
         if (!workspace) throw new NoWorkspaceUserError();
 
-        const {configuration, editor, preview} = workspace;
+        const {configuration, editor, metadata, preview} = workspace;
 
         if (!editor) throw new NoEditorUserError();
         if (!preview) throw new NoPreviewUserError();
@@ -120,9 +125,13 @@ export const EXTENSION_EXPORT = define_extension({
             is_dismissible: true,
         });
 
+        const $metadata = get(metadata);
+
         download_blob(
             zip,
-            `svelte-in-motion.frames.${result.start}-${result.end}.${file_path}.zip`
+            `svelte-in-motion.frames.${result.start}-${result.end}.${format_slug(
+                $metadata.name
+            )}.zip`
         );
     },
 
@@ -131,7 +140,7 @@ export const EXTENSION_EXPORT = define_extension({
 
         if (!workspace) throw new NoWorkspaceUserError();
 
-        const {configuration, editor, preview} = workspace;
+        const {configuration, editor, metadata, preview} = workspace;
 
         if (!editor) throw new NoEditorUserError();
         if (!preview) throw new NoPreviewUserError();
@@ -200,9 +209,13 @@ export const EXTENSION_EXPORT = define_extension({
 
         // HACK: / TODO: Update later to support variable video container format
 
+        const $metadata = get(metadata);
+
         download_buffer(
             video,
-            `svelte-in-motion.video.${result.start}-${result.end}.${file_path}.webm`,
+            `svelte-in-motion.video.${result.start}-${result.end}.${format_slug(
+                $metadata.name
+            )}.webm`,
             `video/webm`
         );
     },
