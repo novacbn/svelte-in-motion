@@ -1,7 +1,7 @@
 import {get} from "svelte/store";
 
 import type {ICollectionItem, ICollectionStore} from "@svelte-in-motion/utilities";
-import {collection} from "@svelte-in-motion/utilities";
+import {UserError, collection, format_snake_case} from "@svelte-in-motion/utilities";
 
 import type {IAppContext} from "../app";
 
@@ -26,15 +26,15 @@ export interface IKeybindItem extends ICollectionItem {
 
     repeat_throttle?: number;
 
-    on_bind: (app: IAppContext, event: IKeybindEvent) => void;
+    on_bind: (app: IAppContext, event: IKeybindEvent) => void | Promise<void>;
 }
 
 export interface IKeybindsStore extends ICollectionStore<IKeybindItem> {
-    execute: (event: KeyboardEvent, is_down: boolean) => void;
+    execute: (event: KeyboardEvent, is_down: boolean) => Promise<void>;
 }
 
 export function keybinds(app: IAppContext): IKeybindsStore {
-    const {prompts} = app;
+    const {notifications, prompts, translations} = app;
 
     const store = collection<IKeybindItem>();
     const {find, has, push, subscribe, remove, update, watch} = store;
@@ -44,7 +44,7 @@ export function keybinds(app: IAppContext): IKeybindsStore {
     const timestamp_lookup: Map<string, number> = new Map();
 
     return {
-        execute(event, is_down): void {
+        async execute(event, is_down) {
             const {repeat} = event;
             const key = event.key.toLowerCase();
 
@@ -97,10 +97,38 @@ export function keybinds(app: IAppContext): IKeybindsStore {
 
                 if (current_active !== previous_active || is_repeating) {
                     if (!is_disabled || (typeof is_disabled === "function" && !is_disabled())) {
-                        item.on_bind(app, {
-                            active: current_active,
-                            repeat,
-                        });
+                        try {
+                            await item.on_bind(app, {
+                                active: current_active,
+                                repeat,
+                            });
+                        } catch (err) {
+                            if (err instanceof UserError) {
+                                const $translations = get(translations);
+                                const translation_identifier = `errors-${format_snake_case(
+                                    err.name
+                                )}`;
+
+                                notifications.push({
+                                    icon: err.icon,
+                                    is_dismissible: true,
+
+                                    header: $translations.format(
+                                        `${translation_identifier}-label`,
+                                        err.tokens
+                                    ),
+
+                                    text: $translations.format(
+                                        `${translation_identifier}-description`,
+                                        err.tokens
+                                    ),
+                                });
+
+                                return;
+                            }
+
+                            throw err;
+                        }
                     }
 
                     if (is_repeating) timestamp_lookup.set(identifier, current_timestamp);

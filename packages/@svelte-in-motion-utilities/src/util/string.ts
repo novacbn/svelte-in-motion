@@ -8,7 +8,10 @@ export function format_camel_case(text: string): string {
 export function format_dash_case(text: string): string {
     return text
         .replace(/([A-Z])/g, (match, character) => "-" + character.toLowerCase())
-        .replace(/(^-)/, "");
+        .replace(/([\s\.])/g, "-")
+        .replace(/([\-\-]+)/g, "-")
+        .replace(/(^\-)/, "")
+        .replace(/(\-$)/, "");
 }
 
 export function format_slug(text: string): string {
@@ -16,6 +19,15 @@ export function format_slug(text: string): string {
 
     const slugger = new GithubSlugger();
     return slugger.slug(text);
+}
+
+export function format_snake_case(text: string): string {
+    return text
+        .replace(/([A-Z])/g, (match, character) => "_" + character.toLowerCase())
+        .replace(/([\s\.])/g, "_")
+        .replace(/([__]+)/g, "_")
+        .replace(/(^_)/, "")
+        .replace(/(_$)/, "");
 }
 
 export function hash_string(text: string): number {

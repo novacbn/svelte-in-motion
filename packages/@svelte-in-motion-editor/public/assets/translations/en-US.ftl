@@ -36,6 +36,13 @@ commands-workspace-prompt-open_recent-label = Workspaces: Open Recent
 templates-welcome-label = Welcome to Svelte-In-Motion
 templates-welcome-description = Simple welcome message template to introduce syntax and concepts.
 
+errors-export_no_editor_user_error-label= Export Error
+errors-export_no_editor_user_error-description = No File is currently loaded.
+errors-export_no_preview_user_error-label= Export Error
+errors-export_no_preview_user_error-description = No Preview is currently loaded.
+errors-export_no_workspace_user_error-label= Export Error
+errors-export_no_workspace_user_error-description = No Workspace is currently loaded.
+
 ui-view-dashboard-brand-label = Svelte-In-Motion
 ui-view-dashboard-start-label = Start
 ui-view-dashboard-new_workspace-label = New Workspace
