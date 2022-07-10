@@ -67,6 +67,7 @@ export async function bundle(options: IBundleOptions): Promise<IBundleError | IB
             external: [
                 "@svelte-in-motion/animations",
                 "@svelte-in-motion/core",
+                "@svelte-in-motion/utilities",
                 "svelte",
                 "svelte/animate",
                 "svelte/easing",
