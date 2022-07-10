@@ -5,13 +5,9 @@ import {define_extension} from "@svelte-in-motion/extension";
 import {ICodecNames, IPixelFormatNames} from "@svelte-in-motion/encoding";
 import {Default, Description, Label, Minimum, Namespace, Placeholder} from "@svelte-in-motion/type";
 import {typeOf} from "@svelte-in-motion/type";
-import {
-    PromptDismissError,
-    UserError,
-    download_blob,
-    download_buffer,
-} from "@svelte-in-motion/utilities";
+import {PromptDismissError, download_blob, download_buffer} from "@svelte-in-motion/utilities";
 
+import {NoEditorUserError, NoPreviewUserError, NoWorkspaceUserError} from "../util/errors";
 import {zip_frames} from "../util/io";
 
 interface IFramesExportConfiguration {
@@ -57,22 +53,6 @@ interface IVideoExportConfiguration {
         Namespace<"ui-prompt-form-video-export-pixel_format-${identifier}-label">;
 }
 
-class ExportUserError extends UserError {
-    name = ExportUserError.name;
-}
-
-class ExportNoEditorUserError extends ExportUserError {
-    name = ExportNoEditorUserError.name;
-}
-
-class ExportNoPreviewUserError extends ExportUserError {
-    name = ExportNoPreviewUserError.name;
-}
-
-class ExportNoWorkspaceUserError extends ExportUserError {
-    name = ExportNoWorkspaceUserError.name;
-}
-
 export const EXTENSION_EXPORT = define_extension({
     identifier: "dev.nbn.sim.export",
     is_builtin: true,
@@ -108,12 +88,12 @@ export const EXTENSION_EXPORT = define_extension({
     async command_prompt_frames(app: IAppContext) {
         const {notifications, prompts, renders, workspace} = app;
 
-        if (!workspace) throw new ExportNoWorkspaceUserError();
+        if (!workspace) throw new NoWorkspaceUserError();
 
         const {configuration, editor, preview} = workspace;
 
-        if (!editor) throw new ExportNoEditorUserError();
-        if (!preview) throw new ExportNoPreviewUserError();
+        if (!editor) throw new NoEditorUserError();
+        if (!preview) throw new NoPreviewUserError();
 
         const {maxframes} = get(configuration);
 
@@ -175,12 +155,12 @@ export const EXTENSION_EXPORT = define_extension({
     async command_prompt_video(app: IAppContext) {
         const {agent, jobs, notifications, prompts, workspace} = app;
 
-        if (!workspace) throw new ExportNoWorkspaceUserError();
+        if (!workspace) throw new NoWorkspaceUserError();
 
         const {configuration, editor, preview} = workspace;
 
-        if (!editor) throw new ExportNoEditorUserError();
-        if (!preview) throw new ExportNoPreviewUserError();
+        if (!editor) throw new NoEditorUserError();
+        if (!preview) throw new NoPreviewUserError();
 
         const {file_path} = editor;
         const $file_path = get(file_path);

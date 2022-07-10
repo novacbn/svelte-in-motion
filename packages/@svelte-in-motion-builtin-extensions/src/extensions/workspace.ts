@@ -7,6 +7,8 @@ import {Default, Description, Label, MinLength, Pattern} from "@svelte-in-motion
 import {typeOf} from "@svelte-in-motion/type";
 import {PromptDismissError} from "@svelte-in-motion/utilities";
 
+import {NoWorkspaceUserError} from "../util/errors";
+
 const EXPRESSION_NAME = /^[\w ]+$/;
 
 interface IWorkspaceNewConfiguration {
@@ -51,6 +53,12 @@ export const EXTENSION_WORKSPACE = define_extension({
         const {commands, keybinds, workspaces} = app;
 
         commands.push({
+            identifier: "workspace.close",
+            is_visible: () => !!app.workspace,
+            on_execute: this.command_close.bind(this),
+        });
+
+        commands.push({
             identifier: "workspace.prompt.new",
             on_execute: this.command_prompt_new.bind(this),
         });
@@ -85,6 +93,13 @@ export const EXTENSION_WORKSPACE = define_extension({
             is_visible: () => get(workspaces).workspaces.length > 0,
             on_bind: this.keybind_prompt_open_recent.bind(this),
         });
+    },
+
+    command_close(app: IAppContext) {
+        const {workspace} = app;
+        if (!workspace) throw new NoWorkspaceUserError();
+
+        location.hash = ``;
     },
 
     async command_prompt_new(app: IAppContext) {
