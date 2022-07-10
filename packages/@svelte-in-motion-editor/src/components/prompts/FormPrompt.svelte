@@ -23,6 +23,7 @@
     const dispatch = createEventDispatcher();
 
     export let model: any;
+    export let namespace: string;
     export let type: TypeObjectLiteral;
 
     function on_dismiss_click(event: MouseEvent): void {
@@ -40,7 +41,7 @@
         });
     }
 
-    $: translation_identifier = `prompts-${format_snake_case(type.typeName!)}`;
+    $: translation_identifier = `prompts-${format_snake_case(namespace)}`;
 
     $: is_valid = validates(model, type);
 </script>
@@ -48,7 +49,7 @@
 <Card.Section>
     <form on:submit={on_submit}>
         <Stack.Container spacing="small">
-            <FormRender {type} bind:model />
+            <FormRender {namespace} {type} bind:model />
         </Stack.Container>
 
         <input type="submit" data-hidden />

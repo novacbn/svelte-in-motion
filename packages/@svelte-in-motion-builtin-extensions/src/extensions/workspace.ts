@@ -106,6 +106,7 @@ export const EXTENSION_WORKSPACE = define_extension({
                 await prompts.prompt_form<WorkspaceNew>({
                     is_dismissible: true,
 
+                    namespace: "workspace_new",
                     type: typeOf<WorkspaceNew>(),
                 })
             ).model;
@@ -170,6 +171,7 @@ export const EXTENSION_WORKSPACE = define_extension({
                 await prompts.prompt_form<WorkspaceNew>({
                     is_dismissible: true,
 
+                    namespace: "workspace_new",
                     type: typeOf<WorkspaceNew>(),
                 })
             ).model;
@@ -187,6 +189,7 @@ export const EXTENSION_WORKSPACE = define_extension({
                     await prompts.prompt_form<any>({
                         is_dismissible: true,
 
+                        namespace: template.identifier,
                         type: template.type,
                     })
                 ).model;

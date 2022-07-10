@@ -113,6 +113,7 @@ export const EXTENSION_COMMANDS = define_extension({
                     await prompts.prompt_form<any>({
                         is_dismissible: true,
 
+                        namespace: command.identifier,
                         type: command.type,
                     })
                 ).model;

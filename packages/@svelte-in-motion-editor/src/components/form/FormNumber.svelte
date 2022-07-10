@@ -13,16 +13,17 @@
 
     const {translations} = CONTEXT_APP.get()!;
 
-    export let type: TypeNumber;
+    export let namespace: string;
     export let signature: TypePropertySignature;
+    export let type: TypeNumber;
     export let value: number = 0;
 
-    $: form_identifier = `prompts-${format_dash_case(
-        signature.parent.typeName!
-    )}-${format_dash_case(signature.name.toString())}`;
-    $: translation_identifier = `prompts-${format_snake_case(
-        signature.parent.typeName!
-    )}-${format_snake_case(signature.name.toString())}`;
+    $: form_identifier = `prompts-${format_dash_case(namespace)}-${format_dash_case(
+        signature.name.toString()
+    )}`;
+    $: translation_identifier = `prompts-${format_snake_case(namespace)}-${format_snake_case(
+        signature.name.toString()
+    )}`;
 
     $: description = `${translation_identifier}-description`;
     $: label = `${translation_identifier}-label`;

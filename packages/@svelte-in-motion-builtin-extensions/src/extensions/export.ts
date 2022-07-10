@@ -83,6 +83,7 @@ export const EXTENSION_EXPORT = define_extension({
                 await prompts.prompt_form<FramesExport>({
                     is_dismissible: true,
 
+                    namespace: "frames_export",
                     type: typeOf<FramesExport>(),
                     model: {
                         // TODO: Make prompt configuration dynamic to support this as runtime validation
@@ -161,6 +162,7 @@ export const EXTENSION_EXPORT = define_extension({
                 await prompts.prompt_form<VideoExport>({
                     is_dismissible: true,
 
+                    namespace: "video_export",
                     type: typeOf<VideoExport>(),
                     model: {
                         // TODO: Make prompt configuration dynamic to support this as runtime validation

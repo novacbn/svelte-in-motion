@@ -37,6 +37,8 @@ export interface IFormPromptProps<T> {
 
     model?: Partial<ClassProperties<T>>;
 
+    namespace: string;
+
     type: Type;
 }
 
@@ -195,7 +197,7 @@ export function prompts(): IPromptsStore {
                 Component: FormPrompt,
 
                 is_dismissible: props.is_dismissible,
-                title: `prompts-${format_snake_case(props.type.typeName!)}-label`,
+                title: `prompts-${format_snake_case(props.namespace)}-label`,
                 props,
             });
         },

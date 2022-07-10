@@ -83,6 +83,7 @@
 
     type IFormModel = Record<string, any>;
 
+    export let namespace: string;
     export let type: IFormType;
 
     if (type.kind !== ReflectionKind.objectLiteral) {
@@ -122,6 +123,7 @@
         <svelte:component
             this={Component}
             type={signature.type}
+            {namespace}
             {signature}
             bind:value={model[signature.name.toString()]}
         />
