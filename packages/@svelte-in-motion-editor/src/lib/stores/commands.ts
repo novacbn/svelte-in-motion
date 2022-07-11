@@ -1,9 +1,7 @@
-import {get} from "svelte/store";
-
 import type {TypeObjectLiteral} from "@svelte-in-motion/type";
 import {validate} from "@svelte-in-motion/type";
 import type {ICollectionItem, ICollectionStore} from "@svelte-in-motion/utilities";
-import {UserError, collection, format_snake_case} from "@svelte-in-motion/utilities";
+import {UserError, collection} from "@svelte-in-motion/utilities";
 
 import type {IAppContext} from "../app";
 
@@ -35,7 +33,7 @@ export interface ICommandsStore
 }
 
 export function commands(app: IAppContext): ICommandsStore {
-    const {notifications, translations} = app;
+    const {errors} = app;
 
     const {find, has, push, subscribe, remove, update, watch} = collection<
         ICommandTypedItem<unknown> | ICommandUntypedItem
@@ -62,20 +60,7 @@ export function commands(app: IAppContext): ICommandsStore {
                 await item.on_execute(app, args);
             } catch (err) {
                 if (err instanceof UserError) {
-                    const $translations = get(translations);
-                    const translation_identifier = `errors-${format_snake_case(err.name)}`;
-
-                    notifications.push({
-                        icon: err.icon,
-                        is_dismissible: true,
-
-                        header: $translations.format(`${translation_identifier}-label`, err.tokens),
-                        text: $translations.format(
-                            `${translation_identifier}-description`,
-                            err.tokens
-                        ),
-                    });
-
+                    errors.push(err);
                     return;
                 }
 

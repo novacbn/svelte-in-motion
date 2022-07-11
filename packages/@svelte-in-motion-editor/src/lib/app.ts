@@ -8,6 +8,8 @@ import type {ICommandsStore} from "./stores/commands";
 import {commands as make_commands_store} from "./stores/commands";
 import type {IEncodesStore} from "./stores/encodes";
 import {encodes as make_encodes_store} from "./stores/encodes";
+import type {IErrorsStore} from "./stores/errors";
+import {errors as make_errors_store} from "./stores/errors";
 import type {IExtensionsStore} from "./stores/extensions";
 import {extensions as make_extensions_store} from "./stores/extensions";
 import type {IGrammarsStore} from "./stores/grammars";
@@ -43,6 +45,8 @@ export interface IAppContext {
     agent: Agent;
 
     commands: ICommandsStore;
+
+    errors: IErrorsStore;
 
     encodes: IEncodesStore;
 
@@ -126,6 +130,7 @@ export async function app(): Promise<IAppContext> {
     app.agent = agent;
     app.storage = STORAGE_USER;
 
+    app.errors = make_errors_store(app);
     app.locale = make_locale_store(app);
     app.translations = make_translations_store(app);
 

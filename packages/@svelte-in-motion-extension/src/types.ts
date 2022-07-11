@@ -41,6 +41,8 @@ export type {
 export type {ILocaleStore} from "@svelte-in-motion/editor/src/lib/stores/locale";
 export type {
     INotificationItem,
+    INotificationTypedItem,
+    INotificationUntypedItem,
     INotificationsStore,
 } from "@svelte-in-motion/editor/src/lib/stores/notifications";
 export type {

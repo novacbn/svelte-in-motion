@@ -6,9 +6,6 @@ import {WorkspaceConfiguration, WorkspacesItemConfiguration} from "@svelte-in-mo
 import type {IDriver} from "@svelte-in-motion/storage";
 import {make_scoped_context} from "@svelte-in-motion/utilities";
 
-import type {IErrorsStore} from "./stores/errors";
-import {errors as make_errors_store} from "./stores/errors";
-
 import {FILE_CONFIGURATION_WORKSPACE} from "./util/storage";
 
 import type {IAppContext} from "./app";
@@ -21,8 +18,6 @@ export interface IWorkspaceContext {
     configuration: IPreloadedConfigurationFileStore<WorkspaceConfiguration>;
 
     editor?: IEditorContext;
-
-    errors: IErrorsStore;
 
     identifier: string;
 
@@ -38,7 +33,7 @@ function is_workspace_prepared(storage: IDriver): Promise<boolean> {
 }
 
 export async function workspace(identifier: string, app: IAppContext): Promise<IWorkspaceContext> {
-    const {notifications, workspaces} = app;
+    const {workspaces} = app;
 
     const metadata = derived(workspaces, ($workspaces) => {
         const workspace = $workspaces.workspaces.find(
@@ -72,11 +67,8 @@ export async function workspace(identifier: string, app: IAppContext): Promise<I
         }
     );
 
-    const errors = make_errors_store(notifications);
-
     return {
         configuration,
-        errors,
         identifier,
         metadata,
         storage,

@@ -6,7 +6,7 @@
 
     import type {INotificationItem} from "../../lib/stores/notifications";
 
-    const {notifications} = CONTEXT_APP.get()!;
+    const {notifications, translations} = CONTEXT_APP.get()!;
 
     function on_dismiss_click(event: MouseEvent, notification: INotificationItem): void {
         notifications.remove("identifier", notification.identifier);
@@ -35,11 +35,16 @@
                 {/if}
 
                 <Tile.Section>
-                    <Tile.Header>{notification.header}</Tile.Header>
+                    {@const description = `${notification.namespace}-description`}
+                    {@const label = `${notification.namespace}-label`}
 
-                    {#if notification.text}
+                    <Tile.Header>
+                        {$translations.format(label, notification.tokens)}
+                    </Tile.Header>
+
+                    {#if $translations.has(description)}
                         <Text>
-                            {notification.text}
+                            {$translations.format(description, notification.tokens)}
                         </Text>
                     {/if}
                 </Tile.Section>
@@ -47,7 +52,7 @@
                 {#if notification.is_dismissible}
                     <Tile.Footer>
                         <Button
-                            palette="negative"
+                            palette={notification.palette === "negative" ? "light" : "negative"}
                             variation="clear"
                             sizing="tiny"
                             on:click={(event) => on_dismiss_click(event, notification)}

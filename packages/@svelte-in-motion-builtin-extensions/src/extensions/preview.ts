@@ -4,6 +4,8 @@ import {get} from "svelte/store";
 import type {IAppContext, IKeybindEvent} from "@svelte-in-motion/extension";
 import {define_extension} from "@svelte-in-motion/extension";
 
+import {NoPreviewUserError, NoWorkspaceUserError} from "../util/errors";
+
 export const EXTENSION_PREVIEW = define_extension({
     identifier: "dev.nbn.sim.preview",
     is_builtin: true,
@@ -101,27 +103,11 @@ export const EXTENSION_PREVIEW = define_extension({
     },
 
     command_playback_frame_next(app: IAppContext) {
-        const {notifications, workspace} = app;
-        if (!workspace) {
-            notifications.push({
-                //icon: X,
-                header: "No workspace is currently loaded",
-                is_dismissible: true,
-            });
-
-            return;
-        }
+        const {workspace} = app;
+        if (!workspace) throw new NoWorkspaceUserError();
 
         const {preview} = workspace;
-        if (!preview) {
-            notifications.push({
-                //icon: X,
-                header: "No preview is currently loaded",
-                is_dismissible: true,
-            });
-
-            return;
-        }
+        if (!preview) throw new NoPreviewUserError();
 
         preview.frame.update(($frame) => {
             const {maxframes} = get(workspace.configuration);
@@ -131,27 +117,11 @@ export const EXTENSION_PREVIEW = define_extension({
     },
 
     command_playback_frame_previous(app: IAppContext) {
-        const {notifications, workspace} = app;
-        if (!workspace) {
-            notifications.push({
-                //icon: X,
-                header: "No workspace is currently loaded",
-                is_dismissible: true,
-            });
-
-            return;
-        }
+        const {workspace} = app;
+        if (!workspace) throw new NoWorkspaceUserError();
 
         const {preview} = workspace;
-        if (!preview) {
-            notifications.push({
-                //icon: X,
-                header: "No preview is currently loaded",
-                is_dismissible: true,
-            });
-
-            return;
-        }
+        if (!preview) throw new NoPreviewUserError();
 
         preview.frame.update(($frame) => {
             return Math.max($frame - 1, 0);
@@ -159,27 +129,11 @@ export const EXTENSION_PREVIEW = define_extension({
     },
 
     command_playback_toggle(app: IAppContext) {
-        const {notifications, workspace} = app;
-        if (!workspace) {
-            notifications.push({
-                //icon: X,
-                header: "No workspace is currently loaded",
-                is_dismissible: true,
-            });
-
-            return;
-        }
+        const {workspace} = app;
+        if (!workspace) throw new NoWorkspaceUserError();
 
         const {preview} = workspace;
-        if (!preview) {
-            notifications.push({
-                //icon: X,
-                header: "No preview is currently loaded",
-                is_dismissible: true,
-            });
-
-            return;
-        }
+        if (!preview) throw new NoPreviewUserError();
 
         preview.playing.update(($playing) => {
             return !$playing;
@@ -187,7 +141,11 @@ export const EXTENSION_PREVIEW = define_extension({
     },
 
     command_ui_checkerboard_toggle(app: IAppContext) {
-        const {preferences} = app;
+        const {preferences, workspace} = app;
+        if (!workspace) throw new NoWorkspaceUserError();
+
+        const {preview} = workspace;
+        if (!preview) throw new NoPreviewUserError();
 
         preferences.update(($preferences) => {
             $preferences.ui.preview.checkerboard.enabled =
@@ -198,7 +156,11 @@ export const EXTENSION_PREVIEW = define_extension({
     },
 
     command_ui_controls_toggle(app: IAppContext) {
-        const {preferences} = app;
+        const {preferences, workspace} = app;
+        if (!workspace) throw new NoWorkspaceUserError();
+
+        const {preview} = workspace;
+        if (!preview) throw new NoPreviewUserError();
 
         preferences.update(($preferences) => {
             $preferences.ui.preview.controls.enabled = !$preferences.ui.preview.controls.enabled;
@@ -218,7 +180,11 @@ export const EXTENSION_PREVIEW = define_extension({
     },
 
     command_ui_viewport_toggle(app: IAppContext) {
-        const {preferences} = app;
+        const {preferences, workspace} = app;
+        if (!workspace) throw new NoWorkspaceUserError();
+
+        const {preview} = workspace;
+        if (!preview) throw new NoPreviewUserError();
 
         preferences.update(($preferences) => {
             $preferences.ui.preview.viewport.enabled = !$preferences.ui.preview.viewport.enabled;

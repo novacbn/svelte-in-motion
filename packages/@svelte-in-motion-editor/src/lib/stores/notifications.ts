@@ -11,28 +11,39 @@ export interface INotificationItem extends ICollectionItem {
 
     is_dismissible?: boolean;
 
-    header: string;
+    namespace: string;
 
     palette?: PROPERTY_PALETTE;
-
-    text?: string;
 
     on_remove?: (notification: INotificationItem) => void;
 }
 
-export interface INotificationsStore extends ICollectionStore<INotificationItem> {
-    push(item: Omit<INotificationItem, "identifier">): INotificationItem;
+export interface INotificationTypedItem<T> extends INotificationItem {
+    tokens: T;
+}
+
+export interface INotificationUntypedItem extends INotificationItem {}
+
+export interface INotificationsStore
+    extends ICollectionStore<INotificationTypedItem<unknown> | INotificationUntypedItem> {
+    push(
+        item: Omit<INotificationTypedItem<unknown> | INotificationUntypedItem, "identifier">
+    ): INotificationItem;
 }
 
 export function notifications(): INotificationsStore {
-    const {find, has, push, subscribe, remove, update, watch} = collection<INotificationItem>();
+    const {find, has, push, subscribe, remove, update, watch} = collection<
+        INotificationTypedItem<unknown> | INotificationUntypedItem
+    >();
 
     return {
         find,
         has,
 
         push(item) {
-            return push({...item, identifier: generate_uuid()} as INotificationItem);
+            const identifier = generate_uuid();
+
+            return push({...item, identifier} as INotificationItem);
         },
 
         subscribe,

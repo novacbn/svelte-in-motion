@@ -1,7 +1,7 @@
 import {get} from "svelte/store";
 
 import type {ICollectionItem, ICollectionStore} from "@svelte-in-motion/utilities";
-import {UserError, collection, format_snake_case} from "@svelte-in-motion/utilities";
+import {UserError, collection} from "@svelte-in-motion/utilities";
 
 import type {IAppContext} from "../app";
 
@@ -34,7 +34,7 @@ export interface IKeybindsStore extends ICollectionStore<IKeybindItem> {
 }
 
 export function keybinds(app: IAppContext): IKeybindsStore {
-    const {notifications, prompts, translations} = app;
+    const {errors, prompts} = app;
 
     const store = collection<IKeybindItem>();
     const {find, has, push, subscribe, remove, update, watch} = store;
@@ -104,26 +104,7 @@ export function keybinds(app: IAppContext): IKeybindsStore {
                             });
                         } catch (err) {
                             if (err instanceof UserError) {
-                                const $translations = get(translations);
-                                const translation_identifier = `errors-${format_snake_case(
-                                    err.name
-                                )}`;
-
-                                notifications.push({
-                                    icon: err.icon,
-                                    is_dismissible: true,
-
-                                    header: $translations.format(
-                                        `${translation_identifier}-label`,
-                                        err.tokens
-                                    ),
-
-                                    text: $translations.format(
-                                        `${translation_identifier}-description`,
-                                        err.tokens
-                                    ),
-                                });
-
+                                errors.push(err);
                                 return;
                             }
 
