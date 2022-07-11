@@ -3,17 +3,21 @@ import {get} from "svelte/store";
 import {WorkspacesItemConfiguration} from "@svelte-in-motion/configuration";
 import type {IAppContext, IKeybindEvent, ISearchPromptEvent} from "@svelte-in-motion/extension";
 import {define_extension} from "@svelte-in-motion/extension";
-import {Default, MinLength, Pattern} from "@svelte-in-motion/type";
+import {Default, MinLength, Pattern, TypeObjectLiteral} from "@svelte-in-motion/type";
 import {typeOf} from "@svelte-in-motion/type";
 import {PromptDismissError} from "@svelte-in-motion/utilities";
 
-import {NoWorkspaceUserError} from "../util/errors";
+import {InvalidFileUserError, NoWorkspaceUserError} from "../util/errors";
 
 const EXPRESSION_FILE_NAME = /^[\w _\.\(\)\[\]]+$/;
 
 const EXPRESSION_NAME = /^[\w ]+$/;
 
 interface FileNew {
+    file_name: string & MinLength<1> & Pattern<typeof EXPRESSION_FILE_NAME>;
+}
+
+interface FileRemove {
     file_name: string & MinLength<1> & Pattern<typeof EXPRESSION_FILE_NAME>;
 }
 
@@ -105,6 +109,13 @@ export const EXTENSION_WORKSPACE = define_extension({
             is_disabled: () => get(workspaces).workspaces.length > 0,
             is_visible: () => get(workspaces).workspaces.length > 0,
             on_bind: this.keybind_prompt_open_recent.bind(this),
+        });
+
+        commands.push({
+            identifier: "workspace.remove_file",
+            is_visible: () => false,
+            type: typeOf<FileRemove>() as TypeObjectLiteral,
+            on_execute: this.command_remove_file.bind(this),
         });
     },
 
@@ -286,6 +297,25 @@ export const EXTENSION_WORKSPACE = define_extension({
 
         if (!location.hash) location.hash = `#/workspace/${result.identifier}`;
         else open(`#/workspace/${result.identifier}`, "_blank");
+    },
+
+    async command_remove_file(app: IAppContext, args: FileRemove) {
+        const {file_name} = args;
+        const {workspace} = app;
+
+        if (!workspace) throw new NoWorkspaceUserError();
+
+        const {editor, storage} = workspace;
+
+        if (!(await storage.exists(file_name))) throw new InvalidFileUserError();
+
+        if (editor) {
+            const $current_file_name = get(editor.file_path);
+
+            if (file_name === $current_file_name) location.hash = `#/${workspace.identifier}`;
+        }
+
+        await storage.remove_file(file_name);
     },
 
     keybind_prompt_new(app: IAppContext, event: IKeybindEvent) {

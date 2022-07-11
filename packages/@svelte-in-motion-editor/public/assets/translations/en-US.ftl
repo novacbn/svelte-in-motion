@@ -48,6 +48,8 @@ templates-samples-transitions-description = Showcase of the Transitions Componen
 templates-welcome-label = Welcome to Svelte-In-Motion
 templates-welcome-description = Simple welcome message template to introduce syntax and concepts.
 
+errors-invalid_file_user_error-label = Error
+errors-invalid_file_user_error-description = File does not exist.
 errors-no_editor_user_error-label = Error
 errors-no_editor_user_error-description = No File is currently loaded.
 errors-no_preview_user_error-label = Error
