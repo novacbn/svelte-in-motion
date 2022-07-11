@@ -10,18 +10,27 @@ export class PromptDismissError extends PromptError {
     name = PromptDismissError.name;
 }
 
-export class UserError<T = void> extends Error {
+export class TranslatedError<T = void> extends Error {
+    name = TranslatedError.name;
+
+    tokens?: T;
+
+    constructor(tokens?: T) {
+        super();
+
+        this.tokens = tokens;
+    }
+}
+
+export class UserError<T = void> extends TranslatedError<T> {
     // TODO: Once icon situation is resolved, should default to the X icon
     icon?: typeof SvelteComponent;
 
     name = UserError.name;
 
-    tokens?: T;
-
     constructor(tokens?: T, icon?: typeof SvelteComponent) {
-        super();
+        super(tokens);
 
         this.icon = icon;
-        this.tokens = tokens;
     }
 }
