@@ -9,7 +9,6 @@
 /packages/@svelte-in-motion-configuration/dist/
 /packages/@svelte-in-motion-configuration/node_modules/
 /packages/@svelte-in-motion-core/node_modules/
-/packages/@svelte-in-motion-editor/.vercel/
 /packages/@svelte-in-motion-editor/dist/
 /packages/@svelte-in-motion-editor/node_modules/
 /packages/@svelte-in-motion-editor/vite.config.ts.js
