@@ -22,9 +22,9 @@
 
     import Loader from "../Loader.svelte";
 
-    const {preferences} = CONTEXT_APP.get()!;
+    const {errors, preferences} = CONTEXT_APP.get()!;
     const {file_path, frame, playing} = CONTEXT_PREVIEW.get()!;
-    const {configuration, errors, identifier} = CONTEXT_WORKSPACE.get()!;
+    const {configuration, identifier} = CONTEXT_WORKSPACE.get()!;
 
     const framerate = derived(configuration, ($configuration) => $configuration.framerate);
     const maxframes = derived(configuration, ($configuration) => $configuration.maxframes);
