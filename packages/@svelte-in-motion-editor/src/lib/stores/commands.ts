@@ -60,7 +60,7 @@ export function commands(app: IAppContext): ICommandsStore {
                 await item.on_execute(app, args);
             } catch (err) {
                 if (err instanceof UserError) {
-                    errors.push(UserError);
+                    errors.push(err);
                     return;
                 }
 
