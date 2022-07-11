@@ -197,53 +197,53 @@ export function jobs(app: IAppContext): IJobsStore {
         },
 
         track(identifier, on_remove = undefined) {
-            if (!has("identifier", identifier)) {
+            const job = find("identifier", identifier);
+            if (!job) {
                 throw new ReferenceError(
                     `bad argument #0 to 'jobs.track' (job '${identifier}' is not valid)`
                 );
             }
 
             const {identifier: notification_identifier} = notifications.push({
-                header: "Tracking job...",
-                text: identifier,
+                namespace: "jobs-tracking-uninitiaized",
+                tokens: job,
+
                 on_remove,
             });
 
             function update(): void {
-                // HACK: We're relying `has` at the top of the function remaining
-                // valid through entire lifecycle
-                const item = find("identifier", identifier)!;
+                // HACK: We're relying reference check at the top of the function
+                // remaining valid through entire lifecycle
+                const job = find("identifier", identifier)!;
 
-                switch (item.state) {
-                    case JOB_STATES.ended:
-                        notifications.update("identifier", notification_identifier, {
-                            //icon: Check,
-                            header: "Job Finished",
-                            is_dismissible: true,
-                        });
-
-                        break;
-
+                switch (job.state) {
                     case JOB_STATES.encoding:
                         notifications.update("identifier", notification_identifier, {
                             //icon: Film,
-                            header: "Encoding Video",
+
+                            namespace: "jobs-tracking-encoding",
+                            tokens: job,
                         });
 
                         break;
 
                     case JOB_STATES.rendering:
                         notifications.update("identifier", notification_identifier, {
-                            //icon: Video,
-                            header: "Rendering Frames",
+                            //icon: Film,
+
+                            namespace: "jobs-tracking-rendering",
+                            tokens: job,
                         });
 
                         break;
 
-                    case JOB_STATES.uninitialized:
+                    case JOB_STATES.ended:
                         notifications.update("identifier", notification_identifier, {
-                            //icon: Clock,
-                            header: "Starting Job",
+                            //icon: Check,
+                            is_dismissible: true,
+
+                            namespace: "jobs-tracking-ended",
+                            tokens: job,
                         });
 
                         break;

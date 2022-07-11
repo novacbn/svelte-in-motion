@@ -174,28 +174,32 @@ export function encodes(app: IAppContext): IEncodesStore {
         },
 
         track(identifier, on_remove = undefined) {
-            if (!has("identifier", identifier)) {
+            const encode = find("identifier", identifier);
+            if (!encode) {
                 throw new ReferenceError(
                     `bad argument #0 to 'encodes.track' (encode '${identifier}' is not valid)`
                 );
             }
 
             const {identifier: notification_identifier} = notifications.push({
-                header: "Tracking encode...",
-                text: identifier,
+                namespace: "encodes-tracking-uninitiaized",
+                tokens: encode,
+
                 on_remove,
             });
 
             function update(): void {
-                // HACK: We're relying `has` at the top of the function remaining
-                // valid through entire lifecycle
+                // HACK: We're relying reference check at the top of the function
+                // remaining valid through entire lifecycle
                 const encode = find("identifier", identifier)!;
 
                 switch (encode.state) {
                     case ENCODE_STATES.encoding:
                         notifications.update("identifier", notification_identifier, {
                             //icon: Film,
-                            header: "Encoding Video",
+
+                            namespace: "encodes-tracking-encoding",
+                            tokens: encode,
                         });
 
                         break;
@@ -203,30 +207,34 @@ export function encodes(app: IAppContext): IEncodesStore {
                     case ENCODE_STATES.ended:
                         notifications.update("identifier", notification_identifier, {
                             //icon: Check,
-                            header: "Encode Finished",
                             is_dismissible: true,
+
+                            namespace: "encodes-tracking-ended",
+                            tokens: encode,
                         });
 
                         break;
 
-                    case ENCODE_STATES.uninitialized:
+                    case ENCODE_STATES.initializing:
                         notifications.update("identifier", notification_identifier, {
                             //icon: Clock,
-                            header: "Starting Encode",
+
+                            namespace: "encodes-tracking-initializing",
+                            tokens: encode,
                         });
 
                         break;
                 }
             }
 
-            const destroy_start = EVENT_START.subscribe(({encode: item}) => {
-                if (item.identifier !== identifier) return;
+            const destroy_start = EVENT_START.subscribe(({encode}) => {
+                if (encode.identifier !== identifier) return;
 
                 update();
             });
 
-            const destroy_end = EVENT_END.subscribe(({encode: item}) => {
-                if (item.identifier !== identifier) return;
+            const destroy_end = EVENT_END.subscribe(({encode}) => {
+                if (encode.identifier !== identifier) return;
 
                 destroy_end();
                 destroy_start();

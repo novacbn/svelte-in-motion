@@ -191,59 +191,67 @@ export function renders(app: IAppContext): IRendersStore {
         },
 
         track(identifier, on_remove = undefined) {
-            if (!has("identifier", identifier)) {
+            const render = find("identifier", identifier);
+            if (!render) {
                 throw new ReferenceError(
                     `bad argument #0 to 'renders.track' (render '${identifier}' is not valid)`
                 );
             }
 
             const {identifier: notification_identifier} = notifications.push({
-                header: "Tracking render...",
-                text: identifier,
+                namespace: "renders-tracking-uninitiaized",
+                tokens: render,
+
                 on_remove,
             });
 
             function update(): void {
-                // HACK: We're relying `has` at the top of the function remaining
-                // valid through entire lifecycle
-                const item = find("identifier", identifier)!;
+                // HACK: We're relying reference check at the top of the function
+                // remaining valid through entire lifecycle
+                const render = find("identifier", identifier)!;
 
-                switch (item.state) {
+                switch (render.state) {
+                    case RENDER_STATES.rendering:
+                        notifications.update("identifier", notification_identifier, {
+                            //icon: Film,
+
+                            namespace: "renders-tracking-rendering",
+                            tokens: render,
+                        });
+
+                        break;
+
                     case RENDER_STATES.ended:
                         notifications.update("identifier", notification_identifier, {
                             //icon: Check,
-                            header: "Render Finished",
                             is_dismissible: true,
+
+                            namespace: "renders-tracking-ended",
+                            tokens: render,
                         });
 
                         break;
 
-                    case RENDER_STATES.rendering:
-                        notifications.update("identifier", notification_identifier, {
-                            //icon: Video,
-                            header: "Rendering Frames",
-                        });
-
-                        break;
-
-                    case RENDER_STATES.uninitialized:
+                    case RENDER_STATES.initializing:
                         notifications.update("identifier", notification_identifier, {
                             //icon: Clock,
-                            header: "Starting Render",
+
+                            namespace: "renders-tracking-initializing",
+                            tokens: render,
                         });
 
                         break;
                 }
             }
 
-            const destroy_start = EVENT_START.subscribe(({render: item}) => {
-                if (item.identifier !== identifier) return;
+            const destroy_start = EVENT_START.subscribe(({render}) => {
+                if (render.identifier !== identifier) return;
 
                 update();
             });
 
-            const destroy_end = EVENT_END.subscribe(({render: item}) => {
-                if (item.identifier !== identifier) return;
+            const destroy_end = EVENT_END.subscribe(({render}) => {
+                if (render.identifier !== identifier) return;
 
                 destroy_end();
                 destroy_start();

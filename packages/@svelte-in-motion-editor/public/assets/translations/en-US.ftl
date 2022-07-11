@@ -53,6 +53,40 @@ errors-no_preview_user_error-description = No Preview is currently loaded.
 errors-no_workspace_user_error-label = Error
 errors-no_workspace_user_error-description = No Workspace is currently loaded.
 
+encodes-tracking-encoding-label = Encoding Video
+encodes-tracking-encoding-description = { $identifier }
+encodes-tracking-ended-label = Encode Finished
+encodes-tracking-ended-description = { $identifier }
+encodes-tracking-initializing-label = Encode Initializing
+encodes-tracking-initializing-description = { $identifier }
+encodes-tracking-uninitialized-label = Encode Uninitialized
+encodes-tracking-uninitialized-description = { $identifier }
+
+renders-tracking-rendering-label = Rendering Frames
+renders-tracking-rendering-description = { $identifier }
+renders-tracking-ended-label = Render Finished
+renders-tracking-ended-description = { $identifier }
+renders-tracking-initializing-label = Render Initializing
+renders-tracking-initializing-description = { $identifier }
+renders-tracking-uninitialized-label = Render Uninitialized
+renders-tracking-uninitialized-description = { $identifier }
+
+jobs-tracking-encoding-label = { encodes-tracking-encoding-label }
+jobs-tracking-encoding-description = { encodes-tracking-encoding-description }
+jobs-tracking-rendering-label = { renders-tracking-rendering-label }
+jobs-tracking-rendering-description = { renders-tracking-rendering-description }
+jobs-tracking-ended-label = Job Finished
+jobs-tracking-ended-description = { $identifier }
+jobs-tracking-initializing-label = Job Initializing
+jobs-tracking-initializing-description = { $identifier }
+jobs-tracking-uninitialized-label = Job Uninitialized
+jobs-tracking-uninitialized-description = { $identifier }
+
+exports-tracking-archiving-label = Archiving Frames
+exports-tracking-archiving-description = { $identifier }
+exports-tracking-download-label = Downloading Artifact
+exports-tracking-download-description = { $identifier }
+
 prompts-about-label = About Svelte-In-Motion
 prompts-about-version-label = VERSION
 prompts-about-source-label = SOURCE

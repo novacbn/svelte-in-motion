@@ -114,16 +114,18 @@ export const EXTENSION_EXPORT = define_extension({
 
         notifications.update("identifier", notification_identifier, {
             //icon: Archive,
-            header: "Archiving Frames",
             is_dismissible: false,
+
+            namespace: "exports-tracking-archiving",
         });
 
         const zip = await zip_frames(frames);
 
         notifications.update("identifier", notification_identifier, {
             //icon: Download,
-            header: "Downloading Archive",
             is_dismissible: true,
+
+            namespace: "exports-tracking-download",
         });
 
         const $metadata = get(metadata);
@@ -205,8 +207,9 @@ export const EXTENSION_EXPORT = define_extension({
 
         notifications.update("identifier", notification_identifier, {
             //icon: Download,
-            header: "Downloading Video",
             is_dismissible: true,
+
+            namespace: "exports-tracking-download",
         });
 
         // HACK: / TODO: Update later to support variable video container format
