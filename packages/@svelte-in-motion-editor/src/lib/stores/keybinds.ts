@@ -34,7 +34,7 @@ export interface IKeybindsStore extends ICollectionStore<IKeybindItem> {
 }
 
 export function keybinds(app: IAppContext): IKeybindsStore {
-    const {notifications, prompts, translations} = app;
+    const {notifications, prompts} = app;
 
     const store = collection<IKeybindItem>();
     const {find, has, push, subscribe, remove, update, watch} = store;
@@ -104,7 +104,6 @@ export function keybinds(app: IAppContext): IKeybindsStore {
                             });
                         } catch (err) {
                             if (err instanceof UserError) {
-                                const $translations = get(translations);
                                 const translation_identifier = `errors-${format_snake_case(
                                     err.name
                                 )}`;
@@ -113,15 +112,10 @@ export function keybinds(app: IAppContext): IKeybindsStore {
                                     icon: err.icon,
                                     is_dismissible: true,
 
-                                    header: $translations.format(
-                                        `${translation_identifier}-label`,
-                                        err.tokens
-                                    ),
+                                    tokens: err.tokens,
 
-                                    text: $translations.format(
-                                        `${translation_identifier}-description`,
-                                        err.tokens
-                                    ),
+                                    header: `${translation_identifier}-label`,
+                                    text: `${translation_identifier}-description`,
                                 });
 
                                 return;
