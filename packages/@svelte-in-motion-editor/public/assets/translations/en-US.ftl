@@ -34,6 +34,8 @@ commands-workspace-prompt-new_from_template-description = Prompts for creating a
 commands-workspace-prompt-new_from_template-label = Workspaces: New from Template
 commands-workspace-prompt-new-description = Prompts for creating a new Workspace.
 commands-workspace-prompt-new-label = Workspaces: New
+commands-workspace-prompt-new_file-description = Prompts for creating a new File in the current Workspace.
+commands-workspace-prompt-new_file-label = Workspace: New File
 commands-workspace-prompt-open_recent-description = Open a Workspace that was recently accessed.
 commands-workspace-prompt-open_recent-label = Workspaces: Open Recent
 
@@ -119,8 +121,12 @@ prompts-video_export-pixel_format-yuv420p-label = yuv420p
 prompts-video_export-dismiss-label = Dismiss
 prompts-video_export-submit-label = Export
 
+prompts-file_new-label = New File
+prompts-file_new-file_name-description = Enter an alphanumeric name for the File.
+prompts-file_new-dismiss-label = Dismiss
+prompts-file_new-submit-label = Create File
+
 prompts-workspace_new-label = New Workspace
-prompts-workspace_new-name-label = Name
 prompts-workspace_new-name-description = Enter an alphanumeric name for the Workspace.
 prompts-workspace_new-dismiss-label = Dismiss
 prompts-workspace_new-submit-label = Create Workspace

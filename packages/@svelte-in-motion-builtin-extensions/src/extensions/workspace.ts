@@ -9,7 +9,13 @@ import {PromptDismissError} from "@svelte-in-motion/utilities";
 
 import {NoWorkspaceUserError} from "../util/errors";
 
+const EXPRESSION_FILE_NAME = /^[\w _\.\(\)\[\]]+$/;
+
 const EXPRESSION_NAME = /^[\w ]+$/;
+
+interface FileNew {
+    file_name: string & MinLength<1> & Pattern<typeof EXPRESSION_FILE_NAME>;
+}
 
 interface WorkspaceNew {
     name: string & Default<""> & MinLength<0> & Pattern<typeof EXPRESSION_NAME>;
@@ -65,6 +71,18 @@ export const EXTENSION_WORKSPACE = define_extension({
         });
 
         commands.push({
+            identifier: "workspace.prompt.new_file",
+            is_visible: () => !!app.workspace,
+            on_execute: this.command_prompt_new_file.bind(this),
+        });
+
+        keybinds.push({
+            identifier: "workspace.prompt.new_file",
+            binds: [["control", "shift", "f"]],
+            on_bind: this.keybind_prompt_new_file.bind(this),
+        });
+
+        commands.push({
             identifier: "workspace.prompt.new_from_template",
             on_execute: this.command_prompt_new_from_template.bind(this),
         });
@@ -116,6 +134,31 @@ export const EXTENSION_WORKSPACE = define_extension({
         }
 
         render_template(app, result.name, "welcome");
+    },
+
+    async command_prompt_new_file(app: IAppContext) {
+        const {prompts, workspace} = app;
+
+        if (!workspace) throw new NoWorkspaceUserError();
+
+        let result: FileNew;
+        try {
+            result = (
+                await prompts.prompt_form<FileNew>({
+                    is_dismissible: true,
+
+                    namespace: "file_new",
+                    type: typeOf<FileNew>(),
+                })
+            ).model;
+        } catch (err) {
+            if (err instanceof PromptDismissError) return;
+            throw err;
+        }
+
+        const {storage} = workspace;
+
+        await storage.write_file_text(result.file_name, "");
     },
 
     async command_prompt_new_from_template(app: IAppContext) {
@@ -247,6 +290,10 @@ export const EXTENSION_WORKSPACE = define_extension({
 
     keybind_prompt_new(app: IAppContext, event: IKeybindEvent) {
         if (event.active) this.command_prompt_new(app);
+    },
+
+    keybind_prompt_new_file(app: IAppContext, event: IKeybindEvent) {
+        if (event.active && app.workspace?.editor) this.command_prompt_new_file(app);
     },
 
     keybind_prompt_new_from_template(app: IAppContext, event: IKeybindEvent) {
