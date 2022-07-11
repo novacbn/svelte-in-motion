@@ -49,7 +49,7 @@
                 {#if notification.is_dismissible}
                     <Tile.Footer>
                         <Button
-                            palette="negative"
+                            palette={notification.palette === "negative" ? "light" : "negative"}
                             variation="clear"
                             sizing="tiny"
                             on:click={(event) => on_dismiss_click(event, notification)}
