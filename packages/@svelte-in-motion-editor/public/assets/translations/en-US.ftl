@@ -77,8 +77,6 @@ jobs-tracking-rendering-label = { renders-tracking-rendering-label }
 jobs-tracking-rendering-description = { renders-tracking-rendering-description }
 jobs-tracking-ended-label = Job Finished
 jobs-tracking-ended-description = { $identifier }
-jobs-tracking-initializing-label = Job Initializing
-jobs-tracking-initializing-description = { $identifier }
 jobs-tracking-uninitialized-label = Job Uninitialized
 jobs-tracking-uninitialized-description = { $identifier }
 
