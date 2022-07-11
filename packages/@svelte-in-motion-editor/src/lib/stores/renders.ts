@@ -172,22 +172,22 @@ export function renders(app: IAppContext): IRendersStore {
         },
 
         remove(identifier) {
-            const item = find("identifier", identifier);
+            const render = find("identifier", identifier);
 
-            if (!item) {
+            if (!render) {
                 throw new ReferenceError(
                     `bad argument #0 to 'renders.remove' (render '${identifier}' is not valid)`
                 );
             }
 
-            if (item.state !== RENDER_STATES.ended) {
+            if (render.state !== RENDER_STATES.ended) {
                 throw new TypeError(
                     `bad argument #0 'renders.remove' (render '${identifier}' has not ended)`
                 );
             }
 
             remove(identifier);
-            return item;
+            return render;
         },
 
         track(identifier, on_remove = undefined) {
@@ -264,15 +264,15 @@ export function renders(app: IAppContext): IRendersStore {
         },
 
         yield(identifier) {
-            const item = find("identifier", identifier);
+            const render = find("identifier", identifier);
 
-            if (!item) {
+            if (!render) {
                 throw new ReferenceError(
                     `bad argument #0 to 'renders.yield' (render '${identifier}' is not valid)`
                 );
             }
 
-            if (item.state === RENDER_STATES.ended) {
+            if (render.state === RENDER_STATES.ended) {
                 throw new ReferenceError(
                     `bad argument #0 'renders.yield' (render '${identifier}' already ended)`
                 );

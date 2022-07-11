@@ -178,22 +178,22 @@ export function jobs(app: IAppContext): IJobsStore {
         },
 
         remove(identifier) {
-            const item = find(identifier);
+            const job = find(identifier);
 
-            if (!item) {
+            if (!job) {
                 throw new ReferenceError(
                     `bad argument #0 to 'jobs.remove' (job '${identifier}' is not valid)`
                 );
             }
 
-            if (item.state !== JOB_STATES.ended) {
+            if (job.state !== JOB_STATES.ended) {
                 throw new TypeError(
                     `bad argument #0 'jobs.remove' (job '${identifier}' has not ended)`
                 );
             }
 
             remove(identifier);
-            return item;
+            return job;
         },
 
         track(identifier, on_remove = undefined) {
@@ -276,15 +276,15 @@ export function jobs(app: IAppContext): IJobsStore {
         },
 
         yield(identifier) {
-            const item = find("identifier", identifier);
+            const job = find("identifier", identifier);
 
-            if (!item) {
+            if (!job) {
                 throw new ReferenceError(
                     `bad argument #0 to 'jobs.yield' (job '${identifier}' is not valid)`
                 );
             }
 
-            if (item.state === JOB_STATES.ended) {
+            if (job.state === JOB_STATES.ended) {
                 throw new TypeError(
                     `bad argument #0 'jobs.yield' (job '${identifier}' already ended)`
                 );

@@ -155,22 +155,22 @@ export function encodes(app: IAppContext): IEncodesStore {
         },
 
         remove(identifier) {
-            const item = find("identifier", identifier);
+            const encode = find("identifier", identifier);
 
-            if (!item) {
+            if (!encode) {
                 throw new ReferenceError(
                     `bad argument #0 to 'encodes.remove' (encode '${identifier}' is not valid)`
                 );
             }
 
-            if (item.state !== ENCODE_STATES.ended) {
+            if (encode.state !== ENCODE_STATES.ended) {
                 throw new TypeError(
                     `bad argument #0 'encodes.remove' (encode '${identifier}' has not ended)`
                 );
             }
 
             remove(identifier);
-            return item;
+            return encode;
         },
 
         track(identifier, on_remove = undefined) {
@@ -247,23 +247,23 @@ export function encodes(app: IAppContext): IEncodesStore {
         },
 
         yield(identifier) {
-            const item = find("identifier", identifier);
+            const encode = find("identifier", identifier);
 
-            if (!item) {
+            if (!encode) {
                 throw new ReferenceError(
                     `bad argument #0 to 'encodes.yield' (encode '${identifier}' is not valid)`
                 );
             }
 
-            if (item.state === ENCODE_STATES.ended) {
+            if (encode.state === ENCODE_STATES.ended) {
                 throw new TypeError(
                     `bad argument #0 'encodes.yield' (encode '${identifier}' already ended)`
                 );
             }
 
             return new Promise<Uint8Array>((resolve) => {
-                const destroy = EVENT_END.subscribe(({encode: item, video}) => {
-                    if (identifier === item.identifier) {
+                const destroy = EVENT_END.subscribe(({encode, video}) => {
+                    if (identifier === encode.identifier) {
                         resolve(video);
                         destroy();
                     }
