@@ -104,7 +104,7 @@ export function keybinds(app: IAppContext): IKeybindsStore {
                             });
                         } catch (err) {
                             if (err instanceof UserError) {
-                                errors.push({error: UserError});
+                                errors.push(UserError);
                                 return;
                             }
 
