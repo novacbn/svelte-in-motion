@@ -115,7 +115,7 @@ export const EXTENSION_WORKSPACE = define_extension({
             throw err;
         }
 
-        render_template(app, result.name, "templates.welcome");
+        render_template(app, result.name, "welcome");
     },
 
     async command_prompt_new_from_template(app: IAppContext) {
