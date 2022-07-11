@@ -182,7 +182,7 @@ export function encodes(app: IAppContext): IEncodesStore {
             }
 
             const {identifier: notification_identifier} = notifications.push({
-                namespace: "encodes-tracking-uninitiaized",
+                namespace: "encodes-tracking-uninitialized",
                 tokens: encode,
 
                 on_remove,

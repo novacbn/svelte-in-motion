@@ -205,7 +205,7 @@ export function jobs(app: IAppContext): IJobsStore {
             }
 
             const {identifier: notification_identifier} = notifications.push({
-                namespace: "jobs-tracking-uninitiaized",
+                namespace: "jobs-tracking-uninitialized",
                 tokens: job,
 
                 on_remove,

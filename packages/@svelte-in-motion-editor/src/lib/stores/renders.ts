@@ -199,7 +199,7 @@ export function renders(app: IAppContext): IRendersStore {
             }
 
             const {identifier: notification_identifier} = notifications.push({
-                namespace: "renders-tracking-uninitiaized",
+                namespace: "renders-tracking-uninitialized",
                 tokens: render,
 
                 on_remove,
