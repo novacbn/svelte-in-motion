@@ -1,25 +1,32 @@
 //import {Slash} from "lucide-svelte";
 
-import type {ICollectionItem, ICollectionStore} from "@svelte-in-motion/utilities";
-import {collection, generate_uuid} from "@svelte-in-motion/utilities";
+import type {SvelteComponent} from "svelte";
 
-import type {INotificationsStore} from "./notifications";
+import type {
+    ICollectionItem,
+    ICollectionStore,
+    TranslatedError,
+    UserError,
+} from "@svelte-in-motion/utilities";
+import {collection, format_snake_case, generate_uuid} from "@svelte-in-motion/utilities";
+
+import type {IAppContext} from "../app";
 
 export interface IErrorItem extends ICollectionItem {
     identifier: string;
 
-    message: string;
+    icon?: typeof SvelteComponent;
 
-    name: string;
-
-    source: string;
+    error: Error | TranslatedError | UserError;
 }
 
 export interface IErrorsStore extends ICollectionStore<IErrorItem> {
     push(item: Omit<IErrorItem, "identifier">): IErrorItem;
 }
 
-export function errors(notifications: INotificationsStore): IErrorsStore {
+export function errors(app: IAppContext): IErrorsStore {
+    const {notifications} = app;
+
     const {find, has, push, subscribe, remove, update, watch} = collection<IErrorItem>();
 
     return {
@@ -27,17 +34,24 @@ export function errors(notifications: INotificationsStore): IErrorsStore {
         has,
 
         push(item) {
+            const {error} = item;
+            const error_identifier = generate_uuid();
+
+            const translation_identifier = `errors-${format_snake_case(error.name)}`;
+
             notifications.push({
-                //icon: Slash,
+                //icon: item.icon ? item.icon : Slash,
                 palette: "negative",
 
-                dismissible: true,
+                is_dismissible: true,
 
-                header: `Error: ${item.source}`,
-                text: `${item.name}: ${item.message}`,
+                header: `${translation_identifier}-label`,
+                text: `${translation_identifier}-description`,
+
+                on_remove: () => remove(error_identifier),
             });
 
-            return push({...item, identifier: generate_uuid()} as IErrorItem);
+            return push({...item, identifier: error_identifier} as IErrorItem);
         },
 
         subscribe,
