@@ -266,13 +266,41 @@ export function indexeddb(
             ]);
 
             await Promise.all([
-                directory_keys
+                ...file_keys
                     .filter((key, index) => key.toString().startsWith(path))
-                    .map((key) => del(key, directory_store)),
+                    .map(async (key) => {
+                        await del(key, file_store);
 
-                file_keys
+                        CHANNEL_WATCH.dispatch({
+                            identifier,
+                            detail: {
+                                path: key.toString(),
+                                type: WATCH_EVENT_TYPES.remove,
+                                stats: {
+                                    is_directory: false,
+                                    is_file: true,
+                                },
+                            },
+                        });
+                    }),
+
+                ...directory_keys
                     .filter((key, index) => key.toString().startsWith(path))
-                    .map((key) => del(key, file_store)),
+                    .map(async (key) => {
+                        await del(key, directory_store);
+
+                        CHANNEL_WATCH.dispatch({
+                            identifier,
+                            detail: {
+                                path: key.toString(),
+                                type: WATCH_EVENT_TYPES.remove,
+                                stats: {
+                                    is_directory: true,
+                                    is_file: false,
+                                },
+                            },
+                        });
+                    }),
             ]);
         },
 
@@ -293,7 +321,19 @@ export function indexeddb(
                 );
             }
 
-            return del(path, file_store);
+            await del(path, file_store);
+
+            CHANNEL_WATCH.dispatch({
+                identifier,
+                detail: {
+                    path,
+                    type: WATCH_EVENT_TYPES.remove,
+                    stats: {
+                        is_directory: false,
+                        is_file: true,
+                    },
+                },
+            });
         },
 
         async stats(path) {
