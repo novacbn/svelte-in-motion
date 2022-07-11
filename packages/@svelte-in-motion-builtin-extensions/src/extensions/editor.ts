@@ -52,7 +52,9 @@ export const EXTENSION_EDITOR = define_extension({
     },
 
     command_ui_file_tree_toggle(app: IAppContext) {
-        const {preferences} = app;
+        const {preferences, workspace} = app;
+
+        if (!workspace) throw new NoWorkspaceUserError();
 
         preferences.update(($preferences) => {
             $preferences.ui.editor.file_tree.enabled = !$preferences.ui.editor.file_tree.enabled;
@@ -62,7 +64,13 @@ export const EXTENSION_EDITOR = define_extension({
     },
 
     command_ui_script_toggle(app: IAppContext) {
-        const {preferences} = app;
+        const {preferences, workspace} = app;
+
+        if (!workspace) throw new NoWorkspaceUserError();
+
+        const {editor} = workspace;
+
+        if (!editor) throw new NoEditorUserError();
 
         preferences.update(($preferences) => {
             $preferences.ui.editor.script.enabled = !$preferences.ui.editor.script.enabled;

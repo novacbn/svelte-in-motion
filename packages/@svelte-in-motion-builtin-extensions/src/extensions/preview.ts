@@ -141,7 +141,11 @@ export const EXTENSION_PREVIEW = define_extension({
     },
 
     command_ui_checkerboard_toggle(app: IAppContext) {
-        const {preferences} = app;
+        const {preferences, workspace} = app;
+        if (!workspace) throw new NoWorkspaceUserError();
+
+        const {preview} = workspace;
+        if (!preview) throw new NoPreviewUserError();
 
         preferences.update(($preferences) => {
             $preferences.ui.preview.checkerboard.enabled =
@@ -152,7 +156,11 @@ export const EXTENSION_PREVIEW = define_extension({
     },
 
     command_ui_controls_toggle(app: IAppContext) {
-        const {preferences} = app;
+        const {preferences, workspace} = app;
+        if (!workspace) throw new NoWorkspaceUserError();
+
+        const {preview} = workspace;
+        if (!preview) throw new NoPreviewUserError();
 
         preferences.update(($preferences) => {
             $preferences.ui.preview.controls.enabled = !$preferences.ui.preview.controls.enabled;
@@ -172,7 +180,11 @@ export const EXTENSION_PREVIEW = define_extension({
     },
 
     command_ui_viewport_toggle(app: IAppContext) {
-        const {preferences} = app;
+        const {preferences, workspace} = app;
+        if (!workspace) throw new NoWorkspaceUserError();
+
+        const {preview} = workspace;
+        if (!preview) throw new NoPreviewUserError();
 
         preferences.update(($preferences) => {
             $preferences.ui.preview.viewport.enabled = !$preferences.ui.preview.viewport.enabled;
