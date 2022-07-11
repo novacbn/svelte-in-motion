@@ -11,11 +11,9 @@ export interface INotificationItem extends ICollectionItem {
 
     is_dismissible?: boolean;
 
-    header: string;
+    namespace: string;
 
     palette?: PROPERTY_PALETTE;
-
-    text?: string;
 
     on_remove?: (notification: INotificationItem) => void;
 }

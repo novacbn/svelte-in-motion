@@ -45,16 +45,13 @@ export function errors(app: IAppContext): IErrorsStore {
             const {icon, message, name, stack, tokens} = item;
 
             const error_identifier = generate_uuid();
-            const translation_identifier = `errors-${format_snake_case(name)}`;
 
             notifications.push({
                 //icon: item.icon ? item.icon : Slash,
                 palette: "negative",
                 is_dismissible: true,
 
-                header: `${translation_identifier}-label`,
-                text: `${translation_identifier}-description`,
-
+                namespace: `errors-${format_snake_case(name)}`,
                 tokens: stack ? {...(tokens ?? {}), stack} : tokens,
 
                 on_remove: () => remove(error_identifier),

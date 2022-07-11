@@ -35,13 +35,16 @@
                 {/if}
 
                 <Tile.Section>
+                    {@const description = `${notification.namespace}-description`}
+                    {@const label = `${notification.namespace}-label`}
+
                     <Tile.Header>
-                        {$translations.format(notification.header, notification.tokens)}
+                        {$translations.format(label, notification.tokens)}
                     </Tile.Header>
 
-                    {#if notification.text}
+                    {#if $translations.has(description)}
                         <Text>
-                            {$translations.format(notification.text, notification.tokens)}
+                            {$translations.format(description, notification.tokens)}
                         </Text>
                     {/if}
                 </Tile.Section>
