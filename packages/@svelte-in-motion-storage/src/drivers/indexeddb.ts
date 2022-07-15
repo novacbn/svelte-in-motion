@@ -1,3 +1,5 @@
+import "urlpattern-polyfill";
+
 import type {UseStore} from "idb-keyval";
 import {createStore, del, keys, get, set} from "idb-keyval";
 
@@ -14,7 +16,6 @@ import {get_mimetype} from "../util/mimetypes";
 
 import type {IDriver, IWatchEvent} from "./driver";
 import {WATCH_EVENT_TYPES} from "./driver";
-import {URLPattern} from "urlpattern-polyfill";
 
 interface IIndexedDBWatchEvent {
     detail: IWatchEvent;
