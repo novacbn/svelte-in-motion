@@ -1,8 +1,12 @@
 <script context="module" lang="ts">
+    import {define_load} from "@novacbn/svelte-router";
+
     import type {IAppContext} from "../lib/app";
+    import type {IEditorContext} from "../lib/editor";
     import {CONTEXT_EDITOR, editor as make_editor_context} from "../lib/editor";
-    import type {ILoadCallback} from "../lib/router";
+    import type {IPreviewContext} from "../lib/preview";
     import {CONTEXT_PREVIEW, preview as make_preview_context} from "../lib/preview";
+    import type {IWorkspaceContext} from "../lib/workspace";
     import {CONTEXT_WORKSPACE, workspace as make_workspace_context} from "../lib/workspace";
 
     import {can_preview_file} from "../lib/util/preview";
@@ -12,9 +16,17 @@
         "/workspace/:identifier/:file_path",
     ];
 
-    export const load: ILoadCallback<{app: IAppContext}> = async ({context, url}) => {
-        const {app} = context;
-        const {identifier, file_path} = url.pathname.groups;
+    export const load = define_load<
+        {[CONTEXT_APP.key]: IAppContext},
+        {
+            [CONTEXT_APP.key]: IAppContext;
+            [CONTEXT_EDITOR.key]?: IEditorContext;
+            [CONTEXT_PREVIEW.key]?: IPreviewContext;
+            [CONTEXT_WORKSPACE.key]: IWorkspaceContext;
+        }
+    >(async ({pattern, services}) => {
+        const {app} = services;
+        const {identifier = "", file_path} = pattern.pathname.groups;
 
         const workspace = await make_workspace_context(identifier, app);
         app.workspace = workspace;
@@ -30,6 +42,7 @@
 
             return {
                 context: {
+                    [CONTEXT_APP.key]: app,
                     [CONTEXT_EDITOR.key]: editor,
                     [CONTEXT_PREVIEW.key]: preview,
                     [CONTEXT_WORKSPACE.key]: workspace,
@@ -39,10 +52,11 @@
 
         return {
             context: {
+                [CONTEXT_APP.key]: app,
                 [CONTEXT_WORKSPACE.key]: workspace,
             },
         };
-    };
+    });
 </script>
 
 <script lang="ts">

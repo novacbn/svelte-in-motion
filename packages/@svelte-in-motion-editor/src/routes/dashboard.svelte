@@ -1,14 +1,25 @@
 <script context="module" lang="ts">
+    import {define_load} from "@novacbn/svelte-router";
+
     import type {IAppContext} from "../lib/app";
-    import type {ILoadCallback} from "../lib/router";
+    import {CONTEXT_APP} from "../lib/app";
 
     export const pattern: string = "/";
 
-    export const load: ILoadCallback<{app: IAppContext}> = async ({context}) => {
-        const {app} = context;
+    export const load = define_load<
+        {[CONTEXT_APP.key]: IAppContext},
+        {[CONTEXT_APP.key]: IAppContext}
+    >(({services}) => {
+        const {app} = services;
 
         app.workspace = undefined;
-    };
+
+        return {
+            context: {
+                [CONTEXT_APP.key]: app,
+            },
+        };
+    });
 </script>
 
 <script lang="ts">
@@ -17,8 +28,6 @@
 
     import AppLayout from "../components/app/AppLayout.svelte";
     import AppStatus from "../components/app/AppStatus.svelte";
-
-    import {CONTEXT_APP} from "../lib/app";
 
     const {commands, translations, workspaces} = CONTEXT_APP.get()!;
 
