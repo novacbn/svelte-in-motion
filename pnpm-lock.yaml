@@ -150,6 +150,7 @@ importers:
       '@fluent/bundle': ^0.17.1
       '@fluent/langneg': ^0.6.2
       '@kahi-ui/framework': 0.6.4
+      '@novacbn/svelte-router': 0.0.2
       '@svelte-in-motion/agent': workspace:^
       '@svelte-in-motion/animations': workspace:^
       '@svelte-in-motion/builtin-extensions': workspace:^
@@ -178,7 +179,6 @@ importers:
       svelte2tsx: ^0.5.10
       tslib: ^2.3.1
       typescript: ^4.7.3
-      urlpattern-polyfill: ^1.0.0-rc5
       vite: 2.9.12
     dependencies:
       '@codemirror/commands': 6.0.1
@@ -190,6 +190,7 @@ importers:
       '@fluent/bundle': 0.17.1
       '@fluent/langneg': 0.6.2
       '@kahi-ui/framework': 0.6.4
+      '@novacbn/svelte-router': 0.0.2
       '@svelte-in-motion/agent': link:../@svelte-in-motion-agent
       '@svelte-in-motion/animations': link:../@svelte-in-motion-animations
       '@svelte-in-motion/builtin-extensions': link:../@svelte-in-motion-builtin-extensions
@@ -207,7 +208,6 @@ importers:
       buffer: 6.0.3
       flexsearch: 0.7.21
       lucide-svelte: 0.61.0_svelte2tsx@0.5.10+svelte@3.46.4
-      urlpattern-polyfill: 1.0.0-rc5
     devDependencies:
       '@deepkit/type-compiler': 1.0.1-alpha.71_typescript@4.7.3
       '@sveltejs/vite-plugin-svelte': 1.0.0-next.49_svelte@3.46.4+vite@2.9.12
@@ -349,14 +349,14 @@ importers:
       prettier: ^2.3.1
       svelte: ^3.48.0
       typescript: ^4.7.3
-      urlpattern-polyfill: ^1.0.0-rc5
+      urlpattern-polyfill: ^5.0.3
     dependencies:
       '@svelte-in-motion/utilities': link:../@svelte-in-motion-utilities
       '@zip.js/zip.js': 2.4.7
       idb-keyval: 6.1.0
       lzutf8: 0.6.1
       svelte: 3.48.0
-      urlpattern-polyfill: 1.0.0-rc5
+      urlpattern-polyfill: 5.0.3
     devDependencies:
       prettier: 2.5.1
       typescript: 4.7.3
@@ -419,14 +419,12 @@ importers:
       string-hash: ^1.1.3
       svelte: ^3.46.4
       typescript: ^4.7.3
-      urlpattern-polyfill: 1.0.0-rc5
     dependencies:
       dot-prop: 7.2.0
       github-slugger: 1.4.0
       mersenne-twister: 1.1.0
       string-hash: 1.1.3
       svelte: 3.48.0
-      urlpattern-polyfill: 1.0.0-rc5
     devDependencies:
       '@types/github-slugger': 1.3.0
       '@types/mersenne-twister': 1.1.2
@@ -1357,6 +1355,13 @@ packages:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.13.0
     dev: true
+
+  /@novacbn/svelte-router/0.0.2:
+    resolution: {integrity: sha512-D9zeVsNWBEqbEJeaRbmXJPgZyArsL8SwCUfdf+9DamUwbs//oTop73mhdNeBVAwiQsR7ZAfHNmCfe0w1Y0PuVA==}
+    dependencies:
+      svelte: 3.49.0
+      urlpattern-polyfill: 5.0.3
+    dev: false
 
   /@rollup/pluginutils/4.2.1:
     resolution: {integrity: sha512-iKnFXr7NkdZAIHiIWE+BX5ULi/ucVFYWD6TbAV+rZctiRTY2PL6tsIKhoIOaoskiWAkgu+VsbXgUVDNLHf+InQ==}
@@ -3916,6 +3921,11 @@ packages:
     resolution: {integrity: sha512-fN2YRm/bGumvjUpu6yI3BpvZnpIm9I6A7HR4oUNYd7ggYyIwSA/BX7DJ+UXXffLp6XNcUijyLvttbPVCYa/3xQ==}
     engines: {node: '>= 8'}
 
+  /svelte/3.49.0:
+    resolution: {integrity: sha512-+lmjic1pApJWDfPCpUUTc1m8azDqYCG1JN9YEngrx/hUyIcFJo6VZhj0A1Ai0wqoHcEIuQy+e9tk+4uDgdtsFA==}
+    engines: {node: '>= 8'}
+    dev: false
+
   /svelte2tsx/0.5.10_svelte@3.46.4+typescript@4.7.3:
     resolution: {integrity: sha512-nokQ0HTTWMcNX6tLrDLiOmJCuqjKZU9nCZ6/mVuCL3nusXdbp+9nv69VG2pCy7uQC66kV4Ls+j0WfvvJuGVnkg==}
     peerDependencies:
@@ -4019,8 +4029,8 @@ packages:
       picocolors: 1.0.0
     dev: true
 
-  /urlpattern-polyfill/1.0.0-rc5:
-    resolution: {integrity: sha512-OxVmQLKMQbDZX1m8Ljuf26rzMUJ7lm3cnBAicqrB0qmo1qb/koH7EXayeHiZdiyc6Z0OnaHETW2JCoVHgTnGGA==}
+  /urlpattern-polyfill/5.0.3:
+    resolution: {integrity: sha512-fDnGF6lV6KQUpGhrOyRLgYx8U/zbMelFn1j4aqIGojHIvw+uDSRcBmalOsu1MvWd86HaEnGkihRyko53CSJ8EA==}
     dev: false
 
   /util-deprecate/1.0.2:

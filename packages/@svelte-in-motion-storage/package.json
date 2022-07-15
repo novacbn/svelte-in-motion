@@ -30,6 +30,6 @@
         "idb-keyval": "^6.1.0",
         "lzutf8": "^0.6.1",
         "svelte": "^3.48.0",
-        "urlpattern-polyfill": "^1.0.0-rc5"
+        "urlpattern-polyfill": "^5.0.3"
     }
 }
