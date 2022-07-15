@@ -5,7 +5,7 @@ import {make_scoped_context} from "@svelte-in-motion/utilities";
 import type {IFilePathStore} from "./stores/io";
 import {filepath as make_filepath_store} from "./stores/io";
 
-export const CONTEXT_PREVIEW = make_scoped_context<IPreviewContext>("preview");
+export const CONTEXT_PREVIEW = make_scoped_context<IPreviewContext, "preview">("preview");
 
 export interface IPreviewContext {
     file_path: IFilePathStore;

@@ -3,27 +3,23 @@ import {getContext, hasContext, setContext} from "svelte";
 /**
  * Represents the return value of [[make_scoped_context]]
  */
-export interface IContextScope<T> {
-    key: string;
+export interface IContextScope<Key, Value> {
+    key: Key;
 
-    get(): T | undefined;
+    get(): Value | undefined;
 
     has(): boolean;
 
-    set(value: T | undefined): void;
+    set(value: Value | undefined): void;
 }
 
 /**
  * Returns Svelte Context Scoped helpers
  *
- * ```javascript
- * const {get, has, set} = make_scoped_context("my-context");
- * ```
- *
  * @param key
  * @returns
  */
-export function make_scoped_context<T>(key: string): IContextScope<T> {
+export function make_scoped_context<Value, Key = unknown>(key: Key): IContextScope<Key, Value> {
     return {
         key,
 

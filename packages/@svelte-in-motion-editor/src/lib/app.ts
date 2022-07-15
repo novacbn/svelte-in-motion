@@ -39,7 +39,7 @@ import {
 
 import type {IWorkspaceContext} from "./workspace";
 
-export const CONTEXT_APP = make_scoped_context<IAppContext>("app");
+export const CONTEXT_APP = make_scoped_context<IAppContext, "app">("app");
 
 export interface IAppContext {
     agent: Agent;

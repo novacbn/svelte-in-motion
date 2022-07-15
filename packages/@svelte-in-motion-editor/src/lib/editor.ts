@@ -7,7 +7,7 @@ import {editorview as make_editorview_store} from "./stores/editor";
 import type {IFilePathStore} from "./stores/io";
 import {filepath as make_filepath_store} from "./stores/io";
 
-export const CONTEXT_EDITOR = make_scoped_context<IEditorContext>("editor");
+export const CONTEXT_EDITOR = make_scoped_context<IEditorContext, "editor">("editor");
 
 export interface IEditorContext {
     file_path: IFilePathStore;

@@ -12,7 +12,7 @@ import type {IAppContext} from "./app";
 import type {IEditorContext} from "./editor";
 import type {IPreviewContext} from "./preview";
 
-export const CONTEXT_WORKSPACE = make_scoped_context<IWorkspaceContext>("workspace");
+export const CONTEXT_WORKSPACE = make_scoped_context<IWorkspaceContext, "workspace">("workspace");
 
 export interface IWorkspaceContext {
     configuration: IPreloadedConfigurationFileStore<WorkspaceConfiguration>;
