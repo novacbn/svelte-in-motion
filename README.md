@@ -1,3 +1,5 @@
+> **NOTICE**: This project is archived due to lack of interest. All code is freely available if you want to continue Svelte-In-Motion or for use in your own project.
+
 # svelte-in-motion
 
 > Remotion clone, but in Svelte!
